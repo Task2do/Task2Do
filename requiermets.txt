@@ -1,0 +1,5 @@
+Django==<latest_version>
+djongo==<latest_version>
+sqlparse==<latest_version>  # Required by Djongo
+pymongo==<latest_version>
+djangorestframework==<latest_version>  # Optional, for building RESTful APIs
