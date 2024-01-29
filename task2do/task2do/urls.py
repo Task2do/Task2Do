@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core import views #Why is this not working? The core folder is in the same directory as the urls.py folder
+from task2do.core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', views.project_list, name='project-list'),
+
 ]
