@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+{% if projects %}
+    <ul>
+    {% for project, tasks in projects.items %}
+        <li>{{ project}}: </li>
+        {% for task, date in tasks.items %}
+            <li>{{ task}}:due in {{date}} days</li>
+        {% endfor %}
+    {% endfor %}
+
+    </ul>
+{% else %}
+    <p>No projects yet</p>
+{% endif %}
+</body>
+</html>

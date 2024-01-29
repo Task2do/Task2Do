@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class User(AbstractUser):
+class User(models.Model):
     # Additional user fields if needed
-    pass
+    user = models.OneToOneField(AbstractUser, on_delete=models.CASCADE)
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
