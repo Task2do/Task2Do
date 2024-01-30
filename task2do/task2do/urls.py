@@ -16,11 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from task2do.core import views
+from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('projects/', views.project_list, name='project-list'),
+    path('projects/', views.projects_list, name='project-list'),
     path('', views.open_screen, name='open_screen'),
     path('users/', views.users_list, name='users-list'),
     path('signup/', views.signup_view, name='signup'),

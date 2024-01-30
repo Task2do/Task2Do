@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+
 
 class Worker(models.Model):
     # Additional user fields if needed
-    user = models.OneToOneField(AbstractUser, on_delete=models.CASCADE)
-
+    # user = models.OneToOneField(, on_delete=models.CASCADE)
+    pass
 class Manager(models.Model):
     pass
 class Project(models.Model):

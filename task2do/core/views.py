@@ -1,7 +1,8 @@
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
-from task2do.core.models import Worker, Manager, Project, Task
+from core.models import Worker, Manager, Project, Task
+# The problem above in pycharm is wrong! the import works fine
 from django.core import serializers
 from django.template import loader
 from django.shortcuts import render
