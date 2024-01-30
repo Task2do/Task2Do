@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"> <!-- Specify the character set as UTF-8 -->
+    <title>Your Django Web Page</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <button onclick="location.href='{% url 'signup' %}'">הירשם</button> <!-- Sign Up in Hebrew -->
+        <h2>{{ today_date }}</h2>
+        <button onclick="location.href='{% url 'user_registration' %}'">התחברות משתמש</button> <!-- User Registration in Hebrew -->
+        <button onclick="location.href='{% url 'manager_registration' %}'">התחברות מנהל</button> <!-- Manager Registration in Hebrew -->
+    </div>
+</body>
+</html>
