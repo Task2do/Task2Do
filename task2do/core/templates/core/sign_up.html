@@ -6,26 +6,19 @@
 </head>
 <body>
     <h2>Sign Up</h2>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags|default:'' }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
     <form action="{% url 'signup' %}" method="post">
         {% csrf_token %}
-        <label for="first_name">First Name:</label><br>
-        <input type="text" id="first_name" name="first_name"><br>
-        <label for="last_name">Last Name:</label><br>
-        <input type="text" id="last_name" name="last_name"><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email"><br>
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br>
+        {{ form.as_p }}
         <input type="submit" value="Create">
     </form>
+    {% if form.errors %}
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 </body>
 </html>
