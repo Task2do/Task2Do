@@ -17,8 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core import views
-# The problem above in pycharm is wrong! the import works fine
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +25,9 @@ urlpatterns = [
     path('users/', views.users_list, name='users-list'),
     path('signup/', views.signup_view, name='signup'),
     path('signup/success/', views.signup_success, name='signup-success'),
+    path('user_login/', views.user_login, name='user_login'),
+    path('manager_login/', views.manager_login, name='manager_login'),
+path('user_forgot_password/', views.user_forgot_password, name='user_forgot_password'),
+    path('manager_forgot_password/', views.manager_forgot_password, name='manager_forgot_password'),
 ]
 
