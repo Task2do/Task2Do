@@ -120,20 +120,83 @@ def signup_success(request):
 
 
 
+from .forms import UserRegistrationForm
+
 def signup_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists. Please choose another one.')
-            return render(request, 'core/sign_up.html')
-        else:
-            User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name,
-                                     email=email)
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('signup_success')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'core/sign_up.html', {'form': form})
 
-    return render(request, 'core/sign_up.html')
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('open_screen')
+    else:
+        form = UserCreationForm()
+    return render(request, 'core/user_login.html', {'form': form})
+
+def manager_login(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('open_screen')
+    else:
+        form = UserCreationForm()
+    return render(request, 'core/manager_login.html', {'form': form})
+
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from .forms import ForgotPasswordForm
+
+def user_forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            try:
+                user = User.objects.get(email=email)
+                send_mail(
+                    'Your username and password',
+                    f'Username: {user.username}\nPassword: {user.password}',
+                    'from@example.com',
+                    [email],
+                    fail_silently=False,
+                )
+                return redirect('open_screen')
+            except User.DoesNotExist:
+                form.add_error('email', 'Email does not exist')
+    else:
+        form = ForgotPasswordForm()
+    return render(request, 'core/user_forgot_password.html', {'form': form})
+
+def manager_forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            try:
+                user = User.objects.get(email=email)
+                send_mail(
+                    'Your username and password',
+                    f'Username: {user.username}\nPassword: {user.password}',
+                    'from@example.com',
+                    [email],
+                    fail_silently=False,
+                )
+                return redirect('open_screen')
+            except User.DoesNotExist:
+                form.add_error('email', 'Email does not exist')
+    else:
+        form = ForgotPasswordForm()
+    return render(request, 'core/manager_forgot_password.html', {'form': form})
