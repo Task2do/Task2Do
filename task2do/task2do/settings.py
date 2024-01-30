@@ -73,7 +73,20 @@ WSGI_APPLICATION = 'task2do.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+# TODO: Change the database settings to use MongoDB.
+# I tried to use djongo with the following DB:
+'''
+import djongo
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': False,  # Optional: Enforce schema for data consistency
+        'NAME': 'Task2Do',
+        'CLIENT': {
+            'host': 'mongodb+srv://Task2Do:task2do123456789@task2do.qfnrkky.mongodb.net/'
+        }
+    }
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
