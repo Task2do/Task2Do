@@ -21,5 +21,9 @@ from task2do.core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', views.project_list, name='project-list'),
-
+    path('', views.open_screen, name='open_screen'),
+    path('users/', views.users_list, name='users-list'),
+    path('signup/', views.signup_view, name='signup'),
+    path('signup/success/', views.signup_success, name='signup-success'),
 ]
+
