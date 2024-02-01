@@ -1,3 +1,6 @@
+from django.contrib.auth import login
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -10,6 +13,10 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from jwt.utils import force_bytes
+from pymongo.auth import authenticate
 
 
 def index(request):
@@ -137,22 +144,26 @@ from django.shortcuts import render, redirect
 
 def user_login(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('open_screen')
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('user_home_screen')
     else:
-        form = UserCreationForm()
+        pass
     return render(request, 'core/user_login.html', {'form': form})
 
 def manager_login(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('open_screen')
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('manager_home_screen')
     else:
-        form = UserCreationForm()
+        pass
     return render(request, 'core/manager_login.html', {'form': form})
 
 from django.core.mail import send_mail
@@ -160,43 +171,67 @@ from django.contrib.auth.models import User
 from .forms import ForgotPasswordForm
 
 def user_forgot_password(request):
+    email_sent = False
+    email_not_sent = False
+    email_not_found = False
+
     if request.method == 'POST':
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            try:
-                user = User.objects.get(email=email)
-                send_mail(
-                    'Your username and password',
-                    f'Username: {user.username}\nPassword: {user.password}',
-                    'from@example.com',
-                    [email],
-                    fail_silently=False,
-                )
-                return redirect('open_screen')
-            except User.DoesNotExist:
-                form.add_error('email', 'Email does not exist')
-    else:
-        form = ForgotPasswordForm()
-    return render(request, 'core/user_forgot_password.html', {'form': form})
+            user = User.objects.filter(email=email).first()
+            if user:
+                try:
+                    send_mail(
+                        'Password reset',
+                        'Here is the link to reset your password.',
+                        'from@example.com',
+                        [email],
+                        fail_silently=False,
+                    )
+                    email_sent = True
+                except:
+                    email_not_sent = True
+            else:
+                email_not_found = True
+
+    context = {
+        'email_sent': email_sent,
+        'email_not_sent': email_not_sent,
+        'email_not_found': email_not_found,
+    }
+
+    return render(request, 'core/user_forgot_password.html', context)
 
 def manager_forgot_password(request):
+    email_sent = False
+    email_not_sent = False
+    email_not_found = False
+
     if request.method == 'POST':
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            try:
-                user = User.objects.get(email=email)
-                send_mail(
-                    'Your username and password',
-                    f'Username: {user.username}\nPassword: {user.password}',
-                    'from@example.com',
-                    [email],
-                    fail_silently=False,
-                )
-                return redirect('open_screen')
-            except User.DoesNotExist:
-                form.add_error('email', 'Email does not exist')
-    else:
-        form = ForgotPasswordForm()
-    return render(request, 'core/manager_forgot_password.html', {'form': form})
+            user = User.objects.filter(email=email).first()
+            if user:
+                try:
+                    send_mail(
+                        'Password reset',
+                        'Here is the link to reset your password.',
+                        'from@example.com',
+                        [email],
+                        fail_silently=False,
+                    )
+                    email_sent = True
+                except:
+                    email_not_sent = True
+            else:
+                email_not_found = True
+
+    context = {
+        'email_sent': email_sent,
+        'email_not_sent': email_not_sent,
+        'email_not_found': email_not_found,
+    }
+
+    return render(request, 'core/manager_forgot_password.html', context)
