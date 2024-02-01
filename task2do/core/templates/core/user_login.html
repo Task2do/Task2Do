@@ -2,17 +2,18 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>התחברות משתמש</title> <!-- User Login in Hebrew -->
+    <title>התחברות משתמש</title>
 </head>
 <body>
-    <h2>התחברות משתמש</h2> <!-- User Login in Hebrew -->
+    <h2>התחברות משתמש</h2>
     <form method="post">
         {% csrf_token %}
-        <label for="username">שם משתמש:</label><br> <!-- Username in Hebrew -->
+        <label for="username">שם משתמש:</label><br>
         <input type="text" id="username" name="username"><br>
-        <label for="password">סיסמא:</label><br> <!-- Password in Hebrew -->
+        <label for="password">סיסמא:</label><br>
         <input type="password" id="password" name="password"><br>
-        <input type="submit" value="התחבר"> <!-- Login in Hebrew -->
+        <input type="submit" value="התחבר">
+        <input type="button" value="חזור" onclick="window.history.back()">
         <button type="button" onclick="location.href='{% url 'user_forgot_password' %}'">שכחתי סיסמא</button> <!-- Forgot Password in Hebrew -->
     </form>
 </body>

@@ -13,6 +13,7 @@
         <label for="password">סיסמא:</label><br> <!-- Password in Hebrew -->
         <input type="password" id="password" name="password"><br>
         <input type="submit" value="התחבר"> <!-- Login in Hebrew -->
+        <input type="button" value="חזור" onclick="window.history.back()">
         <button type="button" onclick="location.href='{% url 'manager_forgot_password' %}'">שכחתי סיסמא</button> <!-- Forgot Password in Hebrew -->
     </form>
 </body>

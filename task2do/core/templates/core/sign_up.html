@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title>הרשמה</title>
 </head>
 <body>
-    <h2>Sign Up</h2>
+    <h2>הרשמה</h2>
     <form action="{% url 'signup' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Create">
+        <input type="submit" value="צור">
+        <input type="button" value="חזור" onclick="window.history.back()">
     </form>
     {% if form.errors %}
+    {% endif %}
         <ul>
             {% for field in form %}
                 {% for error in field.errors %}
@@ -19,6 +21,14 @@
                 {% endfor %}
             {% endfor %}
         </ul>
-    {% endif %}
+    <div id="password-constraints">
+        <h3>הסיסמה חייבת להכיל:</h3>
+        <ul>
+            <li>לפחות 8 תווים</li>
+            <li>לפחות אות אחת קטנה</li>
+            <li>לפחות מספר אחד</li>
+            <li>לפחות תו מיוחד אחד (לדוגמה, !@#$%^&*)</li>
+        </ul>
+    </div>
 </body>
 </html>
