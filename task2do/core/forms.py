@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from core.models import Worker, Manager
+from .models import Worker, Manager
 
 
 class UserRegistrationForm(forms.ModelForm):

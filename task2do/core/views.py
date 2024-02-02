@@ -142,10 +142,17 @@ def signup_view(request):
             f_name = form.cleaned_data.get('first_name')
             l_name = form.cleaned_data.get('last_name')
             email = form.cleaned_data.get('email')
-            # Create a new Worker
-            worker = Worker(usr_name, pwd, f_name, l_name, email)
-            # Save the Worker to the database
-            worker.save()
+            usr_type = form.cleaned_data.get('user_type')
+            if usr_type == 'manager':
+                # Create a new Manager
+                manager = Manager(usr_name, pwd, f_name, l_name, email)
+                # Save the Manager to the database
+                manager.save()
+            else:
+                # Create a new Worker
+                worker = Worker(usr_name, pwd, f_name, l_name, email)
+                # Save the Worker to the database
+                worker.save()
             return redirect('signup_success')
     else:
         form = UserRegistrationForm()
