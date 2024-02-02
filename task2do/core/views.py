@@ -1,22 +1,25 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.models import User # is this necessary? where is it used?
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+# The problem below in pycharm is wrong! the import works fine
 from .models import Worker, Manager, Project, Task
-# The problem above in pycharm is wrong! the import works fine
+
 from django.core import serializers
 from django.template import loader
-from django.shortcuts import render
 from datetime import datetime
-from django.contrib.auth.models import User
-from django.shortcuts import redirect
+
+
 from django.contrib import messages
-from django.template.loader import render_to_string
+
 from django.utils.http import urlsafe_base64_encode
 from jwt.utils import force_bytes
+
 from pymongo.auth import authenticate
+
+from .forms import UserRegistrationForm
 
 
 def index(request):
@@ -127,7 +130,7 @@ def signup_success(request):
 
 
 
-from .forms import UserRegistrationForm
+
 
 def signup_view(request):
     if request.method == 'POST':

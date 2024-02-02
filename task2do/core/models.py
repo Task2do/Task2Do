@@ -45,17 +45,35 @@ class Worker(PersonalData):
     personaldata_ptr = models.OneToOneField(PersonalData, on_delete=models.CASCADE,
         parent_link=True, default= -1)
     _id = models.AutoField(primary_key=True, default=-1)
+    tasks = models.ManyToManyField('Task', related_name='worker_tasks')
 
     def __init__(self, usr_name, pwd, f_name, l_name, email, b_date=None):
         super().__init__(usr_name, pwd, f_name, l_name, email, b_date)
         # create a uniqe id for the worker base on the workers sql db table
         self._id = Worker.objects.count() + 1
+        self.tasks = []
         # insert the worker to the workers table
         Worker.objects.create(user_name=usr_name, password=pwd, first_name=f_name, last_name=l_name, email=email,
                               b_date=b_date)
 
+    def get_tasks(self):
+        return self.tasks
+
+    def add_task(self, task):
+        self.tasks.append(task)
+        self.save()
+
+    def remove_task(self, task):
+        self.tasks.remove(task)
+        self.save()
+
+    def update_task(self, task):
+        self.save()
+
+
 
 class Manager(PersonalData):
+    # the manager is a subclass of the PersonalData class. This is a one-to-one relationship.
     personaldata_ptr = models.OneToOneField(PersonalData, on_delete=models.CASCADE,
         parent_link=True, default= -1)
     _id = models.AutoField(primary_key=True, default=-1)
