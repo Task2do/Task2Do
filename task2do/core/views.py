@@ -160,7 +160,7 @@ def user_login(request):
             login(request, user)
             return redirect('user_home_screen')
     else:
-        pass
+        form = UserRegistrationForm()
     return render(request, 'core/user_login.html', {'form': form})
 
 def manager_login(request):
@@ -172,7 +172,7 @@ def manager_login(request):
             login(request, user)
             return redirect('manager_home_screen')
     else:
-        pass
+        form = UserRegistrationForm()
     return render(request, 'core/manager_login.html', {'form': form})
 
 from django.core.mail import send_mail
