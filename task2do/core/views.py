@@ -4,7 +4,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
-from core.models import Worker, Manager, Project, Task
+from .models import Worker, Manager, Project, Task
 # The problem above in pycharm is wrong! the import works fine
 from django.core import serializers
 from django.template import loader
@@ -133,7 +133,16 @@ def signup_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Extract data from form
+            usr_name = form.cleaned_data.get('username')
+            pwd = form.cleaned_data.get('password1')  # Assuming 'password1' is the field name
+            f_name = form.cleaned_data.get('first_name')
+            l_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
+            # Create a new Worker
+            worker = Worker(usr_name, pwd, f_name, l_name, email)
+            # Save the Worker to the database
+            worker.save()
             return redirect('signup_success')
     else:
         form = UserRegistrationForm()
