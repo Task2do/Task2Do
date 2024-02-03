@@ -1,11 +1,9 @@
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.models import User # is this necessary? where is it used?
-from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
-# The problem below in pycharm is wrong! the import works fine
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
 from .models import Worker, Manager, Project, Task
+from .forms import UserRegistrationForm
+from django.http import HttpResponse, JsonResponse
 
 from django.core import serializers
 from django.template import loader
@@ -17,9 +15,9 @@ from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode
 from jwt.utils import force_bytes
 
-from pymongo.auth import authenticate
 
-from .forms import UserRegistrationForm
+
+
 
 
 def index(request):
@@ -151,10 +149,10 @@ def signup_view(request):
                     return redirect('signup')
                 # Create a new Manager
                 id = Manager.objects.count() + 1
-                Manager.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
+                manager = Manager.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
                                        email=email, b_date=None, _id=id, lead_projects=[])
                 # Save the Manager to the database
-                Manager.save()
+                manager.save()
 
             else:  # Assuming the other option is 'worker'
                 # Check if the email already exists for the worker user type
@@ -163,10 +161,10 @@ def signup_view(request):
                     return redirect('signup')
                 # Create a new Worker
                 id = Worker.objects.count() + 1
-                Worker.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
+                worker = Worker.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
                                       email=email, b_date=None, _id=id, tasks=[])
                 # Save the Worker to the database
-                Worker.save()
+                worker.save()
 
             return redirect('signup_success')
     else:
@@ -174,8 +172,7 @@ def signup_view(request):
     return render(request, 'core/sign_up.html', {'form': form})
 
 
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -270,3 +267,16 @@ def manager_forgot_password(request):
     }
 
     return render(request, 'core/manager_forgot_password.html', context)
+
+#adding tasks and projects to the database
+def add_task_to_worker(request, worker_id, task_id):
+    worker = Worker.objects.get(_id=worker_id)
+    task = Task.objects.get(id=task_id)
+    worker.tasks.add(task)
+    worker.save()
+
+def add_project_to_manager(request, manager_id, project_id):
+    manager = Manager.objects.get(_id=manager_id)
+    project = Project.objects.get(id=project_id)
+    manager.lead_projects.add(project)
+    manager.save()
