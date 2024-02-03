@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>פרטי משימה</title>
+</head>
+<body>
+    <h1>פרטי משימה - {{ task.title }}</h1>
+
+    <h2>{{ task.title }}</h2>
+    <p>{{ task.description }}</p>
+    <p>תאריך סיום: {{ task.due_date }}</p>
+
+
+    {% if task.due_date >= today_date %}
+        <h3>עדכון משימה</h3>
+
+
+        <form method="post" action="{% url 'update_task' task.id %}">
+            {% csrf_token %}
+            <label for="new_description">תיאור חדש:</label>
+            <input type="text" id="new_description" name="new_description">
+            <br>
+            <label for="new_due_date">תאריך סיום חדש:</label>
+            <input type="date" id="new_due_date" name="new_due_date">
+            <br>
+            <input type="submit" value="עדכן משימה">
+        </form>
+    {% else %}
+        <p style="color: red;">לא ניתן לעדכן משימה - המועד הסיום כבר עבר</p>
+    {% endif %}
+
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_tasks' project.id %}'">חזור לרשימת המשימות</button>
+</body>
+</html>

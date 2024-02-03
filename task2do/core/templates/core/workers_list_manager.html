@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>רשימת עובדים</title> <!-- Workers List in Hebrew -->
+</head>
+<body>
+    <h1>רשימת עובדים</h1> <!-- Workers List Heading in Hebrew -->
+
+    <ul>
+        {% for worker in workers %}
+            <li>
+                {{ worker.first_name }} {{ worker.last_name }}
+                <button class="chooseWorkerBtn" data-worker-id="{{ worker.id }}" style="font-size: 15px;">בחר עובד</button> <!-- Choose Worker in Hebrew -->
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button> <!-- Back to Home Screen in Hebrew -->
+
+    <script>
+        document.getElementById("backToHome").addEventListener("click", function() {
+            location.href = "{% url 'manager_home_screen' %}";
+        });
+
+        var chooseWorkerBtns = document.getElementsByClassName("chooseWorkerBtn");
+        for (var i = 0; i < chooseWorkerBtns.length; i++) {
+            chooseWorkerBtns[i].addEventListener("click", function() {
+                var workerId = this.getAttribute("data-worker-id");
+                location.href = "{% url 'worker_details' %}" + "?worker_id=" + workerId;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>פרטי המשימה</title>
+</head>
+<body>
+    <h1>פרטי המשימה</h1>
+
+    <h2>{{ task.title }}</h2>
+    <p>{{ task.description }}</p>
+    <p>תאריך סיום: {{ task.due_date }}</p>
+
+    <h3>פרטי פרויקט</h3>
+    <ul>
+        <li>שם הפרויקט: {{ task.project.name }}</li>
+        <li>תיאור הפרויקט: {{ task.project.description }}</li>
+        <li>מנהל הפרויקט: {{ task.project.lead.user.username }}</li>
+    </ul>
+
+    <h3>פרטי משתמשים משוייכים לפרויקט</h3>
+    <ul>
+        {% for member in task.project.members.all %}
+            <li>{{ member.user.username }} - {{ member.user.email }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>שינוי פרויקט</h3>
+
+    <button id="changeProject" style="font-size: 15px;">שנה פרויקט</button>
+
+    <script>
+        document.getElementById("changeProject").addEventListener("click", function() {
+            window.open("{% url 'change_project' task.id %}", "_blank");
+        });
+    </script>
+</body>
+</html>

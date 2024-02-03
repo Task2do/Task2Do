@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>פרויקטים פעילים</title>
+</head>
+<body>
+    <h1>פרויקטים פעילים</h1>
+
+    <ul>
+        {% for project in active_projects %}
+            <li>
+                <a href="{% url 'project_detail' project.id %}">
+                    {{ project.name }} - {{ project.description }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button>
+
+    <script>
+        document.getElementById("backToHome").addEventListener("click", function() {
+            location.href = "{% url 'user_home_screen' %}";
+        });
+    </script>
+</body>
+</html>
