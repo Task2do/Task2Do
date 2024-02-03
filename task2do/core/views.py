@@ -137,26 +137,38 @@ def signup_view(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             # Extract data from form
-            usr_name = form.cleaned_data.get('username')
-            pwd = form.cleaned_data.get('password1')  # Assuming 'password1' is the field name
-            f_name = form.cleaned_data.get('first_name')
-            l_name = form.cleaned_data.get('last_name')
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')  # Assuming 'password1' is the field name
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
             email = form.cleaned_data.get('email')
-            usr_type = form.cleaned_data.get('user_type')
-            if usr_type == 'manager':
+            user_type = form.cleaned_data.get('user_type')
+
+            if user_type == 'manager':
+                # Check if the email already exists for the manager user type
+                if Manager.objects.filter(email=email).exists():
+                    messages.error(request, 'Email already exists for this user type. Please choose another one.')
+                    return redirect('signup')
                 # Create a new Manager
-                manager = Manager(usr_name, pwd, f_name, l_name, email)
+                manager = Manager(usr_name=username, pwd=password, f_name=first_name, l_name=last_name, email=email)
                 # Save the Manager to the database
                 manager.save()
-            else:
+
+            else:  # Assuming the other option is 'worker'
+                # Check if the email already exists for the worker user type
+                if Worker.objects.filter(email=email).exists():
+                    messages.error(request, 'Email already exists for this user type. Please choose another one.')
+                    return redirect('signup')
                 # Create a new Worker
-                worker = Worker(usr_name, pwd, f_name, l_name, email)
+                worker = Worker(usr_name=username, pwd=password, f_name=first_name, l_name=last_name, email=email)
                 # Save the Worker to the database
                 worker.save()
+
             return redirect('signup_success')
     else:
         form = UserRegistrationForm()
     return render(request, 'core/sign_up.html', {'form': form})
+
 
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
