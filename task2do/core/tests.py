@@ -1,11 +1,66 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Worker, Manager  # Adjust the import according to your app structure
-from .forms import UserRegistrationForm
 from django.core.exceptions import ImproperlyConfigured
 
+from .models import Worker, Manager, PersonalData, Task, Project
+from .forms import UserRegistrationForm
+import datetime
 
+class WorkerTests(TestCase):
+    def setUp(self):
+        self.worker = Worker.objects.create(user_name='testworker', password='pwd123', first_name='Test', last_name='Worker', email='testworker@example.com')
 
+    def test_update_password(self):
+        self.worker.update_password('newpassword')
+        self.assertEqual(self.worker.password, 'newpassword')
+
+    def test_update_email(self):
+        self.worker.update_email('newemail@example.com')
+        self.assertEqual(self.worker.email, 'newemail@example.com')
+
+    def test_update_b_date(self):
+        new_b_date = datetime.date(2000, 1, 1)
+        self.worker.update_b_date(new_b_date)
+        self.assertEqual(self.worker.b_date, new_b_date)
+
+    def test_get_full_name(self):
+        self.assertEqual(self.worker.get_full_name(), 'Test Worker')
+
+    def test_is_birthday_today(self):
+        self.worker.b_date = datetime.date.today()
+        self.assertTrue(self.worker.is_birthday_today())
+
+    def test_delete_user(self):
+        self.worker.delete_user()
+        self.assertFalse(Worker.objects.filter(user_name='testworker').exists())
+
+class ManagerTests(TestCase):
+    def setUp(self):
+        self.manager = Manager.objects.create(user_name='testmanager', password='pwd123', first_name='Test', last_name='Manager', email='testmanager@example.com')
+
+    def test_update_password(self):
+        self.manager.update_password('newpassword')
+        self.assertEqual(self.manager.password, 'newpassword')
+
+    def test_update_email(self):
+        self.manager.update_email('newemail@example.com')
+        self.assertEqual(self.manager.email, 'newemail@example.com')
+
+    def test_update_b_date(self):
+        new_b_date = datetime.date(2000, 1, 1)
+        self.manager.update_b_date(new_b_date)
+        self.assertEqual(self.manager.b_date, new_b_date)
+
+    def test_get_full_name(self):
+        self.assertEqual(self.manager.get_full_name(), 'Test Manager')
+
+    def test_is_birthday_today(self):
+        self.manager.b_date = datetime.date.today()
+        self.assertTrue(self.manager.is_birthday_today())
+
+    def test_delete_user(self):
+        self.manager.delete_user()
+        self.assertFalse(Manager.objects.filter(user_name='testmanager').exists())
 class UserCreationTests(TestCase):
     def setUp(self):
         # Setup data or prerequisites for the tests
