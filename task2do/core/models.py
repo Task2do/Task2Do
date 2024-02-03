@@ -46,8 +46,6 @@ class Worker(models.Model):
     b_date = models.DateField()  # not must have
     tasks = models.ManyToManyField('Task', related_name='worker_tasks')
 
-
-
 class Manager(models.Model):
     # the manager is a subclass of the PersonalData class. This is a one-to-one relationship.
 
