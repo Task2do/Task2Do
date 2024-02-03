@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>שינוי פרויקט</title>
+</head>
+<body>
+    <h1>שינוי פרויקט</h1>
+
+    <form method="post" action="{% url 'change_project' task.id %}">
+        {% csrf_token %}
+        <label for="new_project_name">שם הפרויקט החדש:</label>
+        <input type="text" id="new_project_name" name="new_project_name" value="{{ task.project.name }}">
+        <br>
+        <label for="new_project_description">תיאור הפרויקט החדש:</label>
+        <input type="text" id="new_project_description" name="new_project_description" value="{{ task.project.description }}">
+        <br>
+        <label for="new_project_lead">מנהל הפרויקט החדש:</label>
+        <input type="text" id="new_project_lead" name="new_project_lead" value="{{ task.project.lead.user.username }}">
+        <br>
+        <input type="submit" value="שנה פרויקט">
+    </form>
+
+    <button id="closeWindow" style="font-size: 15px;">סגור חלון</button>
+
+    <script>
+        document.getElementById("closeWindow").addEventListener("click", function() {
+            window.close();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>משימות פרויקט</title>
+</head>
+<body>
+    <h1>משימות פרויקט - {{ project.name }}</h1>
+
+    <ul>
+        {% for task in project.tasks.all %}
+            <li>
+                <h2>{{ task.title }}</h2>
+                <p>{{ task.description }}</p>
+                <p>תאריך סיום: {{ task.due_date }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_list' %}'">חזור לרשימת הפרויקטים</button>
+</body>
+</html>
+l>

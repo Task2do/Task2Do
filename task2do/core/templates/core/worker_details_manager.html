@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>פרטי עובד</title> <!-- Worker Details in Hebrew -->
+</head>
+<body>
+    <h1>פרטי עובד</h1> <!-- Worker Details Heading in Hebrew -->
+
+    <ul>
+        <li>שם מלא: {{ worker.first_name }} {{ worker.last_name }}</li>
+        <li>אימייל: {{ worker.email }}</li>
+        <!-- Add other worker details as needed -->
+    </ul>
+
+    <button id="backToList" style="font-size: 15px;">חזור לרשימת העובדים</button> <!-- Back to Workers List in Hebrew -->
+
+    <script>
+        document.getElementById("backToList").addEventListener("click", function() {
+            location.href = "{% url 'workers_list' %}";
+        });
+    </script>
+</body>
+</html>
