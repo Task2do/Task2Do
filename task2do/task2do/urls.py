@@ -24,12 +24,15 @@ urlpatterns = [
     path('projects/', views.projects_list, name='project-list'),
     path('', views.open_screen, name='open_screen'),
     path('users/', views.users_list, name='users-list'),
+    #signup
     path('signup/', views.signup_view, name='signup'),
     path('signup_success/', views.signup_success, name='signup_success'),
+    # login
     path('user_login/', views.user_login, name='user_login'),
     path('manager_login/', views.manager_login, name='manager_login'),
     path('user_forgot_password/', views.user_forgot_password, name='user_forgot_password'),
     path('manager_forgot_password/', views.manager_forgot_password, name='manager_forgot_password'),
+    # manager urls for home screen
     path('manager_home_screen/', views.manager_home_screen, name='manager_home_screen'),
     path('user_home_screen/', views.user_home_screen, name='user_home_screen'),
     path('active_projects_manager/', views.active_projects_manager, name='active_projects_manager'),
@@ -46,13 +49,16 @@ urlpatterns = [
     path('new_association_request_manager/', views.new_association_request_manager, name='new_association_request_manager'),
     path('project_history_manager/', views.project_history_manager, name='project_history_manager'),
     path('task_creation_screen_manager/', views.task_creation_screen_manager, name='task_creation_screen_manager'),
+    # user urls for home screen
     path('active_tasks_user/', views.active_tasks_user, name='active_tasks_user'),
+    path('upcoming_deadlines/', views.upcoming_deadlines, name='upcoming_deadlines'),
+    path('my_requests/', views.user_requests_managment, name='user-requests-managment'),
     path('task_history_user/', views.task_history_user, name='task_history_user'),
     path('specific_task_display_user/<int:task_id>/', views.specific_task_display_user, name='specific_task_display_user'),
     path('task_division_screen_user/', views.task_division_screen_user, name='task_division_screen_user'),
     path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
     path('subtask_definition_screen_user/', views.subtask_definition_screen_user, name='subtask_definition_screen_user'),
-    path('upcoming_deadlines/', views.upcoming_deadlines, name='upcoming_deadlines'),
+
     path('new_association_request_submission_user/', views.new_association_request_submission_user, name='new_association_request_submission_user'),
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
 ]

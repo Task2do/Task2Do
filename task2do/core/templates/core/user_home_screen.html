@@ -6,12 +6,12 @@
 </head>
 <body>
     <div style="text-align: center;">
-        <button style="font-size: 30px;" onclick="location.href='{% url 'active_tasks' %}'">משימות פעילות</button> <!-- Active Tasks in Hebrew -->
-        <button style="font-size: 30px;" onclick="location.href='{% url 'close_deadlines' %}'">מועדי סיום קרובים</button> <!-- Close Deadlines in Hebrew -->
+        <button style="font-size: 30px;" onclick="location.href='{% url 'active_tasks_user' %}'">משימות פעילות</button> <!-- Active Tasks in Hebrew -->
+        <button style="font-size: 30px;" onclick="location.href='{% url 'upcoming_deadlines' %}'">מועדי סיום קרובים</button> <!-- Close Deadlines in Hebrew -->
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'my_requests' %}'">בקשות</button> <!-- Requests in Hebrew -->
+        <button style="font-size: 20px;" onclick="location.href='{% url 'user-requests-managment' %}'">בקשות</button> <!-- Requests in Hebrew -->
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'tasks_history' %}'">היסטוריית משימות</button> <!-- Tasks History in Hebrew -->
+        <button style="font-size: 20px;" onclick="location.href='{% url 'tasks_history_user' %}'">היסטוריית משימות</button> <!-- Tasks History in Hebrew -->
         <br>
         <button style="font-size: 15px; float: left;" onclick="location.href='{% url 'sign_out' %}'">התנתק</button> <!-- Sign Out in Hebrew -->
     </div>
