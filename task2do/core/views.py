@@ -136,11 +136,12 @@ def signup_view(request):
         if form.is_valid():
             # Extract data from form
             username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')  # Assuming 'password1' is the field name
+            password = form.cleaned_data.get('password')  # Assuming 'password1' is the field name
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
             email = form.cleaned_data.get('email')
             user_type = form.cleaned_data.get('user_type')
+            birth_date = form.cleaned_data.get('birth_date')
 
             if user_type == 'manager':
                 # Check if the email already exists for the manager user type
@@ -150,7 +151,7 @@ def signup_view(request):
                 # Create a new Manager
                 id = Manager.objects.count() + 1
                 manager = Manager.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
-                                       email=email, b_date=None, _id=id, lead_projects=[])
+                                       email=email, b_date=birth_date, _id=id)
                 # Save the Manager to the database
                 manager.save()
 
@@ -162,7 +163,7 @@ def signup_view(request):
                 # Create a new Worker
                 id = Worker.objects.count() + 1
                 worker = Worker.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
-                                      email=email, b_date=None, _id=id, tasks=[])
+                                      email=email, b_date=birth_date, _id=id)
                 # Save the Worker to the database
                 worker.save()
 
