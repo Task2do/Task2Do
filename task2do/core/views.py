@@ -17,6 +17,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from .forms import ForgotPasswordForm
 from .models import Manager, Worker, Project, Task, PersonalData
+from .backend import ManagerBackend, WorkerBackend
 
 
 
@@ -177,7 +178,8 @@ def manager_login(request):
         be = ManagerBackend()
         manager = be.authenticate(request=request, username=username, password=password)
         if manager is not None:
-            request.session['manager_username'] = manager.personal_data.user_name
+            # request.session['manager_username'] = manager.personal_data.user_name
+            login(request, manager, backend='core.backend.ManagerBackend')
             return redirect('manager_home_screen')
         else:
             messages.error(request, 'Login failed. Please try again.')
@@ -190,7 +192,8 @@ def user_login(request):
         be = WorkerBackend()
         user = be.authenticate(request=request, username=username, password=password)
         if user is not None:
-            request.session['user_username'] = user.personal_data.user_name
+            # request.session['user_username'] = user.personal_data.user_name
+            login(request, user, backend='core.backend.WorkerBackend')
             return redirect('user_home_screen')
         else:
             messages.error(request, 'Login failed. Please try again.')
@@ -292,7 +295,8 @@ def user_home_screen(request):
 # the following views are not yet implemented fully, only to see that login is working
 
 def active_projects_manager(request):
-    projects = Project.objects.filter(is_active=True, lead=request.user)
+    manager_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
+    projects = Project.objects.filter(is_active=True, lead_id=manager_id)
     return render(request, 'core/active_projects_manager.html', {'projects': projects})
 
 def specific_project_manager(request, project_id):

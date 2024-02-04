@@ -135,4 +135,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTHENTICATION_BACKENDS = ['core.backends.ManagerBackend', 'core.backends.WorkerBackend']
+AUTHENTICATION_BACKENDS = ['core.backend.ManagerBackend', 'core.backend.WorkerBackend']
