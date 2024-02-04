@@ -236,7 +236,6 @@ def manager_forgot_password(request):
         'email_not_sent': email_not_sent,
         'email_not_found': email_not_found,
     }
-
     return render(request, 'core/manager_forgot_password.html', context)
 
 
