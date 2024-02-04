@@ -41,13 +41,13 @@ class PersonalData(models.Model):
 class Worker(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     tasks = models.ManyToManyField('Task', related_name='worker_tasks')
-    # TODO: add last_login = models.DateTimeField(null=True)
+    last_login = models.DateTimeField(null=True)
 
 
 class Manager(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     lead_projects = models.ManyToManyField('Project', related_name='manager_projects')
-    # TODO: add last_login = models.DateTimeField(null=True)
+    last_login = models.DateTimeField(null=True)
 
 
 class Request(models.Model):
