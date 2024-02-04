@@ -6,15 +6,15 @@
 </head>
 <body>
     <div style="text-align: center;">
-        <button style="font-size: 30px;" onclick="location.href='{% url 'active_projects' %}'">פרויקטים פעילים</button> <!-- Active Projects in Hebrew -->
+        <button style="font-size: 30px;" onclick="location.href='{% url 'active_projects_manager' %}'">פרויקטים פעילים</button> <!-- Active Projects in Hebrew -->
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'my_workers' %}'">העובדים שלי</button> <!-- My Workers in Hebrew -->
+        <button style="font-size: 20px;" onclick="location.href='{% url 'workers_list_manager' %}'">העובדים שלי</button> <!-- My Workers in Hebrew -->
+        <!-- <br>-->
+        <!--<button style="font-size: 20px;" onclick="location.href='{% url 'my_requests' %}'">בקשות</button>-->
+        <!--<br>-->
+        <!--<button style="font-size: 20px;" onclick="location.href='{% url 'projects_history' %}'">היסטוריית פרויקטים</button> -->
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'my_requests' %}'">בקשות</button> <!-- Requests in Hebrew -->
-        <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'projects_history' %}'">היסטוריית פרויקטים</button> <!-- Projects History in Hebrew -->
-        <br>
-        <button style="font-size: 15px; float: left;" onclick="location.href='{% url 'sign_out' %}'">התנתק</button> <!-- Sign Out in Hebrew -->
+        <button style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">התנתק</button> <!-- Sign Out in Hebrew -->
     </div>
 </body>
 </html>

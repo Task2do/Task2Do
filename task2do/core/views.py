@@ -218,6 +218,39 @@ def logout_view(request):
         del request.session['manager_id']
     return redirect('open_screen')  # Redirect to the open screen after logging out
 
+def manager_forgot_password(request):
+    email_sent = False
+    email_not_sent = False
+    email_not_found = False
+
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            manager = Manager.objects.filter(email=email).first()
+            if manager:
+                try:
+                    send_mail(
+                        'Password reset',
+                        'Here is the link to reset your password.',
+                        'from@example.com',
+                        [email],
+                        fail_silently=False,
+                    )
+                    email_sent = True
+                except:
+                    email_not_sent = True
+            else:
+                email_not_found = True
+
+    context = {
+        'email_sent': email_sent,
+        'email_not_sent': email_not_sent,
+        'email_not_found': email_not_found,
+    }
+
+    return render(request, 'core/manager_forgot_password.html', context)
+
 def user_forgot_password(request):
     email_sent = False
     email_not_sent = False
@@ -227,7 +260,7 @@ def user_forgot_password(request):
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            user = User.objects.filter(email=email).first()
+            user = Worker.objects.filter(email=email).first()
             if user:
                 try:
                     send_mail(
@@ -251,39 +284,6 @@ def user_forgot_password(request):
 
     return render(request, 'core/user_forgot_password.html', context)
 
-def manager_forgot_password(request):
-    email_sent = False
-    email_not_sent = False
-    email_not_found = False
-
-    if request.method == 'POST':
-        form = ForgotPasswordForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            user = User.objects.filter(email=email).first()
-            if user:
-                try:
-                    send_mail(
-                        'Password reset',
-                        'Here is the link to reset your password.',
-                        'from@example.com',
-                        [email],
-                        fail_silently=False,
-                    )
-                    email_sent = True
-                except:
-                    email_not_sent = True
-            else:
-                email_not_found = True
-
-    context = {
-        'email_sent': email_sent,
-        'email_not_sent': email_not_sent,
-        'email_not_found': email_not_found,
-    }
-
-    return render(request, 'core/manager_forgot_password.html', context)
-
 #adding tasks and projects to the database
 def add_task_to_worker(request, worker_id, task_id):
     worker = Worker.objects.get(_id=worker_id)
@@ -302,3 +302,29 @@ def manager_home_screen(request):
 
 def user_home_screen(request):
     return render(request, 'core/user_home_screen.html')
+
+# the following views are not yet implemented fully, only to see that login is working
+
+def active_projects_manager(request):
+    projects = Project.objects.filter(is_active=True, lead=request.user)
+    return render(request, 'core/active_projects_manager.html', {'projects': projects})
+
+def specific_project_manager(request, project_id):
+    project = Project.objects.get(id=project_id)
+    return render(request, 'core/specific_project_manager.html', {'project': project})
+
+def tasks_specific_project_manager(request, project_id):
+    tasks = Task.objects.filter(project__id=project_id)
+    return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
+
+def specific_task_manager(request, task_id):
+    task = Task.objects.get(id=task_id)
+    return render(request, 'core/specific_task_manager.html', {'task': task})
+
+def workers_list_manager(request):
+    workers = Worker.objects.all()
+    return render(request, 'core/workers_list_manager.html', {'workers': workers})
+
+def worker_details_manager(request, worker_id):
+    worker = Worker.objects.get(id=worker_id)
+    return render(request, 'core/worker_details_manager.html', {'worker': worker})
