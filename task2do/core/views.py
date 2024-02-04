@@ -6,6 +6,8 @@ from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.template import loader
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+
 
 from django.contrib import messages
 
@@ -156,6 +158,7 @@ def signup_view(request):
                 personal_data.save()
                 worker.save()
 
+
             return redirect('signup_success')
     else:
         form = UserRegistrationForm()
@@ -171,11 +174,11 @@ def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        be = ManagerBackend()
-        manager = be.authenticate(request=request, username=username, password=password)
-        if manager is not None:
-            # request.session['manager_username'] = manager.personal_data.user_name
-            login(request, manager, backend='core.backend.ManagerBackend')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            print(user)
+            login(request, user, backend='core.backend.ManagerBackend')
             return redirect('manager_home_screen')
         else:
             messages.error(request, 'Login failed. Please try again.')
@@ -186,10 +189,8 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        be = WorkerBackend()
-        user = be.authenticate(request=request, username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            # request.session['user_username'] = user.personal_data.user_name
             login(request, user, backend='core.backend.WorkerBackend')
             return redirect('user_home_screen')
         else:
@@ -297,8 +298,10 @@ def user_home_screen(request):
 
 
 # the following views are not yet implemented fully, only to see that login is working
-
+#@login_required(login_url='manager_login')
 def active_projects_manager(request):
+    print(request.user)  # Print the user
+    print(request.user.is_authenticated)  # Print whether the user is authenticated
     manager_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
     projects = Project.objects.filter(is_active=True, lead_id=manager_id)
     return render(request, 'core/active_projects_manager.html', {'projects': projects})
