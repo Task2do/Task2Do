@@ -165,7 +165,6 @@ def signup_view(request):
 
 
 
-from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 
@@ -315,3 +314,68 @@ def workers_list_manager(request):
 def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
+
+
+def manager_requests_page(request):
+    # Your view logic here
+    return render(request, 'core/manager_requests_page.html')
+
+def specific_request_view(request, request_id):
+    # Your view logic here
+    return render(request, 'core/specific_request_view.html', {'request_id': request_id})
+
+def view_request_association(request):
+    # Your view logic here
+    return render(request, 'core/view_request_association.html')
+
+def request_history(request):
+    # Your view logic here
+    return render(request, 'core/request_history.html')
+
+def new_association_request_manager(request):
+    # Your view logic here
+    return render(request, 'core/new_association_request_manager.html')
+
+def project_history_manager(request):
+    # Your view logic here
+    return render(request, 'core/project_history_manager.html')
+
+def task_creation_screen_manager(request):
+    # Your view logic here
+    return render(request, 'core/task_creation_screen_manager.html')
+
+def active_tasks_user(request):
+    # Your view logic here
+    return render(request, 'core/active_tasks_user.html')
+
+def task_history_user(request):
+    # Your view logic here
+    return render(request, 'core/task_history_user.html')
+
+def specific_task_display_user(request, task_id):
+    # Your view logic here
+    return render(request, 'core/specific_task_display_user.html', {'task_id': task_id})
+
+def task_division_screen_user(request):
+    # Your view logic here
+    return render(request, 'core/task_division_screen_user.html')
+
+def new_request_submission(request):
+    # Your view logic here
+    return render(request, 'core/new_request_submission.html')
+
+def subtask_definition_screen_user(request):
+    # Your view logic here
+    return render(request, 'core/subtask_definition_screen_user.html')
+
+def upcoming_deadlines(request):
+    # Your view logic here
+    return render(request, 'core/upcoming_deadlines.html')
+
+def new_association_request_submission_user(request):
+    # Your view logic here
+    return render(request, 'core/new_association_request_submission_user.html')
+
+def task_editing_screen_user(request):
+    # Your view logic here
+    return render(request, 'core/task_editing_screen_user.html')
