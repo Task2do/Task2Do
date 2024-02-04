@@ -152,9 +152,8 @@ def signup_view(request):
                     messages.error(request, 'Email already exists for this user type. Please choose another one.')
                     return redirect('signup')
                 # Create a new Manager
-                id = Manager.objects.count() + 1
                 manager = Manager.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
-                                       email=email, b_date=birth_date, _id=id)
+                                       email=email, b_date=birth_date)
                 # Save the Manager to the database
                 manager.save()
 
@@ -164,9 +163,9 @@ def signup_view(request):
                     messages.error(request, 'Email already exists for this user type. Please choose another one.')
                     return redirect('signup')
                 # Create a new Worker
-                id = Worker.objects.count() + 1
+
                 worker = Worker.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name,
-                                      email=email, b_date=birth_date, _id=id)
+                                      email=email, b_date=birth_date)
                 # Save the Worker to the database
                 worker.save()
 

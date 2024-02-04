@@ -40,8 +40,6 @@ class PersonalData(models.Model):
 
 
 class Worker(models.Model):
-
-    _id = models.AutoField(primary_key=True, default=-1)
     user_name = models.CharField(max_length=75)
     password = models.CharField(max_length=75)  # must have
     first_name = models.CharField(max_length=30)  # must have
@@ -49,13 +47,12 @@ class Worker(models.Model):
     email = models.EmailField()  # must have
     b_date = models.DateField()  # not must have
     tasks = models.ManyToManyField('Task', related_name='worker_tasks')
+
     def check_password(self, password):
         return password == self.password
 
-class Manager(models.Model):
-    # the manager is a subclass of the PersonalData class. This is a one-to-one relationship.
 
-    _id = models.AutoField(primary_key=True, default=1)
+class Manager(models.Model):
     user_name = models.CharField(max_length=75)  # this the PK of the model
     password = models.CharField(max_length=75)  # must have
     first_name = models.CharField(max_length=30)  # must have

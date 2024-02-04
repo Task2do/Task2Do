@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 
+PG_NAME = os.environ.get('PG_NAME', 'task2do')
+PG_USER = os.environ.get('PG_USER', 'task2do')
+PG_PASSWORD = os.environ.get('PG_PASSWORD', 'G1RiztM9q26frD9ygbyrmOxASCpYJsX8')
+PG_HOST = os.environ.get('PG_HOST', 'dpg-cmvm4pol5elc73ef54i0-a.oregon-postgres.render.com')
+PG_PORT = os.environ.get('PG_PORT', '5432')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -78,9 +84,12 @@ WSGI_APPLICATION = 'task2do.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'ENFORCE_SCHEMA': False,  # Optional: Enforce schema for data consistency
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': PG_NAME,
+        'USER': PG_USER,
+        'PASSWORD': PG_PASSWORD,
+        'HOST': PG_HOST,
+        'PORT': PG_PORT,
     }
 }
 

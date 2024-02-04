@@ -7,6 +7,9 @@ djangorestframework==3.14.0  # Optional, for building RESTful APIs
 pytz==2024.1 # Optional, for proper timezone support
 PyJWT==2.8.0
 
+#for postgres
+psycopg2==2.9.9
+
 # For dotenv
 FastAPI==0.109.0
 uvicorn==0.27.0.post1
