@@ -38,14 +38,8 @@ class PersonalData(models.Model):
     b_date = models.DateField()  # not must have
 
 
-
 class Worker(models.Model):
-    user_name = models.CharField(max_length=75)
-    password = models.CharField(max_length=75)  # must have
-    first_name = models.CharField(max_length=30)  # must have
-    last_name = models.CharField(max_length=75)  # must have
-    email = models.EmailField()  # must have
-    b_date = models.DateField()  # not must have
+    personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     tasks = models.ManyToManyField('Task', related_name='worker_tasks')
 
     def check_password(self, password):
@@ -53,13 +47,9 @@ class Worker(models.Model):
 
 
 class Manager(models.Model):
-    user_name = models.CharField(max_length=75)  # this the PK of the model
-    password = models.CharField(max_length=75)  # must have
-    first_name = models.CharField(max_length=30)  # must have
-    last_name = models.CharField(max_length=75)  # must have
-    email = models.EmailField()  # must have
-    b_date = models.DateField()  # not must have
+    perdonal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     lead_projects = models.ManyToManyField('Project', related_name='manager_projects')
+
     def check_password(self, password):
         return password == self.password
 
