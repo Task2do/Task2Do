@@ -42,16 +42,10 @@ class Worker(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     tasks = models.ManyToManyField('Task', related_name='worker_tasks')
 
-    def check_password(self, password):
-        return password == self.password
-
 
 class Manager(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     lead_projects = models.ManyToManyField('Project', related_name='manager_projects')
-
-    def check_password(self, password):
-        return password == self.password
 
 
 class Request(models.Model):

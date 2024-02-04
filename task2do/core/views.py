@@ -139,9 +139,10 @@ def signup_view(request):
             user_type = form.cleaned_data.get('user_type')
             birth_date = form.cleaned_data.get('birth_date')
 
+            personal_data = PersonalData.objects.create(user_name=username, password=password, first_name=first_name,
+                                                        last_name=last_name, email=email, b_date=birth_date)
             if user_type == 'manager':
                 # Create a new Manager
-                personal_data = PersonalData.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name, email=email, b_date=birth_date)
                 manager = Manager.objects.create(personal_data=personal_data)
 
                 # Save the Manager to the database
@@ -151,9 +152,6 @@ def signup_view(request):
 
             else:  # Assuming the other option is 'worker'
                 # Create a new Worker
-                personal_data = PersonalData.objects.create(user_name=username, password=password,
-                                                            first_name=first_name, last_name=last_name, email=email,
-                                                            b_date=birth_date)
                 worker = Worker.objects.create(personal_data=personal_data)
                 # Save the Worker to the database
                 # TODO: is this necessary to save the personal data and tthe worker while creation?
@@ -180,7 +178,7 @@ def manager_login(request):
         be = ManagerBackend()
         manager = be.authenticate(request=request, username=username, password=password)
         if manager is not None:
-            request.session['manager_username'] = manager.user_name
+            request.session['manager_username'] = manager.personal_data.user_name
             return redirect('manager_home_screen')
         else:
             messages.error(request, 'Login failed. Please try again.')
@@ -193,7 +191,7 @@ def user_login(request):
         be = WorkerBackend()
         user = be.authenticate(request=request, username=username, password=password)
         if user is not None:
-            request.session['user_username'] = user.user_name
+            request.session['user_username'] = user.personal_data.user_name
             return redirect('user_home_screen')
         else:
             messages.error(request, 'Login failed. Please try again.')
@@ -201,10 +199,10 @@ def user_login(request):
 
 
 def logout_view(request):
-    if 'user_id' in request.session:
-        del request.session['user_id']
-    if 'manager_id' in request.session:
-        del request.session['manager_id']
+    if 'user_username' in request.session:
+        del request.session['user_username']
+    if 'manager_username' in request.session:
+        del request.session['manager_username']
     return redirect('open_screen')  # Redirect to the open screen after logging out
 
 def manager_forgot_password(request):
