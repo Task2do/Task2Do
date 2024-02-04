@@ -126,11 +126,6 @@ def signup_success(request):
     return render(request, 'core/signup_success.html')
 
 
-
-
-
-
-
 def signup_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -145,31 +140,23 @@ def signup_view(request):
             birth_date = form.cleaned_data.get('birth_date')
 
             if user_type == 'manager':
-                # Check if the email already exists for the manager user type
-                if Manager.objects.filter(email=email).exists():
-                    messages.error(request, 'Email already exists for this user type. Please choose another one.')
-                    return redirect('signup')
                 # Create a new Manager
                 personal_data = PersonalData.objects.create(user_name=username, password=password, first_name=first_name, last_name=last_name, email=email, b_date=birth_date)
                 manager = Manager.objects.create(personal_data=personal_data)
 
                 # Save the Manager to the database
-                # TODO: Is it necceary to save the personal data on creation?
+                # TODO: is this necessary to save the personal data and tthe worker while creation?
                 personal_data.save()
                 manager.save()
 
             else:  # Assuming the other option is 'worker'
-                # Check if the email already exists for the worker user type
-                if Worker.objects.filter(email=email).exists():
-                    messages.error(request, 'Email already exists for this user type. Please choose another one.')
-                    return redirect('signup')
                 # Create a new Worker
                 personal_data = PersonalData.objects.create(user_name=username, password=password,
                                                             first_name=first_name, last_name=last_name, email=email,
                                                             b_date=birth_date)
                 worker = Worker.objects.create(personal_data=personal_data)
                 # Save the Worker to the database
-                # TODO: Is it necceary to save the personal data on creation?
+                # TODO: is this necessary to save the personal data and tthe worker while creation?
                 personal_data.save()
                 worker.save()
 
@@ -177,7 +164,6 @@ def signup_view(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'core/sign_up.html', {'form': form})
-
 
 
 

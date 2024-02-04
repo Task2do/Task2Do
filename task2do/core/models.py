@@ -47,7 +47,7 @@ class Worker(models.Model):
 
 
 class Manager(models.Model):
-    perdonal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
+    personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     lead_projects = models.ManyToManyField('Project', related_name='manager_projects')
 
     def check_password(self, password):
