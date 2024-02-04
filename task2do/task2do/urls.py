@@ -18,16 +18,19 @@ from django.contrib import admin
 from django.urls import path
 from core import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', views.projects_list, name='project-list'),
     path('', views.open_screen, name='open_screen'),
     path('users/', views.users_list, name='users-list'),
     path('signup/', views.signup_view, name='signup'),
-    path('signup/success/', views.signup_success, name='signup-success'),
+    path('signup_success/', views.signup_success, name='signup_success'),
     path('user_login/', views.user_login, name='user_login'),
     path('manager_login/', views.manager_login, name='manager_login'),
-path('user_forgot_password/', views.user_forgot_password, name='user_forgot_password'),
+    path('user_forgot_password/', views.user_forgot_password, name='user_forgot_password'),
     path('manager_forgot_password/', views.manager_forgot_password, name='manager_forgot_password'),
+    path('manager_home_screen/', views.manager_home_screen, name='manager_home_screen'),
+    path('user_home_screen/', views.user_home_screen, name='user_home_screen'),
 ]
 

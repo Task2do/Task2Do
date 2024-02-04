@@ -1,5 +1,9 @@
 from django.db import models
 from django.db.models.functions import datetime
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
+
+
 
 # global variables
 # the type of the request
@@ -45,6 +49,8 @@ class Worker(models.Model):
     email = models.EmailField()  # must have
     b_date = models.DateField()  # not must have
     tasks = models.ManyToManyField('Task', related_name='worker_tasks')
+    def check_password(self, password):
+        return password == self.password
 
 class Manager(models.Model):
     # the manager is a subclass of the PersonalData class. This is a one-to-one relationship.
@@ -57,6 +63,8 @@ class Manager(models.Model):
     email = models.EmailField()  # must have
     b_date = models.DateField()  # not must have
     lead_projects = models.ManyToManyField('Project', related_name='manager_projects')
+    def check_password(self, password):
+        return password == self.password
 
 
 class Request(models.Model):

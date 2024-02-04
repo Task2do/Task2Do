@@ -15,7 +15,10 @@ from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode
 from jwt.utils import force_bytes
 
-
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from .forms import ForgotPasswordForm
+from .models import Manager, Worker, Project, Task
 
 
 
@@ -175,33 +178,45 @@ def signup_view(request):
 
 
 
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('user_home_screen')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'core/user_login.html', {'form': form})
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+
+from .backend import ManagerBackend, WorkerBackend
 
 def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
+        be = ManagerBackend()
+        manager = be.authenticate(request=request, username=username, password=password)
+        if manager is not None:
+            request.session['manager_username'] = manager.user_name
             return redirect('manager_home_screen')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'core/manager_login.html', {'form': form})
+        else:
+            messages.error(request, 'Login failed. Please try again.')
+    return render(request, 'core/manager_login.html')
 
-from django.core.mail import send_mail
-from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        be = WorkerBackend()
+        user = be.authenticate(request=request, username=username, password=password)
+        if user is not None:
+            request.session['user_username'] = user.user_name
+            return redirect('user_home_screen')
+        else:
+            messages.error(request, 'Login failed. Please try again.')
+    return render(request, 'core/user_login.html')
+
+
+def logout_view(request):
+    if 'user_id' in request.session:
+        del request.session['user_id']
+    if 'manager_id' in request.session:
+        del request.session['manager_id']
+    return redirect('open_screen')  # Redirect to the open screen after logging out
 
 def user_forgot_password(request):
     email_sent = False
@@ -281,3 +296,9 @@ def add_project_to_manager(request, manager_id, project_id):
     project = Project.objects.get(id=project_id)
     manager.lead_projects.add(project)
     manager.save()
+
+def manager_home_screen(request):
+    return render(request, 'core/manager_home_screen.html')
+
+def user_home_screen(request):
+    return render(request, 'core/user_home_screen.html')
