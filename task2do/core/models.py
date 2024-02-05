@@ -40,6 +40,7 @@ class PersonalData(models.Model):
 class Worker(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     last_login = models.DateTimeField(null=True)
+    managers = models.ManyToManyField('Manager', related_name='workers')
 
 
 class Manager(models.Model):
@@ -86,6 +87,7 @@ class Task(models.Model):
     description = models.TextField()
     due_date = models.DateField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
+    is_active = models.BooleanField(default=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
                                      limit_choices_to={'model__in': ('worker', 'manager')})
     object_id = models.PositiveIntegerField()
@@ -104,6 +106,7 @@ class Project(models.Model):
     lead = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name="lead_projects")
     members = models.ManyToManyField(Worker, related_name='projects')
     tasks = models.ManyToManyField(Task, related_name='project_tasks')
+    # TODO: add a field for the project's due date
 
 
 

@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from .models import Worker, Manager
+from .models import Worker, Manager, Project
+from django_select2.forms import Select2MultipleWidget
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -79,5 +80,20 @@ class UserRegistrationForm(forms.ModelForm):
             raise ValidationError("Birth date cannot be more than 120 years in the past.")
         return birth_date
 
+
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
+
+
+class CreateProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'description', 'members']
+        widgets = {
+            'members': Select2MultipleWidget
+        }
+
+    def __init__(self, *args, **kwargs):
+        manager = kwargs.pop('manager')
+        super(CreateProjectForm, self).__init__(*args, **kwargs)
+        self.fields['members'].queryset = Worker.objects.filter(managers=manager)

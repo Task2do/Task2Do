@@ -15,10 +15,13 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm
+from .forms import ForgotPasswordForm, CreateProjectForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
+
+# import for request
+from django.contrib.contenttypes.models import ContentType
 
 
 # Add more views for different functionalities like creating users, tasks, etc.
@@ -98,7 +101,8 @@ def request_history(request):
     # Your view logic here
     return render(request, 'core/request_history.html')
 
-#TODO: page needs request_to_view
+
+# TODO: page needs request_to_view
 # needs to accept the form to add content to request or close it
 def specific_request_view(request, request_id):
     # Your view logic here
@@ -110,7 +114,7 @@ def view_request_association(request):
     return render(request, 'core/view_request_association.html')
 
 
-# manager stuff
+# MANAGER views
 def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -163,6 +167,7 @@ def manager_home_screen(request):
     return render(request, 'core/manager_home_screen.html')
 
 
+# # Manager's projects
 def specific_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
     return render(request, 'core/specific_project_manager.html', {'project': project})
@@ -170,14 +175,49 @@ def specific_project_manager(request, project_id):
 
 @login_required(login_url='manager_login')
 def active_projects_manager(request):
-    print(request.user)  # Print the user
-    print(request.user.is_authenticated)  # Print whether the user is authenticated
-    manager_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
-    projects = Project.objects.filter(is_active=True, lead_id=manager_id)
-    return render(request, 'core/active_projects_manager.html', {'projects': projects})
+    manager_id = request.user.personal_data.id
+    active_projects = Project.objects.filter(is_active=True, lead_id=manager_id)
+
+    projects_data = []
+    for project in active_projects:
+        num_tasks = project.tasks.count()
+        num_workers = project.members.count()
+        projects_data.append({
+            'project': project,
+            'num_tasks': num_tasks,
+            'num_workers': num_workers,
+        })
+
+    context = {'projects_data': projects_data}
+    return render(request, 'core/active_projects_manager.html', context)
 
 
+@login_required(login_url='manager_login')
+def create_new_project(request):
+    if request.method == 'POST':
+        form = CreateProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.lead = Manager.objects.get(personal_data__user=request.user)
+            # TODO: add a field for the project's due date
+            project.save()
+            project.members.set(form.cleaned_data['members'])  # Use set() method here
+            project.save()
+
+            return redirect('specific_project_manager', project_id=project.id)
+    else:
+        form = CreateProjectForm()
+    return render(request, 'core/create_new_project.html', {'form': form})
+
+
+def project_history_manager(request):
+    # Your view logic here
+    return render(request, 'core/project_history_manager.html')
+
+
+# # Manager's tasks
 def tasks_specific_project_manager(request, project_id):
+    # retrieve all tasks of a specific project
     tasks = Task.objects.filter(project__id=project_id)
     return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
 
@@ -187,21 +227,44 @@ def specific_task_manager(request, task_id):
     return render(request, 'core/specific_task_manager.html', {'task': task})
 
 
-def workers_list_manager(request):
-    workers = Worker.objects.all()
-    return render(request, 'core/workers_list_manager.html', {'workers': workers})
+@login_required(login_url='manager_login')
+def task_creation_screen_manager(request):
+    # Your view logic here
+    return render(request, 'core/task_creation_screen_manager.html')
 
 
+# # Manager's workers
+@login_required(login_url='manager_login')  # is this needed?
+def workers_list_manager(request, manager_id):
+    # TODO HTML file doesnt work properly @shira_chesler&Yuval
+    manager = Manager.objects.get(id=manager_id)
+    workers = manager.workers.all()
+    return redirect('workers_list_manager', manager_id=manager_id)
+
+
+@login_required(login_url='manager_login')  # is this needed?
 def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
 
+# # Manager's requests
 @login_required(login_url='manager_login')
 def requests_page(request):
     # Your view logic here
-    requests_from_me = Request.objects.filter(last_sender=request.user.personal_data)
-    requests_to_me = Request.objects.filter(last_reciever=request.user.personal_data)
+    # Get the ContentType for PersonalData
+    personal_data_content_type = ContentType.objects.get_for_model(PersonalData)
+
+    # Assuming PersonalData ID is directly related to the sender and receiver IDs in your Request model
+    personal_data_id = request.user.personal_data.id
+
+    # Filter requests where the last sender is the current user's PersonalData
+    requests_from_me = Request.objects.filter(sender_content_type=personal_data_content_type,
+                                              sender_object_id=personal_data_id)
+
+    # Filter requests where the last receiver is the current user's PersonalData
+    requests_to_me = Request.objects.filter(receiver_content_type=personal_data_content_type,
+                                            receiver_object_id=personal_data_id)
 
     return render(request, 'core/requests_page.html',
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me})
@@ -212,12 +275,7 @@ def new_association_request_manager(request):
     return render(request, 'core/new_association_request_manager.html')
 
 
-def project_history_manager(request):
-    # Your view logic here
-    return render(request, 'core/project_history_manager.html')
-
-
-# user stuff
+# USER views
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -269,6 +327,7 @@ def user_home_screen(request):
     return render(request, 'core/user_home_screen.html')
 
 
+# # User's tasks
 def task_history_user(request):
     # Your view logic here
     # TODO : get tasks that were either completed or canceled of that user
@@ -277,14 +336,12 @@ def task_history_user(request):
     return render(request, 'core/task_history_user.html', {'history_tasks': tasks})
 
 
-def task_creation_screen_manager(request):
-    # Your view logic here
-    return render(request, 'core/task_creation_screen_manager.html')
-
-
+@login_required(login_url='user_login')
 def active_tasks_user(request):
-    # Your view logic here
-    return render(request, 'core/active_tasks_user.html')
+    user_id = request.user.personal_data.id
+    active_tasks = Task.objects.filter(~Q(status='CANCELED') & Q(is_active=True), assigned_to=user_id)
+    context = {'active_tasks': active_tasks}
+    return render(request, 'core/active_tasks_user.html', context)
 
 
 def specific_task_display_user(request, task_id):
@@ -297,11 +354,6 @@ def task_division_screen_user(request):
     return render(request, 'core/task_division_screen_user.html')
 
 
-def new_request_submission(request):
-    # Your view logic here
-    return render(request, 'core/new_request_submission.html')
-
-
 def subtask_definition_screen_user(request):
     # Your view logic here
     return render(request, 'core/subtask_definition_screen_user.html')
@@ -312,11 +364,17 @@ def upcoming_deadlines(request):
     return render(request, 'core/upcoming_deadlines.html')
 
 
-def new_association_request_submission_user(request):
-    # Your view logic here
-    return render(request, 'core/new_association_request_submission_user.html')
-
-
+# # User's requests
 def task_editing_screen_user(request):
     # Your view logic here
     return render(request, 'core/task_editing_screen_user.html')
+
+
+def new_request_submission(request):
+    # Your view logic here
+    return render(request, 'core/new_request_submission.html')
+
+
+def new_association_request_submission_user(request):
+    # Your view logic here
+    return render(request, 'core/new_association_request_submission_user.html')

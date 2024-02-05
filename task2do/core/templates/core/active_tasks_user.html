@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>משימות פעילות</title>
+</head>
+<body>
+    <h1>משימות פעילות</h1>
+
+    <ul>
+        {% for task in active_tasks %}
+            <li style="border: 1px solid black; margin: 10px; padding: 10px;">
+                <h2>{{ task.title }}</h2>
+                <p>פרוייקט: {{ task.project.name }}</p>
+                <p>דד ליין: {{ task.due_date }}</p>
+                <button style="font-size: 15px;">
+                    <a href="{% url 'specific_task_display_user' task.id %}">Enter Task</a>
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button>
+
+    <script>
+        document.getElementById("backToHome").addEventListener("click", function() {
+            location.href = "{% url 'user_home_screen' %}";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>צור פרויקט חדש</title>
+</head>
+<body>
+    <h1>צור פרויקט חדש</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">צור פרויקט</button>
+    </form>
+</body>
+</html>

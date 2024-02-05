@@ -59,5 +59,12 @@ urlpatterns = [
 
     path('new_association_request_submission_user/', views.new_association_request_submission_user, name='new_association_request_submission_user'),
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
+    path('create_new_project/', views.create_new_project, name='create_new_project'),
+    path('active_projects_manager/', views.active_projects_manager, name='active_projects_manager'),
+    path('specific_project_manager/<int:project_id>/', views.specific_project_manager, name='specific_project_manager'),
+    path('tasks_specific_project_manager/<int:project_id>/', views.tasks_specific_project_manager, name='tasks_specific_project_manager'),
+    path('specific_task_manager/<int:task_id>/', views.specific_task_manager, name='specific_task_manager'),
+    path('workers_list_manager/<int:manager_id>/', views.workers_list_manager, name='workers_list_manager'),
+    path('worker_details_manager/<int:worker_id>/', views.worker_details_manager, name='worker_details_manager'),
 ]
 
