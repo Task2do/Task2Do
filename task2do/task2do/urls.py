@@ -41,7 +41,6 @@ urlpatterns = [
     path('workers_list_manager/', views.workers_list_manager, name='workers_list_manager'),
     path('worker_details_manager/<int:worker_id>/', views.worker_details_manager, name='worker_details_manager'),
     path('logout/', views.logout_view, name='logout'),
-    path('manager_requests_page/', views.manager_requests_page, name='manager_requests_page'),
     path('specific_request_view/<int:request_id>/', views.specific_request_view, name='specific_request_view'),
     path('view_request_association/', views.view_request_association, name='view_request_association'),
     path('request_history/', views.request_history, name='request_history'),
