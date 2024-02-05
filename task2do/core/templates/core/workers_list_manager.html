@@ -27,7 +27,7 @@
         for (var i = 0; i < chooseWorkerBtns.length; i++) {
             chooseWorkerBtns[i].addEventListener("click", function() {
                 var workerId = this.getAttribute("data-worker-id");
-                location.href = "{% url 'worker_details' %}" + "?worker_id=" + workerId;
+                location.href = "{% url 'worker_details'%}" + "?worker_id=" + workerId;
             });
         }
     </script>

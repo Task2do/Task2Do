@@ -75,8 +75,8 @@ class UserRegistrationForm(forms.ModelForm):
             raise ValidationError("Birth date cannot be in the future.")
         elif birth_date > date.today() - timedelta(days=6 * 365):
             raise ValidationError("You must be at least 6 years old to register.")
-        elif birth_date < date.today() - timedelta(days=100 * 365):
-            raise ValidationError("Birth date cannot be more than 100 years in the past.")
+        elif birth_date < date.today() - timedelta(days=120 * 365):
+            raise ValidationError("Birth date cannot be more than 120 years in the past.")
         return birth_date
 
 class ForgotPasswordForm(forms.Form):

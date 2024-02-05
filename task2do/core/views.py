@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from .forms import ForgotPasswordForm
 from .models import Manager, Worker, Project, Task, PersonalData
+from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
 
 
@@ -333,11 +334,13 @@ def worker_details_manager(request, worker_id):
 
 def manager_requests_page(request):
     # Your view logic here
-    return render(request, 'core/manager_requests_page.html')
+    requests = Request.objects.all()
+    return render(request, 'core/manager_requests_page.html',{'requests':requests})
 
 
 def user_requests_managment(request):
     # Your view logic here
+
     return render(request, 'core/user_requests_managment.html')
 
 
@@ -358,7 +361,9 @@ def request_history(request):
 
 def task_history_user(request):
     # Your view logic here
-    return render(request, 'core/task_history_user.html')
+    worker_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
+    tasks= Task.objects.filter(Q(status='COMPLETED')|Q(status='CANCELED'),assignee=worker_id )
+    return render(request, 'core/task_history_user.html',{'history_tasks':tasks})
 
 
 def new_association_request_manager(request):
