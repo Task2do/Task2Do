@@ -196,11 +196,13 @@ def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
-
+#TODO: get requests for the user and the requests from the user(seperately) as requests_to_me and requests_from_me
+# also get is_manager
+# change name from manager to user i just dont want to mess with view(lior)
 def manager_requests_page(request):
     # Your view logic here
-    # TODO: get the requests of the manager
     Request
+
     return render(request, 'core/manager_requests_page.html',{'requests':requests})
 
 
