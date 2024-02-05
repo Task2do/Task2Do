@@ -98,7 +98,8 @@ def request_history(request):
     # Your view logic here
     return render(request, 'core/request_history.html')
 
-#TODO: page needs request_to_view
+
+# TODO: page needs request_to_view
 # needs to accept the form to add content to request or close it
 def specific_request_view(request, request_id):
     # Your view logic here
@@ -110,7 +111,7 @@ def view_request_association(request):
     return render(request, 'core/view_request_association.html')
 
 
-# manager stuff
+# MANAGER views
 def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -163,6 +164,7 @@ def manager_home_screen(request):
     return render(request, 'core/manager_home_screen.html')
 
 
+# # Manager's projects
 def specific_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
     return render(request, 'core/specific_project_manager.html', {'project': project})
@@ -187,6 +189,12 @@ def active_projects_manager(request):
     return render(request, 'core/active_projects_manager.html', context)
 
 
+def project_history_manager(request):
+    # Your view logic here
+    return render(request, 'core/project_history_manager.html')
+
+
+# # Manager's tasks
 def tasks_specific_project_manager(request, project_id):
     tasks = Task.objects.filter(project__id=project_id)
     return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
@@ -197,17 +205,27 @@ def specific_task_manager(request, task_id):
     return render(request, 'core/specific_task_manager.html', {'task': task})
 
 
+@login_required(login_url='manager_login')
+def task_creation_screen_manager(request):
+    # Your view logic here
+    return render(request, 'core/task_creation_screen_manager.html')
+
+
+# # Manager's workers
+@login_required(login_url='manager_login')  # is this needed?
 def workers_list_manager(request, manager_id):
     manager = Manager.objects.get(id=manager_id)
     workers = manager.workers.all()
     return render(request, 'core/workers_list_manager.html', {'workers': workers})
 
 
+@login_required(login_url='manager_login')  # is this needed?
 def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
 
+# # Manager's requests
 @login_required(login_url='manager_login')
 def requests_page(request):
     # Your view logic here
@@ -221,11 +239,6 @@ def requests_page(request):
 def new_association_request_manager(request):
     # Your view logic here
     return render(request, 'core/new_association_request_manager.html')
-
-
-def project_history_manager(request):
-    # Your view logic here
-    return render(request, 'core/project_history_manager.html')
 
 
 # user stuff
@@ -286,11 +299,6 @@ def task_history_user(request):
     worker_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
     tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assignee=worker_id)
     return render(request, 'core/task_history_user.html', {'history_tasks': tasks})
-
-
-def task_creation_screen_manager(request):
-    # Your view logic here
-    return render(request, 'core/task_creation_screen_manager.html')
 
 
 @login_required(login_url='user_login')
