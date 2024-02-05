@@ -170,11 +170,21 @@ def specific_project_manager(request, project_id):
 
 @login_required(login_url='manager_login')
 def active_projects_manager(request):
-    print(request.user)  # Print the user
-    print(request.user.is_authenticated)  # Print whether the user is authenticated
-    manager_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
-    projects = Project.objects.filter(is_active=True, lead_id=manager_id)
-    return render(request, 'core/active_projects_manager.html', {'projects': projects})
+    manager_id = request.user.personal_data.id
+    active_projects = Project.objects.filter(is_active=True, lead_id=manager_id)
+
+    projects_data = []
+    for project in active_projects:
+        num_tasks = project.tasks.count()
+        num_workers = project.members.count()
+        projects_data.append({
+            'project': project,
+            'num_tasks': num_tasks,
+            'num_workers': num_workers,
+        })
+
+    context = {'projects_data': projects_data}
+    return render(request, 'core/active_projects_manager.html', context)
 
 
 def tasks_specific_project_manager(request, project_id):
@@ -282,9 +292,12 @@ def task_creation_screen_manager(request):
     return render(request, 'core/task_creation_screen_manager.html')
 
 
+@login_required(login_url='user_login')
 def active_tasks_user(request):
-    # Your view logic here
-    return render(request, 'core/active_tasks_user.html')
+    user_id = request.user.personal_data.id
+    active_tasks = Task.objects.filter(~Q(status='CANCELED') & Q(is_active=True), assigned_to=user_id)
+    context = {'active_tasks': active_tasks}
+    return render(request, 'core/active_tasks_user.html', context)
 
 
 def specific_task_display_user(request, task_id):
