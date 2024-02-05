@@ -32,7 +32,7 @@ class PersonalData(models.Model):
     '''
     PersonalData model representing personal data of a user.
     '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='personal_data')
     b_date = models.DateField() # addional by Task2Do
 
 
@@ -77,6 +77,7 @@ class RequestContentHistory(models.Model):
     content = models.TextField(max_length=2048)
     updated_at = models.DateTimeField(auto_now_add=True)
 
+
 class Task(models.Model):
     """
        Task model representing an individual task within a project.
@@ -89,6 +90,7 @@ class Task(models.Model):
                                      limit_choices_to={'model__in': ('worker', 'manager')})
     object_id = models.PositiveIntegerField()
     author = GenericForeignKey('content_type', 'object_id')
+    assigned_to = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='assigned_tasks', default=None)
     parent_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_tasks')
 
 

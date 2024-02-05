@@ -135,7 +135,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTHENTICATION_BACKENDS = ['core.backend.ManagerBackend', 'core.backend.WorkerBackend']
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'core.backend.ManagerBackend', 'core.backend.WorkerBackend'  # Our custom backends
+    ]
 
 SESSION_COOKIE_AGE = 60 * 60
 

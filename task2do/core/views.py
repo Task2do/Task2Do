@@ -119,7 +119,7 @@ def manager_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             print(user)
-            login(request, user, backend='core.backend.ManagerBackend')
+            login(request, user)
             return redirect('manager_home_screen')
         else:
             messages.error(request, 'Login failed. Please try again.')
