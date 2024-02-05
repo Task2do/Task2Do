@@ -65,6 +65,8 @@ class Request(models.Model):
     receiver_object_id = models.PositiveIntegerField()
     last_receiver = GenericForeignKey('receiver_content_type', 'receiver_object_id')
 
+    is_active = models.BooleanField(default=True)
+
     header = models.CharField(max_length=128)
     # For tracking the history of content
     contents = GenericRelation('RequestContentHistory')
