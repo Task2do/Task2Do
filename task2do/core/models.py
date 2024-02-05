@@ -40,6 +40,7 @@ class PersonalData(models.Model):
 class Worker(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
     last_login = models.DateTimeField(null=True)
+    managers = models.ManyToManyField('Manager', related_name='workers')
 
 
 class Manager(models.Model):

@@ -197,8 +197,9 @@ def specific_task_manager(request, task_id):
     return render(request, 'core/specific_task_manager.html', {'task': task})
 
 
-def workers_list_manager(request):
-    workers = Worker.objects.all()
+def workers_list_manager(request, manager_id):
+    manager = Manager.objects.get(id=manager_id)
+    workers = manager.workers.all()
     return render(request, 'core/workers_list_manager.html', {'workers': workers})
 
 
