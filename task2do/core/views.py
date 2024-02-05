@@ -168,7 +168,7 @@ def specific_project_manager(request, project_id):
     return render(request, 'core/specific_project_manager.html', {'project': project})
 
 
-# @login_required(login_url='manager_login')
+@login_required(login_url='manager_login')
 def active_projects_manager(request):
     print(request.user)  # Print the user
     print(request.user.is_authenticated)  # Print whether the user is authenticated
@@ -196,19 +196,15 @@ def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
-#TODO: get requests for the user and the requests from the user(seperately) as requests_to_me and requests_from_me
-# also get is_manager
-# change name from manager to user i just dont want to mess with view(lior)
-def manager_requests_page(request):
-    # Your view logic here
-    Request
-    return render(request, 'core/manager_requests_page.html',{'requests':requests})
 
-
+@login_required(login_url='manager_login')
 def user_requests_managment(request):
     # Your view logic here
+    requests_from_me = Request.objects.filter(last_sender=request.user.personal_data)
+    requests_to_me = Request.objects.filter(last_reciever=request.user.personal_data)
 
-    return render(request, 'core/user_requests_managment.html')
+    return render(request, 'core/user_requests_managment.html',
+                  {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me})
 
 
 def new_association_request_manager(request):
