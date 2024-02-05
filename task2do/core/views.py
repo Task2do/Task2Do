@@ -335,6 +335,7 @@ def task_editing_screen_user(request):
     # Your view logic here
     return render(request, 'core/task_editing_screen_user.html')
 
+
 @login_required(login_url='manager_login')
 def create_new_project(request):
     if request.method == 'POST':
@@ -342,8 +343,10 @@ def create_new_project(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.lead = Manager.objects.get(personal_data__user=request.user)
-            #TODO: project.save()
-            #TODO: form.save_m2m()  # save the many-to-many data
+            project.members = form.cleaned_data['members']
+            # another option instead of above is form.save_m2m() but it is creation so no need
+            project.save()
+
             return redirect('specific_project_manager', project_id=project.id)
     else:
         form = CreateProjectForm()
