@@ -86,6 +86,7 @@ from .models import Project
 class CreateProjectForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(queryset=Worker.objects.all(), widget=forms.CheckboxSelectMultiple)
 
+    # TODO: add a field for the project's due date
     class Meta:
         model = Project
         fields = ['name', 'description', 'members']

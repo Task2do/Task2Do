@@ -189,6 +189,24 @@ def active_projects_manager(request):
     return render(request, 'core/active_projects_manager.html', context)
 
 
+@login_required(login_url='manager_login')
+def create_new_project(request):
+    if request.method == 'POST':
+        form = CreateProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.lead = Manager.objects.get(personal_data__user=request.user)
+            project.members = form.cleaned_data['members']
+            # another option instead of above is form.save_m2m() but it is creation so no need
+            # TODO: add a field for the project's due date
+            project.save()
+
+            return redirect('specific_project_manager', project_id=project.id)
+    else:
+        form = CreateProjectForm()
+    return render(request, 'core/create_new_project.html', {'form': form})
+
+
 def project_history_manager(request):
     # Your view logic here
     return render(request, 'core/project_history_manager.html')
@@ -241,7 +259,7 @@ def new_association_request_manager(request):
     return render(request, 'core/new_association_request_manager.html')
 
 
-# user stuff
+# USER views
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -293,6 +311,7 @@ def user_home_screen(request):
     return render(request, 'core/user_home_screen.html')
 
 
+# # User's tasks
 def task_history_user(request):
     # Your view logic here
     # TODO : get tasks that were either completed or canceled of that user
@@ -319,11 +338,6 @@ def task_division_screen_user(request):
     return render(request, 'core/task_division_screen_user.html')
 
 
-def new_request_submission(request):
-    # Your view logic here
-    return render(request, 'core/new_request_submission.html')
-
-
 def subtask_definition_screen_user(request):
     # Your view logic here
     return render(request, 'core/subtask_definition_screen_user.html')
@@ -334,28 +348,17 @@ def upcoming_deadlines(request):
     return render(request, 'core/upcoming_deadlines.html')
 
 
-def new_association_request_submission_user(request):
-    # Your view logic here
-    return render(request, 'core/new_association_request_submission_user.html')
-
-
+# # User's requests
 def task_editing_screen_user(request):
     # Your view logic here
     return render(request, 'core/task_editing_screen_user.html')
 
 
-@login_required(login_url='manager_login')
-def create_new_project(request):
-    if request.method == 'POST':
-        form = CreateProjectForm(request.POST)
-        if form.is_valid():
-            project = form.save(commit=False)
-            project.lead = Manager.objects.get(personal_data__user=request.user)
-            project.members = form.cleaned_data['members']
-            # another option instead of above is form.save_m2m() but it is creation so no need
-            project.save()
+def new_request_submission(request):
+    # Your view logic here
+    return render(request, 'core/new_request_submission.html')
 
-            return redirect('specific_project_manager', project_id=project.id)
-    else:
-        form = CreateProjectForm()
-    return render(request, 'core/create_new_project.html', {'form': form})
+
+def new_association_request_submission_user(request):
+    # Your view logic here
+    return render(request, 'core/new_association_request_submission_user.html')

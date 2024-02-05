@@ -106,6 +106,7 @@ class Project(models.Model):
     lead = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name="lead_projects")
     members = models.ManyToManyField(Worker, related_name='projects')
     tasks = models.ManyToManyField(Task, related_name='project_tasks')
+    # TODO: add a field for the project's due date
 
 
 
