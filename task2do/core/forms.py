@@ -81,3 +81,11 @@ class UserRegistrationForm(forms.ModelForm):
 
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
+
+from .models import Project
+class CreateProjectForm(forms.ModelForm):
+    members = forms.ModelMultipleChoiceField(queryset=Worker.objects.all(), widget=forms.CheckboxSelectMultiple)
+
+    class Meta:
+        model = Project
+        fields = ['name', 'description', 'members']

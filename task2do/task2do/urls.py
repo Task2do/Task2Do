@@ -59,5 +59,6 @@ urlpatterns = [
 
     path('new_association_request_submission_user/', views.new_association_request_submission_user, name='new_association_request_submission_user'),
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
+    path('create_new_project/', views.create_new_project, name='create_new_project'),
 ]
 

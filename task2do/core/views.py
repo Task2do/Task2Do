@@ -15,7 +15,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm
+from .forms import ForgotPasswordForm, CreateProjectForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -334,3 +334,17 @@ def new_association_request_submission_user(request):
 def task_editing_screen_user(request):
     # Your view logic here
     return render(request, 'core/task_editing_screen_user.html')
+
+@login_required(login_url='manager_login')
+def create_new_project(request):
+    if request.method == 'POST':
+        form = CreateProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.lead = Manager.objects.get(personal_data__user=request.user)
+            #TODO: project.save()
+            #TODO: form.save_m2m()  # save the many-to-many data
+            return redirect('specific_project_manager', project_id=project.id)
+    else:
+        form = CreateProjectForm()
+    return render(request, 'core/create_new_project.html', {'form': form})
