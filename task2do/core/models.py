@@ -86,6 +86,7 @@ class Task(models.Model):
     description = models.TextField()
     due_date = models.DateField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
+    is_active = models.BooleanField(default=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
                                      limit_choices_to={'model__in': ('worker', 'manager')})
     object_id = models.PositiveIntegerField()
