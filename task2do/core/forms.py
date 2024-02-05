@@ -83,10 +83,17 @@ class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
 
 from .models import Project
-class CreateProjectForm(forms.ModelForm):
-    members = forms.ModelMultipleChoiceField(queryset=Worker.objects.all(), widget=forms.CheckboxSelectMultiple)
+from django_select2.forms import Select2MultipleWidget
 
-    # TODO: add a field for the project's due date
+class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['name', 'description', 'members']
+        widgets = {
+            'members': Select2MultipleWidget
+        }
+
+    def __init__(self, *args, **kwargs):
+        manager = kwargs.pop('manager')
+        super(CreateProjectForm, self).__init__(*args, **kwargs)
+        self.fields['members'].queryset = Worker.objects.filter(managers=manager)
