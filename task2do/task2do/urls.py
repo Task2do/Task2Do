@@ -50,7 +50,7 @@ urlpatterns = [
     # user urls for home screen
     path('active_tasks_user/', views.active_tasks_user, name='active_tasks_user'),
     path('upcoming_deadlines/', views.upcoming_deadlines, name='upcoming_deadlines'),
-    path('my_requests/', views.user_requests_managment, name='user-requests-managment'),
+    path('my_requests/', views.requests_page, name='requests_page'),
     path('task_history_user/', views.task_history_user, name='task_history_user'),
     path('specific_task_display_user/<int:task_id>/', views.specific_task_display_user, name='specific_task_display_user'),
     path('task_division_screen_user/', views.task_division_screen_user, name='task_division_screen_user'),

@@ -198,12 +198,12 @@ def worker_details_manager(request, worker_id):
 
 
 @login_required(login_url='manager_login')
-def user_requests_managment(request):
+def requests_page(request):
     # Your view logic here
     requests_from_me = Request.objects.filter(last_sender=request.user.personal_data)
     requests_to_me = Request.objects.filter(last_reciever=request.user.personal_data)
 
-    return render(request, 'core/user_requests_managment.html',
+    return render(request, 'core/requests_page.html',
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me})
 
 
