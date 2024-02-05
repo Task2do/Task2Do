@@ -196,9 +196,9 @@ def create_new_project(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.lead = Manager.objects.get(personal_data__user=request.user)
-            project.members = form.cleaned_data['members']
-            # another option instead of above is form.save_m2m() but it is creation so no need
             # TODO: add a field for the project's due date
+            project.save()
+            project.members.set(form.cleaned_data['members'])  # Use set() method here
             project.save()
 
             return redirect('specific_project_manager', project_id=project.id)
@@ -214,6 +214,7 @@ def project_history_manager(request):
 
 # # Manager's tasks
 def tasks_specific_project_manager(request, project_id):
+    # retrieve all tasks of a specific project
     tasks = Task.objects.filter(project__id=project_id)
     return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
 
