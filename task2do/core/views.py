@@ -20,6 +20,9 @@ from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
 
+# import for request
+from django.contrib.contenttypes.models import ContentType
+
 
 # Add more views for different functionalities like creating users, tasks, etc.
 
@@ -233,6 +236,7 @@ def task_creation_screen_manager(request):
 # # Manager's workers
 @login_required(login_url='manager_login')  # is this needed?
 def workers_list_manager(request, manager_id):
+    # TODO HTML file doesnt work properly @shira_chesler&Yuval
     manager = Manager.objects.get(id=manager_id)
     workers = manager.workers.all()
     return redirect('workers_list_manager', manager_id=manager_id)
@@ -248,8 +252,19 @@ def worker_details_manager(request, worker_id):
 @login_required(login_url='manager_login')
 def requests_page(request):
     # Your view logic here
-    requests_from_me = Request.objects.filter(last_sender=request.user.personal_data)
-    requests_to_me = Request.objects.filter(last_reciever=request.user.personal_data)
+    # Get the ContentType for PersonalData
+    personal_data_content_type = ContentType.objects.get_for_model(PersonalData)
+
+    # Assuming PersonalData ID is directly related to the sender and receiver IDs in your Request model
+    personal_data_id = request.user.personal_data.id
+
+    # Filter requests where the last sender is the current user's PersonalData
+    requests_from_me = Request.objects.filter(sender_content_type=personal_data_content_type,
+                                              sender_object_id=personal_data_id)
+
+    # Filter requests where the last receiver is the current user's PersonalData
+    requests_to_me = Request.objects.filter(receiver_content_type=personal_data_content_type,
+                                            receiver_object_id=personal_data_id)
 
     return render(request, 'core/requests_page.html',
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me})
