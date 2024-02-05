@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>פרטי משימה</title>
+</head>
+<body>
+    
+    <h1>{{ request_to_view.header}}</h1>
+
+    <h2>היסטוריית הבקשה</h2>
+    {{%for message in request_to_view.content%}}
+    <p>:תגובה</p>
+    <p>{{ message }}</p>
+    {{% endfor %}}
+    <h3>הגב לבקשה</h3>
+
+
+        <form method="post" >
+            {% csrf_token %}
+            <label for="new_content">תוכן:</label>
+            <input type="text" id="new_description" name="new_description">
+            <br>
+            <input type="submit" value="הגב">
+        </form>
+
+    <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">חזור לרשימת הבקשות</button>
+</body>
+</html>

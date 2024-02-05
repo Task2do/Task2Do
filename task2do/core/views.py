@@ -99,7 +99,7 @@ def request_history(request):
     return render(request, 'core/request_history.html')
 
 #TODO: page needs request_to_view
-# needs to accept the form if being 
+# needs to accept the form to add content to request 
 def specific_request_view(request, request_id):
     # Your view logic here
     return render(request, 'core/specific_request_view.html', {'request_id': request_id})
