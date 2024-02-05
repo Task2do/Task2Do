@@ -44,20 +44,20 @@
 
 
     <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button>
-{{%if is_manager%}}
+{% if is_manager %}
     <script>
         document.getElementById("backToHome").addEventListener("click", function() {
             location.href = "{% url 'manager_home_screen' %}";
         });
 
     </script>
-    {{%else%}}
+{% else %}
     <script>
         document.getElementById("backToHome").addEventListener("click", function() {
             location.href = "{% url 'user_home_screen' %}";
         });
 
     </script>
-    {{%endif%}}
+{% endif %}
 </body>
 </html>
