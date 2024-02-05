@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Details</title>
+</head>
+<body>
+    <h1>{{ task.title }}</h1>
+
+    <p>Project: {{ task.project.name }}</p>
+    <p>Deadline: {{ task.due_date }}</p>
+    <p>Description: {{ task.description }}</p>
+    <p>Status: {{ task.status }}</p>
+    {% if task.parent_task %}
+        <p>Parent Task: {{ task.parent_task.title }}</p>
+    {% endif %}
+
+    {% if task.due_date > today_date %}
+        <button style="font-size: 15px;">
+            <a href="{% url 'task_editing_screen_user' task.id %}">Edit Task</a>
+        </button>
+    {% endif %}
+
+    <button id="backButton" style="font-size: 15px;">חזור</button> <!-- Back to Previous Page in Hebrew -->
+
+    <script>
+        document.getElementById("backButton").addEventListener("click", function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

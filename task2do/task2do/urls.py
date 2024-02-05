@@ -44,7 +44,6 @@ urlpatterns = [
     path('specific_request_view/<int:request_id>/', views.specific_request_view, name='specific_request_view'),
     path('view_request_association/', views.view_request_association, name='view_request_association'),
     path('request_history/', views.request_history, name='request_history'),
-    path('new_association_request_manager/', views.new_association_request_manager, name='new_association_request_manager'),
     path('project_history_manager/', views.project_history_manager, name='project_history_manager'),
     path('task_creation_screen_manager/', views.task_creation_screen_manager, name='task_creation_screen_manager'),
     # user urls for home screen
@@ -57,7 +56,6 @@ urlpatterns = [
     path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
     path('subtask_definition_screen_user/', views.subtask_definition_screen_user, name='subtask_definition_screen_user'),
 
-    path('new_association_request_submission_user/', views.new_association_request_submission_user, name='new_association_request_submission_user'),
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
     path('create_new_project/', views.create_new_project, name='create_new_project'),
     path('active_projects_manager/', views.active_projects_manager, name='active_projects_manager'),

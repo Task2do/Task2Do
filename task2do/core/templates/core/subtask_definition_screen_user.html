@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>Subtask Definition</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Subtask Definition</h1>
+
+    <form id="subtaskForm" method="post" action="{% url 'create_subtasks' %}">
+        {% csrf_token %}
+        {% for subtask in subtasks %}
+            <div class="subtask">
+                <h2>{{ subtask.name }}</h2>
+
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+
+                <label for="due_date">Due Date (optional):</label>
+                <input type="date" id="due_date" name="due_date">
+
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    {% for status in STATUS_CHOICES %}
+                        <option value="{{ status.0 }}">{{ status.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endfor %}
+        <input type="submit" id="createButton" value="Create" disabled>
+    </form>
+
+    <button id="discardButton">Discard</button>
+
+    <script>
+        $("#subtaskForm").on('input', function() {
+            if ($('.subtask textarea').filter(function() { return this.value == ""; }).length > 0) {
+                $("#createButton").prop('disabled', true);
+            } else {
+                $("#createButton").prop('disabled', false);
+            }
+        });
+
+        $("#discardButton").click(function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

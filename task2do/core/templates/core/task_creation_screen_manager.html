@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>יצירת משימה</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>יצירת משימה חדשה</h1>
+
+    <form id="taskForm" method="post" action="{% url 'create_task' %}">
+        {% csrf_token %}
+        <label for="name">שם:</label><br>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="assignee">משתמשים:</label><br>
+        <select id="assignee" name="assignee">
+            {% for user in project.members.all %}
+                <option value="{{ user.id }}">{{ user.personal_data.user.username }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="due_date">תאריך סיום:</label><br>
+        <input type="date" id="due_date" name="due_date" required><br>
+
+        <label for="description">תיאור:</label><br>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <input type="submit" id="createButton" value="יצירת משימה" disabled>
+    </form>
+
+    <script>
+        $("#taskForm").on('input', function() {
+            if ($('#name').val() == "" || $('#due_date').val() == "" || $('#description').val() == "") {
+                $("#createButton").prop('disabled', true);
+            } else {
+                $("#createButton").prop('disabled', false);
+            }
+        });
+    </script>
+</body>
+</html>
