@@ -17,24 +17,29 @@ from jwt.utils import force_bytes
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from .forms import ForgotPasswordForm
-from .models import Manager, Worker, Project, Task, PersonalData
+from .models import Manager, Worker, Project, Task, PersonalData,Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
 
 
-def index(request):
-    projects_list = {"project1": {"task1": 150, "task2": 124}, "project2": {"task1": 130, "task2": 134},
-                     "project3": {"task1": 5, "task2": 15}}
-    template = loader.get_template("core/templates/core/user.html")
-    context = {
-        "projects": projects_list,
-    }
-    return HttpResponse(template.render(context, request))
-
 
 # Add more views for different functionalities like creating users, tasks, etc.
 
+# should be helpful functions
 
+# adding tasks and projects to the database
+def add_task_to_worker(request, worker_id, task_id):
+    worker = Worker.objects.get(_id=worker_id)
+    task = Task.objects.get(id=task_id)
+    worker.tasks.add(task)
+    worker.save()
+
+
+def add_project_to_manager(request, manager_id, project_id):
+    manager = Manager.objects.get(_id=manager_id)
+    project = Project.objects.get(id=project_id)
+    manager.lead_projects.add(project)
+    manager.save()
 def projects_list(request):
     """
     View to list all projects with their related tasks.
@@ -115,7 +120,7 @@ def users_list(request):
 
     return JsonResponse({'users': users_data})
 
-
+#general stuff
 def open_screen(request):
     context = {
         'today_date': datetime.now().date()
@@ -165,12 +170,33 @@ def signup_view(request):
         form = UserRegistrationForm()
     return render(request, 'core/sign_up.html', {'form': form})
 
+def logout_view(request):
+    if 'user_username' in request.session:
+        del request.session['user_username']
+    if 'manager_username' in request.session:
+        del request.session['manager_username']
+    return redirect('open_screen')  # Redirect to the open screen after logging out
+
+#requests
+def request_history(request):
+    # Your view logic here
+    return render(request, 'core/request_history.html')
+
+def specific_request_view(request, request_id):
+    # Your view logic here
+    return render(request, 'core/specific_request_view.html', {'request_id': request_id})
+
+
+def view_request_association(request):
+    # Your view logic here
+    return render(request, 'core/view_request_association.html')
+
 
 from django.contrib import messages
 
 from .backend import ManagerBackend, WorkerBackend
 
-
+#manager stuff
 def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -184,28 +210,6 @@ def manager_login(request):
         else:
             messages.error(request, 'Login failed. Please try again.')
     return render(request, 'core/manager_login.html')
-
-
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user, backend='core.backend.WorkerBackend')
-            return redirect('user_home_screen')
-        else:
-            messages.error(request, 'Login failed. Please try again.')
-    return render(request, 'core/user_login.html')
-
-
-def logout_view(request):
-    if 'user_username' in request.session:
-        del request.session['user_username']
-    if 'manager_username' in request.session:
-        del request.session['manager_username']
-    return redirect('open_screen')  # Redirect to the open screen after logging out
-
 
 def manager_forgot_password(request):
     email_sent = False
@@ -238,6 +242,80 @@ def manager_forgot_password(request):
         'email_not_found': email_not_found,
     }
     return render(request, 'core/manager_forgot_password.html', context)
+
+def manager_home_screen(request):
+    return render(request, 'core/manager_home_screen.html')
+
+
+def specific_project_manager(request, project_id):
+    project = Project.objects.get(id=project_id)
+    return render(request, 'core/specific_project_manager.html', {'project': project})
+
+
+#@login_required(login_url='manager_login')
+def active_projects_manager(request):
+    print(request.user)  # Print the user
+    print(request.user.is_authenticated)  # Print whether the user is authenticated
+    manager_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
+    projects = Project.objects.filter(is_active=True, lead_id=manager_id)
+    return render(request, 'core/active_projects_manager.html', {'projects': projects})
+
+
+def tasks_specific_project_manager(request, project_id):
+    tasks = Task.objects.filter(project__id=project_id)
+    return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
+
+
+def specific_task_manager(request, task_id):
+    task = Task.objects.get(id=task_id)
+    return render(request, 'core/specific_task_manager.html', {'task': task})
+
+
+def workers_list_manager(request):
+    workers = Worker.objects.all()
+    return render(request, 'core/workers_list_manager.html', {'workers': workers})
+
+
+def worker_details_manager(request, worker_id):
+    worker = Worker.objects.get(id=worker_id)
+    return render(request, 'core/worker_details_manager.html', {'worker': worker})
+
+
+def manager_requests_page(request):
+    # Your view logic here
+    # TODO: get the requests of the manager
+    Request
+    return render(request, 'core/manager_requests_page.html',{'requests':requests})
+
+
+def user_requests_managment(request):
+    # Your view logic here
+
+    return render(request, 'core/user_requests_managment.html')
+
+
+def new_association_request_manager(request):
+    # Your view logic here
+    return render(request, 'core/new_association_request_manager.html')
+
+
+def project_history_manager(request):
+    # Your view logic here
+    return render(request, 'core/project_history_manager.html')
+
+
+#user stuff
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user, backend='core.backend.WorkerBackend')
+            return redirect('user_home_screen')
+        else:
+            messages.error(request, 'Login failed. Please try again.')
+    return render(request, 'core/user_login.html')
 
 
 def user_forgot_password(request):
@@ -274,106 +352,18 @@ def user_forgot_password(request):
     return render(request, 'core/user_forgot_password.html', context)
 
 
-# adding tasks and projects to the database
-def add_task_to_worker(request, worker_id, task_id):
-    worker = Worker.objects.get(_id=worker_id)
-    task = Task.objects.get(id=task_id)
-    worker.tasks.add(task)
-    worker.save()
-
-
-def add_project_to_manager(request, manager_id, project_id):
-    manager = Manager.objects.get(_id=manager_id)
-    project = Project.objects.get(id=project_id)
-    manager.lead_projects.add(project)
-    manager.save()
-
-
-def manager_home_screen(request):
-    return render(request, 'core/manager_home_screen.html')
-
-
 def user_home_screen(request):
     return render(request, 'core/user_home_screen.html')
 
 
-# the following views are not yet implemented fully, only to see that login is working
-#@login_required(login_url='manager_login')
-def active_projects_manager(request):
-    print(request.user)  # Print the user
-    print(request.user.is_authenticated)  # Print whether the user is authenticated
-    manager_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
-    projects = Project.objects.filter(is_active=True, lead_id=manager_id)
-    return render(request, 'core/active_projects_manager.html', {'projects': projects})
-
-
-def specific_project_manager(request, project_id):
-    project = Project.objects.get(id=project_id)
-    return render(request, 'core/specific_project_manager.html', {'project': project})
-
-
-def tasks_specific_project_manager(request, project_id):
-    tasks = Task.objects.filter(project__id=project_id)
-    return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
-
-
-def specific_task_manager(request, task_id):
-    task = Task.objects.get(id=task_id)
-    return render(request, 'core/specific_task_manager.html', {'task': task})
-
-
-def workers_list_manager(request):
-    workers = Worker.objects.all()
-    return render(request, 'core/workers_list_manager.html', {'workers': workers})
-
-
-def worker_details_manager(request, worker_id):
-    worker = Worker.objects.get(id=worker_id)
-    return render(request, 'core/worker_details_manager.html', {'worker': worker})
-
-
-def manager_requests_page(request):
-    # Your view logic here
-    requests = Request.objects.all()
-    return render(request, 'core/manager_requests_page.html',{'requests':requests})
-
-
-def user_requests_managment(request):
-    # Your view logic here
-
-    return render(request, 'core/user_requests_managment.html')
-
-
-def specific_request_view(request, request_id):
-    # Your view logic here
-    return render(request, 'core/specific_request_view.html', {'request_id': request_id})
-
-
-def view_request_association(request):
-    # Your view logic here
-    return render(request, 'core/view_request_association.html')
-
-
-def request_history(request):
-    # Your view logic here
-    return render(request, 'core/request_history.html')
-
 
 def task_history_user(request):
     # Your view logic here
+    # TODO : get tasks that were either completed or canceled of that user
     worker_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
     tasks= Task.objects.filter(Q(status='COMPLETED')|Q(status='CANCELED'),assignee=worker_id )
     return render(request, 'core/task_history_user.html',{'history_tasks':tasks})
 
-
-def new_association_request_manager(request):
-    # Your view logic here
-    return render(request, 'core/new_association_request_manager.html')
-
-
-def project_history_manager(request):
-    # Your view logic here
-    return render(request, 'core/project_history_manager.html')
 
 
 def task_creation_screen_manager(request):
