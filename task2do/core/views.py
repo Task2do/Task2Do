@@ -8,7 +8,6 @@ from django.template import loader
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
-
 from django.contrib import messages
 
 from django.utils.http import urlsafe_base64_encode
@@ -20,7 +19,6 @@ from .forms import ForgotPasswordForm
 from .models import Manager, Worker, Project, Task, PersonalData,Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
-
 
 
 # Add more views for different functionalities like creating users, tasks, etc.
@@ -40,50 +38,50 @@ def add_project_to_manager(request, manager_id, project_id):
     project = Project.objects.get(id=project_id)
     manager.lead_projects.add(project)
     manager.save()
-def projects_list(request):
-    """
-    View to list all projects with their related tasks.
-    Each project includes the name, description, and a list of tasks.
-    Each task includes the title, description, due date, and assignee.
-    """
-    projects = Project.objects.all().prefetch_related('tasks__assignee')
-    projects_data = []
-
-    for project in projects:
-        tasks_data = []
-        for task in project.tasks.all():
-            tasks_data.append({
-                'title': task.title,
-                'description': task.description,
-                'due_date': task.due_date,
-                'assignee': {
-                    'id': task.assignee.id if task.assignee else None,
-                    'username': task.assignee.user.username if task.assignee else None,
-                    # Add other user details if necessary
-                }
-            })
-
-        projects_data.append({
-            'id': project.id,
-            'name': project.name,
-            'description': project.description,
-            'is_active': project.is_active,
-            'tasks': tasks_data,
-            'lead': {
-                'id': project.lead.id,
-                'username': project.lead.user.username,
-                # Add other user details if necessary
-            },
-            'members': [
-                {
-                    'id': member.id,
-                    'username': member.user.username,
-                    # Add other user details if necessary
-                } for member in project.members.all()
-            ],
-        })
-
-    return JsonResponse({'projects': projects_data})
+# def projects_list(request):
+#     """
+#     View to list all projects with their related tasks.
+#     Each project includes the name, description, and a list of tasks.
+#     Each task includes the title, description, due date, and assignee.
+#     """
+#     projects = Project.objects.all().prefetch_related('tasks__assignee')
+#     projects_data = []
+#
+#     for project in projects:
+#         tasks_data = []
+#         for task in project.tasks.all():
+#             tasks_data.append({
+#                 'title': task.title,
+#                 'description': task.description,
+#                 'due_date': task.due_date,
+#                 'assignee': {
+#                     'id': task.assignee.id if task.assignee else None,
+#                     'username': task.assignee.user.username if task.assignee else None,
+#                     # Add other user details if necessary
+#                 }
+#             })
+#
+#         projects_data.append({
+#             'id': project.id,
+#             'name': project.name,
+#             'description': project.description,
+#             'is_active': project.is_active,
+#             'tasks': tasks_data,
+#             'lead': {
+#                 'id': project.lead.id,
+#                 'username': project.lead.user.username,
+#                 # Add other user details if necessary
+#             },
+#             'members': [
+#                 {
+#                     'id': member.id,
+#                     'username': member.user.username,
+#                     # Add other user details if necessary
+#                 } for member in project.members.all()
+#             ],
+#         })
+#
+#     return JsonResponse({'projects': projects_data})
 
 
 def users_list(request):
@@ -191,12 +189,7 @@ def view_request_association(request):
     # Your view logic here
     return render(request, 'core/view_request_association.html')
 
-
-from django.contrib import messages
-
-from .backend import ManagerBackend, WorkerBackend
-
-#manager stuff
+# manager stuff
 def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -242,6 +235,7 @@ def manager_forgot_password(request):
         'email_not_found': email_not_found,
     }
     return render(request, 'core/manager_forgot_password.html', context)
+
 
 def manager_home_screen(request):
     return render(request, 'core/manager_home_screen.html')
