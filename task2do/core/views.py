@@ -16,7 +16,7 @@ from jwt.utils import force_bytes
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from .forms import ForgotPasswordForm
-from .models import Manager, Worker, Project, Task, PersonalData,Request
+from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
 
@@ -40,7 +40,7 @@ def add_project_to_manager(request, manager_id, project_id):
     manager.save()
 
 
-#general stuff
+# general stuff
 def open_screen(request):
     context = {
         'today_date': datetime.now().date()
@@ -58,37 +58,32 @@ def signup_view(request):
         if form.is_valid():
             # Extract data from form
             username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')  # Assuming 'password1' is the field name
+            password = form.cleaned_data.get('password')  # Adjust the field name if necessary
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
             email = form.cleaned_data.get('email')
             user_type = form.cleaned_data.get('user_type')
             birth_date = form.cleaned_data.get('birth_date')
 
-            personal_data = PersonalData.objects.create(user_name=username, password=password, first_name=first_name,
-                                                        last_name=last_name, email=email, b_date=birth_date)
+            # Create Django User instance
+            user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name,
+                                            last_name=last_name)
+
+            # Create PersonalData instance linked to the User
+            personal_data = PersonalData.objects.create(user=user, b_date=birth_date)
+
             if user_type == 'manager':
-                # Create a new Manager
+                # Create a Manager instance
                 manager = Manager.objects.create(personal_data=personal_data)
-
-                # Save the Manager to the database
-                # TODO: is this necessary to save the personal data and tthe worker while creation?
-                personal_data.save()
-                manager.save()
-
             else:  # Assuming the other option is 'worker'
-                # Create a new Worker
+                # Create a Worker instance
                 worker = Worker.objects.create(personal_data=personal_data)
-                # Save the Worker to the database
-                # TODO: is this necessary to save the personal data and tthe worker while creation?
-                personal_data.save()
-                worker.save()
-
 
             return redirect('signup_success')
     else:
         form = UserRegistrationForm()
     return render(request, 'core/sign_up.html', {'form': form})
+
 
 def logout_view(request):
     if 'user_username' in request.session:
@@ -97,10 +92,12 @@ def logout_view(request):
         del request.session['manager_username']
     return redirect('open_screen')  # Redirect to the open screen after logging out
 
-#requests
+
+# requests
 def request_history(request):
     # Your view logic here
     return render(request, 'core/request_history.html')
+
 
 def specific_request_view(request, request_id):
     # Your view logic here
@@ -110,6 +107,7 @@ def specific_request_view(request, request_id):
 def view_request_association(request):
     # Your view logic here
     return render(request, 'core/view_request_association.html')
+
 
 # manager stuff
 def manager_login(request):
@@ -126,6 +124,7 @@ def manager_login(request):
             messages.error(request, 'Login failed. Please try again.')
     return render(request, 'core/manager_login.html')
 
+
 def manager_forgot_password(request):
     email_sent = False
     email_not_sent = False
@@ -135,7 +134,7 @@ def manager_forgot_password(request):
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            manager = Manager.objects.filter(email=email).first()
+            manager = Manager.objects.filter(personal_data__user__email=email).first()
             if manager:
                 try:
                     send_mail(
@@ -168,7 +167,7 @@ def specific_project_manager(request, project_id):
     return render(request, 'core/specific_project_manager.html', {'project': project})
 
 
-#@login_required(login_url='manager_login')
+# @login_required(login_url='manager_login')
 def active_projects_manager(request):
     print(request.user)  # Print the user
     print(request.user.is_authenticated)  # Print whether the user is authenticated
@@ -202,7 +201,6 @@ def worker_details_manager(request, worker_id):
 def manager_requests_page(request):
     # Your view logic here
     Request
-
     return render(request, 'core/manager_requests_page.html',{'requests':requests})
 
 
@@ -222,7 +220,7 @@ def project_history_manager(request):
     return render(request, 'core/project_history_manager.html')
 
 
-#user stuff
+# user stuff
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -245,7 +243,7 @@ def user_forgot_password(request):
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            user = Worker.objects.filter(email=email).first()
+            user = Worker.objects.filter(personal_data__user__email=email).first()
             if user:
                 try:
                     send_mail(
@@ -274,14 +272,12 @@ def user_home_screen(request):
     return render(request, 'core/user_home_screen.html')
 
 
-
 def task_history_user(request):
     # Your view logic here
     # TODO : get tasks that were either completed or canceled of that user
     worker_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
-    tasks= Task.objects.filter(Q(status='COMPLETED')|Q(status='CANCELED'),assignee=worker_id )
-    return render(request, 'core/task_history_user.html',{'history_tasks':tasks})
-
+    tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assignee=worker_id)
+    return render(request, 'core/task_history_user.html', {'history_tasks': tasks})
 
 
 def task_creation_screen_manager(request):
