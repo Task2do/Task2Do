@@ -9,10 +9,11 @@
     <h1>{{ request_to_view.header}}</h1>
 
     <h2>היסטוריית הבקשה</h2>
-    {{%for message in request_to_view.content%}}
+    {% for message in request_to_view.contents%}
     <p>:תגובה</p>
-    <p>{{ message }}</p>
-    {{% endfor %}}
+    <p>{{ message.content }} </p>
+    <p>at {{message.updated_at}}</p>
+    {% endfor %}
     <h3>הגב לבקשה</h3>
 
 
@@ -20,6 +21,8 @@
             {% csrf_token %}
             <label for="new_content">תוכן:</label>
             <input type="text" id="new_description" name="new_description">
+            <br>
+            <input type="checkbox" id="close_request" name="close_request">
             <br>
             <input type="submit" value="הגב">
         </form>

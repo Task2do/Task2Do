@@ -12,6 +12,13 @@
             location.href = "{% url 'new_request_submission' %}";
         });
     </script>
+    <button id="request_history" style="font-size: 30px;">היסטוריית בקשות</button>
+
+    <script>
+        document.getElementById("request_history").addEventListener("click", function() {
+            location.href = "{% url 'request_history' %}";
+        });
+    </script>
     <h1>בקשות אליי</h1>
 
     <ul>
@@ -33,12 +40,19 @@
                     {{ request.header }} - {{ request.type }}
             </p>
             <button id="goto_my_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-
+        {% if  %}
     <script>
         document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
             location.href = "{% url 'specific_request_view' request.id %}";
         });
     </script>
+    {% else %}
+    <script>
+        document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+            location.href = "{% url '' request.id %}";
+        });
+    </script>
+    {% endif %}
         {% endfor %}
     </ul>
 
