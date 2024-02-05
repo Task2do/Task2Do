@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Edit Task</title>
 </head>
 <body>
-$END$
+    <h1>Edit Task: {{ task.title }}</h1>
+
+    <form method="post" action="{% url 'update_task' task.id %}">
+        {% csrf_token %}
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            {% for status in STATUS_CHOICES %}
+                {% if status.0 != 'COMPLETED' or task.sub_tasks|length == 0 or task.sub_tasks|all_completed %}
+                    <option value="{{ status.0 }}" {% if task.status == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input type="submit" value="Update Task">
+    </form>
+
+    {% if not task.parent_task %}
+        <button style="font-size: 15px;">
+            <a href="{% url 'task_division_screen_user' task.id %}">Divide Task</a>
+        </button>
+    {% endif %}
+
+    <button id="backButton" style="font-size: 15px;">חזור</button> <!-- Back to Previous Page in Hebrew -->
+
+    <script>
+        document.getElementById("backButton").addEventListener("click", function() {
+            window.history.back();
+        });
+    </script>
 </body>
 </html>

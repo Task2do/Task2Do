@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>New Request Submission</title>
 </head>
 <body>
-$END$
+    <h1>New Request Submission</h1>
+
+    <form method="post" action="{% url 'create_request' %}">
+        {% csrf_token %}
+        {% if user.personal_data.worker %}
+            <label for="type">Type:</label>
+            <select id="type" name="type">
+                {% for project in user.personal_data.worker.projects.all %}
+                    <option value="{{ project.name }}">{{ project.name }}</option>
+                {% endfor %}
+                <option value="בקשת שיוך">בקשת שיוך</option>
+            </select>
+        {% else %}
+            <input type="hidden" id="type" name="type" value="בקשת שיוך">
+        {% endif %}
+
+        {% if request.POST.type != 'בקשת שיוך' %}
+            <label for="header">Header:</label>
+            <input type="text" id="header" name="header" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+        {% else %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <input type="hidden" id="header" name="header" value="בקשת שיוך">
+        {% endif %}
+
+        <input type="submit" value="שלח">
+        <button id="discardButton" type="button">בטל</button>
+    </form>
+
+    <script>
+        document.getElementById("discardButton").addEventListener("click", function() {
+            window.history.back();
+        });
+    </script>
 </body>
 </html>
