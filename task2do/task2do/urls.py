@@ -21,9 +21,8 @@ from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('projects/', views.projects_list, name='project-list'),
     path('', views.open_screen, name='open_screen'),
-    path('users/', views.users_list, name='users-list'),
+
     #signup
     path('signup/', views.signup_view, name='signup'),
     path('signup_success/', views.signup_success, name='signup_success'),

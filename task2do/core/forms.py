@@ -54,10 +54,10 @@ class UserRegistrationForm(forms.ModelForm):
         email = self.cleaned_data.get('email')
         user_type = self.cleaned_data.get('user_type')
         if user_type == 'manager':
-            if Manager.objects.filter(personal_data__email=email).exists():
-                ValidationError("Email already exists for this user type. Please choose another one.")
+            if Manager.objects.filter(personal_data__user__email=email).exists():
+                raise ValidationError("Email already exists for this user type. Please choose another one.")
         else:
-            if Worker.objects.filter(personal_data__email=email).exists():
+            if Worker.objects.filter(personal_data__user__email=email).exists():
                 raise ValidationError("Email already exists for this user type. Please choose another one.")
         return email
 

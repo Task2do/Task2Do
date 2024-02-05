@@ -2,7 +2,9 @@ from django.db import models
 from django.db.models.functions import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
-
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+# Learn more abt GenericForeignKey: https://docs.djangoproject.com/en/stable/ref/contrib/contenttypes/#generic-relations
+from django.contrib.contenttypes.models import ContentType
 
 
 # global variables
@@ -30,23 +32,18 @@ class PersonalData(models.Model):
     '''
     PersonalData model representing personal data of a user.
     '''
-    user_name = models.CharField(max_length=75, primary_key=True)  # this the PK of the model
-    password = models.CharField(max_length=75)  # must have
-    first_name = models.CharField(max_length=30)  # must have
-    last_name = models.CharField(max_length=75)  # must have
-    email = models.EmailField()  # must have
-    b_date = models.DateField()  # not must have
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    b_date = models.DateField() # addional by Task2Do
+
 
 
 class Worker(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
-    tasks = models.ManyToManyField('Task', related_name='worker_tasks')
     last_login = models.DateTimeField(null=True)
 
 
 class Manager(models.Model):
     personal_data = models.OneToOneField(PersonalData, on_delete=models.CASCADE)
-    lead_projects = models.ManyToManyField('Project', related_name='manager_projects')
     last_login = models.DateTimeField(null=True)
 
 
@@ -54,39 +51,56 @@ class Request(models.Model):
     '''
     Request model representing a request from a user to join a project.
     '''
-    request_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=10, choices=REQUEST_TYPE)
-    # using the usr _id
-    last_sender = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='sent_requests')
-    last_receiver = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='reveiver')  # using the usr _id
-    content = models.TextField(max_length=2048)
+
+    # Setting up GenericForeignKey for the sender
+    sender_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='request_senders',
+                                            limit_choices_to={'model__in': ('worker', 'manager')})
+    sender_object_id = models.PositiveIntegerField()
+    last_sender = GenericForeignKey('sender_content_type', 'sender_object_id')
+
+    # Setting up GenericForeignKey for the receiver
+    receiver_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='request_receivers',
+                                              limit_choices_to={'model__in': ('worker', 'manager')})
+    receiver_object_id = models.PositiveIntegerField()
+    last_receiver = GenericForeignKey('receiver_content_type', 'receiver_object_id')
+
     header = models.CharField(max_length=128)
+    # For tracking the history of content
+    contents = GenericRelation('RequestContentHistory')
+
+
+class RequestContentHistory(models.Model):
+    request = models.ForeignKey(Request, related_name='content_history', on_delete=models.CASCADE)
+    content = models.TextField(max_length=2048)
+    updated_at = models.DateTimeField(auto_now_add=True)
+
+class Task(models.Model):
+    """
+       Task model representing an individual task within a project.
+    """
+    title = models.CharField(max_length=64)
+    description = models.TextField()
+    due_date = models.DateField()
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
+                                     limit_choices_to={'model__in': ('worker', 'manager')})
+    object_id = models.PositiveIntegerField()
+    author = GenericForeignKey('content_type', 'object_id')
+    parent_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_tasks')
 
 
 class Project(models.Model):
     """
        Project model representing a team project with a name, a lead, and members.
        """
-    _id = models.AutoField(primary_key=True, default=-1)
     name = models.CharField(max_length=100)
     description = models.TextField()
     is_active = models.BooleanField(default=True)
-    lead = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name="projects_leader")
-    members = models.ManyToManyField(Worker, related_name='member_projects')
-    tasks = models.ManyToManyField('Task', related_name='project_tasks')
+    lead = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name="lead_projects")
+    members = models.ManyToManyField(Worker, related_name='projects')
+    tasks = models.ManyToManyField(Task, related_name='project_tasks')
 
 
-class Task(models.Model):
-    """
-       Task model representing an individual task within a project.
-    """
-    _id = models.AutoField(primary_key=True, default=-1)
-    title = models.CharField(max_length=64)
-    description = models.TextField()
-    due_date = models.DateField()
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
-    author = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='authored_tasks')
-    assignee = models.ForeignKey(Worker, on_delete=models.SET_NULL, null=True, related_name='assigned_tasks')
-    parent_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_tasks')
-    is_active = models.BooleanField(default=True)
+
 
