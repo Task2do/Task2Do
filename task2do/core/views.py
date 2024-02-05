@@ -235,7 +235,7 @@ def task_creation_screen_manager(request):
 def workers_list_manager(request, manager_id):
     manager = Manager.objects.get(id=manager_id)
     workers = manager.workers.all()
-    return render(request, 'core/workers_list_manager.html', {'workers': workers})
+    return redirect('workers_list_manager', manager_id=manager_id)
 
 
 @login_required(login_url='manager_login')  # is this needed?
