@@ -379,17 +379,7 @@ def active_tasks_user(request):
 
 @login_required(login_url='user_login')
 def specific_task_display_user(request, task_id):
-    """
-    This view function retrieves a specific task assigned to the currently logged-in user.
-    The task is then passed to the 'core/specific_task_display_user.html' template to be displayed.
 
-    Args:
-        request (HttpRequest): The request object.
-        task_id (int): The ID of the task to be retrieved.
-
-    Returns:
-        HttpResponse: The HTTP response.
-    """
 
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
     context = {'task': task, 'today_date': date.today()}
