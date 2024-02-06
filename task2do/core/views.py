@@ -308,6 +308,7 @@ def task_creation_screen_manager(request):
     # Your view logic here
     return render(request, 'core/task_creation_screen_manager.html')
 
+
 @login_required(login_url='manager_login')
 def task_editing_screen_manager(request, task_id):
     task = Task.objects.get(id=task_id)
@@ -322,6 +323,7 @@ def task_editing_screen_manager(request, task_id):
     else:
         form = ManagerTaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_manager.html', {'form': form})
+
 
 # # Manager's workers
 @login_required(login_url='manager_login')  # is this needed?
@@ -447,6 +449,7 @@ def specific_task_display_user(request, task_id):
 
 from .forms import TaskEditForm
 
+
 @login_required(login_url='user_login')
 def task_editing_screen_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
@@ -464,6 +467,7 @@ def task_editing_screen_user(request, task_id):
         form = TaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_user.html', {'form': form})
 
+
 @login_required(login_url='user_login')
 def task_division_screen_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
@@ -475,6 +479,7 @@ def task_division_screen_user(request, task_id):
     else:
         form = SubtaskDivisionForm()
     return render(request, 'core/task_division_screen_user.html', {'form': form, 'task': task})
+
 
 @login_required(login_url='user_login')
 def create_subtasks(request, task_id, num_subtasks):
@@ -489,12 +494,13 @@ def create_subtasks(request, task_id, num_subtasks):
                 subtask.due_date = task.due_date
                 subtask.is_active = True
                 subtask.assign_to = task.assigned_to
-                subtask.object_id = 1 #TODO: Almog, please add the object_id here, I'm not sure what to put
+                subtask.object_id = 1  # TODO: Almog, please add the object_id here, I'm not sure what to put
                 # subtask.save() #TODO: Almog
             return redirect('specific_task_display_user', task_id=task.id)
     else:
         formset = SubtaskFormSet()
     return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
+
 
 def subtask_definition_screen_user(request):
     pass
