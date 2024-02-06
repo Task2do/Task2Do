@@ -161,3 +161,20 @@ class TaskCreationForm(forms.ModelForm):
         project_id = kwargs.pop('project_id')
         super(TaskCreationForm, self).__init__(*args, **kwargs)
         self.fields['assigned_to'].queryset = Worker.objects.filter(projects__id=project_id)
+
+
+class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, worker):
+        return f"{worker.personal_data.user.username} - {worker.personal_data.user.first_name} {worker.personal_data.user.last_name}"
+
+class EditProjectWorkersForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['members']
+
+    def __init__(self, *args, **kwargs):
+        super(EditProjectWorkersForm, self).__init__(*args, **kwargs)
+        self.fields['members'] = WorkerMultipleChoiceField(
+            queryset=Worker.objects.all(),
+            widget=forms.CheckboxSelectMultiple,
+        )

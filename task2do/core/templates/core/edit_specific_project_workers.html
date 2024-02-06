@@ -6,32 +6,11 @@
 </head>
 <body>
     <h1>עריכת עובדים בפרויקט - {{ project.name }}</h1>
-    <form method="post" action="{% url 'save_project_workers' project.id %}">
+    <form method="post" action="{% url 'edit_specific_project_workers' project.id %}">
         {% csrf_token %}
-        {% for worker in project.members.all %}
-        <div style="border: 1px solid black; margin: 10px; padding: 10px;">
-        <div>
-            <p>שם משתמש: {{ worker.personal_data.user.username }}</p>
-            <p>שם פרטי: {{ worker.personal_data.user.first_name }}</p>
-            <p>שם משפחה: {{ worker.personal_data.user.last_name }}</p>
-            <p>אימייל: {{ worker.personal_data.user.email }}</p>
-            {% if not worker.tasks.filter(project=project, is_active=True).exists %}
-            <button type="button" onclick="removeWorker({{ worker.id }})">הסר</button>
-            {% endif %}
-        </div>
-        </div>
-        {% endfor %}
-        <label for="new_workers">הוסף עובדים:</label>
-        <select id="new_workers" name="new_workers" multiple>
-            {% for worker in manager.workers.all %}
-            {% if worker not in project.members.all %}
-            <option value="{{ worker.id }}">{{ worker.personal_data.user.username }}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
+        {{ form.as_p }}
         <input type="submit" value="שמור שינויים">
     </form>
-
     <button style="font-size: 15px;" onclick="location.href='{% url 'specific_project_workers' project.id %}'">חזור</button>
 </body>
 </html>

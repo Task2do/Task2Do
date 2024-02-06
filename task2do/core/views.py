@@ -19,7 +19,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, TaskCreationForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm
+from .forms import ForgotPasswordForm, CreateProjectForm, EditProjectWorkersForm, TaskCreationForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -213,9 +213,21 @@ def create_new_project(request):
     return render(request, 'core/create_new_project.html', {'form': form})
 
 
+@login_required(login_url='manager_login')
 def project_history_manager(request):
-    # Your view logic here
-    return render(request, 'core/project_history_manager.html')
+    manager = Manager.objects.get(personal_data__user=request.user)
+    #TODO: Add due_date__lt=timezone.now() to the filter
+    projects = manager.lead_projects.all()
+    projects_data = []
+    for project in projects:
+        num_tasks = project.tasks.count()
+        num_workers = project.members.count()
+        projects_data.append({
+            'project': project,
+            'num_tasks': num_tasks,
+            'num_workers': num_workers,
+        })
+    return render(request, 'core/project_history_manager.html', {'projects_data': projects_data})
 
 
 # # Manager's tasks
@@ -275,6 +287,18 @@ def task_editing_screen_manager(request, task_id):
     else:
         form = ManagerTaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_manager.html', {'form': form})
+
+@login_required(login_url='manager_login')
+def edit_specific_project_workers(request, project_id):
+    project = Project.objects.get(id=project_id)
+    if request.method == 'POST':
+        form = EditProjectWorkersForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('specific_project_workers', project_id=project_id)
+    else:
+        form = EditProjectWorkersForm(instance=project)
+    return render(request, 'core/edit_specific_project_workers.html', {'form': form, 'project': project})
 
 # # Manager's workers
 @login_required(login_url='manager_login')  # is this needed?

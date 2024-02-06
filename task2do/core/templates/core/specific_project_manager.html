@@ -29,5 +29,8 @@
             location.href = "{% url 'tasks_specific_project_manager' project.id %}";
         });
     </script>
+    <br>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'active_projects_manager' %}'">לכל הפרוייקטים הפעילים</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_history_manager' %}'">לכל הפרוייקטים הלא פעילים</button>
 </body>
 </html>
