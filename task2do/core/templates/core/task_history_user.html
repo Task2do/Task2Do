@@ -3,28 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>היסטוריית משימות</title>
+    <style>
+        .task-box {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>היסטוריית משימות</h1>
 
     <ul>
         {% for task in history_tasks %}
-            <li>
+            <li class="task-box">
                 <h2>{{ task.title }}</h2>
                 <p>{{ task.description }}</p>
                 <p>תאריך סיום: {{ task.due_date }}</p>
                 <p>סטטוס: {{ task.status }}</p>
-                <button id="{{}}" style="font-size: 15px;">חזור לדף עובד</button>
             </li>
         {% endfor %}
     </ul>
-    <button id="backToHome" style="font-size: 15px;">חזור לדף עובד</button> <!-- Back to Workers List in Hebrew -->
-
+    <button id="back" style="font-size: 15px;">חזרה</button>
     <script>
-        document.getElementById("backToHome").addEventListener("click", function() {
-            location.href = "{% url 'user_home_screen' %}";
+        document.getElementById("back").addEventListener("click", function() {
+            window.history.back();
         });
     </script>
-   
+
 </body>
 </html>

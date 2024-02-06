@@ -338,11 +338,10 @@ def user_home_screen(request):
 
 
 # # User's tasks
+@login_required(login_url='user_login')
 def task_history_user(request):
-    # Your view logic here
-    # TODO : get tasks that were either completed or canceled of that user
-    worker_id = request.user.personal_data.id  # Get the id of the currently logged-in manager
-    tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assignee=worker_id)
+    worker_id = request.user.personal_data.id
+    tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assigned_to=worker_id).order_by('-due_date')
     return render(request, 'core/task_history_user.html', {'history_tasks': tasks})
 
 
