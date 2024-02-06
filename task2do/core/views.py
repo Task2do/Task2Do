@@ -19,7 +19,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, EditProjectWorkersForm, TaskCreationForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm
+from .forms import ForgotPasswordForm, NewRequestForm, CreateProjectForm, EditProjectWorkersForm, TaskCreationForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm, NewAssociationRequestForm, NewProjectRequestForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -339,42 +339,12 @@ def requests_page(request):
     # Filter requests where the last receiver is the current user's PersonalData
     requests_to_me = Request.objects.filter(last_receiver=personal_data)
 
+    user_type = 'manager' if isinstance(request.user, Manager) else 'worker'
     return render(request, 'core/requests_page.html',
-                  {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me})
+                  {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me, 'user_type': user_type})
 
-
-@login_required
 def new_request_submission(request):
-    if request.method == 'POST':
-        # Extract form data
-        type = request.POST['type']
-        user_personal_data = request.user.personal_data
-        header = request.POST['header']
-        description = request.POST['description']
-
-        # TODO: Validate form data here
-
-        # TODO: Create new Request object and save it to the database
-        new_request = Request(type=type, header=header, last_sender=user_personal_data,)
-        # TODO: Set the sender and receiver
-
-        new_request.save()
-
-        # Redirect to my_requests page
-        return redirect('my_requests')
-
-    # Render the form
-    return render(request, 'core/new_request_submission.html')
-
-
-def new_association_request_submission_user(request):
-    # Your view logic here
-    return render(request, 'core/new_association_request_submission_user.html')
-
-
-def new_association_request_manager(request):
-    # Your view logic here
-    return render(request, 'core/new_association_request_manager.html')
+    pass
 
 
 # USER views

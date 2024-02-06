@@ -52,7 +52,8 @@ urlpatterns = [
     path('my_requests/', views.requests_page, name='requests_page'),
     path('task_history_user/', views.task_history_user, name='task_history_user'),
     path('specific_task_display_user/<int:task_id>/', views.specific_task_display_user, name='specific_task_display_user'),
-    path('task_division_screen_user/<int:task_id>/', views.task_division_screen_user, name='task_division_screen_user'),    path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
+    path('task_division_screen_user/<int:task_id>/', views.task_division_screen_user, name='task_division_screen_user'),
+    path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
     path('subtask_definition_screen_user/', views.subtask_definition_screen_user, name='subtask_definition_screen_user'),
 
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
@@ -68,5 +69,7 @@ urlpatterns = [
     path('create_subtasks/<int:task_id>/<int:num_subtasks>/', views.create_subtasks, name='create_subtasks'),
     path('specific_project_workers/<int:project_id>/', views.specific_project_workers, name='specific_project_workers'),
     path('edit_specific_project_workers/<int:project_id>/', views.edit_specific_project_workers, name='edit_specific_project_workers'),
+    path('new_association_request/', views.new_association_request, name='new_association_request'),
+    path('new_project_request/', views.new_project_request, name='new_project_request'),
 ]
 

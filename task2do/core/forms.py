@@ -188,3 +188,26 @@ class EditProjectWorkersForm(forms.ModelForm):
         if manager_id:
             manager = Manager.objects.get(id=manager_id)
             self.fields['members'].queryset = Worker.objects.filter(managers=manager)
+
+class NewRequestForm(forms.Form):
+    REQUEST_TYPE_CHOICES = (
+        ('project', 'Project'),
+        ('association', 'Association'),
+    )
+
+    def __init__(self, *args, user_type=None, **kwargs):
+        super(NewRequestForm, self).__init__(*args, **kwargs)
+        if user_type == 'manager':
+            self.fields['type'] = forms.ChoiceField(choices=[self.REQUEST_TYPE_CHOICES[1]], label='Request Type')
+        else:
+            self.fields['type'] = forms.ChoiceField(choices=self.REQUEST_TYPE_CHOICES, label='Request Type')
+
+
+class NewAssociationRequestForm(forms.Form):
+    username = forms.CharField(label='Username')
+
+class NewProjectRequestForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'description']
+
