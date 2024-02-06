@@ -69,7 +69,5 @@ urlpatterns = [
     path('create_subtasks/<int:task_id>/<int:num_subtasks>/', views.create_subtasks, name='create_subtasks'),
     path('specific_project_workers/<int:project_id>/', views.specific_project_workers, name='specific_project_workers'),
     path('edit_specific_project_workers/<int:project_id>/', views.edit_specific_project_workers, name='edit_specific_project_workers'),
-    path('new_association_request/', views.new_association_request, name='new_association_request'),
-    path('new_project_request/', views.new_project_request, name='new_project_request'),
 ]
 
