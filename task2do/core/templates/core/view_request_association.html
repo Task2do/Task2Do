@@ -14,7 +14,7 @@
     <p>{{ message.content }} </p>
     <p>at {{message.updated_at}}</p>
     {% endfor %}
-    {% if request.is_active %}
+    {% if request_to_view.is_active and user_id==request_to_view.last_reciever %}
     <h3>הגב לבקשה</h3>
 
 
@@ -23,7 +23,7 @@
             <label for="new_content">תוכן:</label>
             <input type="text" id="new_description" name="new_description">
             <br>
-            <input type="checkbox" id="close_request" name="close_request">
+            <input type="checkbox" id="accept" name="accept">
             <br>
             <input type="submit" value="הגב">
         </form>

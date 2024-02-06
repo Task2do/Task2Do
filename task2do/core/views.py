@@ -97,6 +97,7 @@ def logout_view(request):
 
 
 # requests
+#TODO like requests_page get to the page all the non active requests in a requests_to_me and requests_from_me
 def request_history(request):
     # Your view logic here
     return render(request, 'core/request_history.html')
@@ -108,7 +109,8 @@ def specific_request_view(request, request_id):
     # Your view logic here
     return render(request, 'core/specific_request_view.html', {'request_id': request_id})
 
-
+#TODO add the request_to_view and user_id to the request
+#change the data for forms(if accepted then associate with the reciever)
 def view_request_association(request):
     # Your view logic here
     return render(request, 'core/view_request_association.html')
@@ -249,6 +251,8 @@ def worker_details_manager(request, worker_id):
 
 
 # # Manager's requests
+#TODO check if we rather have it as both manager and user requests because both need to see their requests
+#also need is_manager if we do want to do that
 @login_required(login_url='manager_login')
 def requests_page(request):
     # Your view logic here
