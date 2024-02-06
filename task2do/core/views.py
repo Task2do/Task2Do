@@ -19,7 +19,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm
+from .forms import ForgotPasswordForm, CreateProjectForm, TaskCreationForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -181,6 +181,11 @@ def specific_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
     return render(request, 'core/specific_project_manager.html', {'project': project})
 
+@login_required(login_url='manager_login')
+def specific_project_workers(request, project_id):
+    project = Project.objects.get(id=project_id)
+    workers = project.members.all()
+    return render(request, 'core/specific_project_workers.html', {'project': project, 'workers': workers})
 
 @login_required(login_url='manager_login')
 def active_projects_manager(request):
@@ -214,10 +219,26 @@ def project_history_manager(request):
 
 
 # # Manager's tasks
+@login_required(login_url='manager_login')
 def tasks_specific_project_manager(request, project_id):
-    # retrieve all tasks of a specific project
-    tasks = Task.objects.filter(project__id=project_id)
-    return render(request, 'core/tasks_specific_project_manager.html', {'tasks': tasks})
+    project = Project.objects.get(id=project_id)
+    all_tasks = project.tasks.all()
+    now = timezone.now()
+
+    active_tasks = [task for task in all_tasks if task.is_active and task.due_date >= now]
+    inactive_tasks = [task for task in all_tasks if not task.is_active and task.due_date >= now]
+    active_tasks_past_deadline = [task for task in all_tasks if task.is_active and task.due_date < now]
+    inactive_tasks_past_deadline = [task for task in all_tasks if not task.is_active and task.due_date < now]
+
+    context = {
+        'project': project,
+        'active_tasks': active_tasks,
+        'inactive_tasks': inactive_tasks,
+        'active_tasks_past_deadline': active_tasks_past_deadline,
+        'inactive_tasks_past_deadline': inactive_tasks_past_deadline,
+    }
+
+    return render(request, 'core/tasks_specific_project_manager.html', context)
 
 
 def specific_task_manager(request, task_id):
@@ -226,9 +247,19 @@ def specific_task_manager(request, task_id):
 
 
 @login_required(login_url='manager_login')
-def task_creation_screen_manager(request):
-    # Your view logic here
-    return render(request, 'core/task_creation_screen_manager.html')
+def task_creation_screen_manager(request, project_id):
+    if request.method == 'POST':
+        form = TaskCreationForm(request.POST, project_id=project_id)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.project = Project.objects.get(id=project_id)
+            task.object_id = task.project.id  # Set the object_id field
+            task.save() #TODO: Almog, there is a problem here with saving to the db
+            return redirect('tasks_specific_project_manager', project_id=project_id)
+    else:
+        form = TaskCreationForm(project_id=project_id)
+    return render(request, 'core/task_creation_screen_manager.html', {'form': form, 'project_id': project_id})
+
 
 @login_required(login_url='manager_login')
 def task_editing_screen_manager(request, task_id):
@@ -260,9 +291,17 @@ def worker_details_manager(request, worker_id):
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
 
+@login_required(login_url='manager_login')
 def change_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
-    return render(request, 'core/change_project_manager.html', {'project': project})
+    if request.method == 'POST':
+        form = ProjectChangeForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('specific_project_manager', project_id=project.id)
+    else:
+        form = ProjectChangeForm(instance=project)
+    return render(request, 'core/change_project_manager.html', {'form': form, 'project': project})
 
 
 # # Manager's requests

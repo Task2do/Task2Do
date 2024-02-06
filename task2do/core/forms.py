@@ -137,3 +137,27 @@ class SubtaskForm(forms.ModelForm):
         fields = ['title', 'description', 'status']
 
 SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=1)
+
+
+class ProjectChangeForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'description', 'is_active']
+        # todo: add due date
+
+
+from django import forms
+from .models import Task, Worker
+
+class TaskCreationForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'assigned_to', 'due_date', 'description']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        project_id = kwargs.pop('project_id')
+        super(TaskCreationForm, self).__init__(*args, **kwargs)
+        self.fields['assigned_to'].queryset = Worker.objects.filter(projects__id=project_id)

@@ -7,35 +7,17 @@
 <body>
     <h1>עריכת פרויקט</h1>
 
-    <form method="post" action="{% url 'change_project' task.id %}">
+    <form method="post" action="{% url 'change_project_manager' project.id %}">
         {% csrf_token %}
-        <label for="new_project_name">שם הפרויקט:</label>
-        <input type="text" id="new_project_name" name="new_project_name" value="{{ project.name }}">
-        <br>
-        <label for="new_project_description">תיאור הפרויקט:</label>
-        <input type="text" id="new_project_description" name="new_project_description" value="{{ project.description }}">
-        <br>
-        <label for="new_project_due_date">תאריך סיום:</label>
-        <input type="date" id="new_project_due_date" name="new_project_due_date" value="{{ project.due_date|date:'Y-m-d' }}">
-        <br>
-        <label for="new_project_is_active">האם הפרויקט פעיל:</label>
-        <select id="new_project_is_active" name="new_project_is_active">
-            <option value="True" {% if project.is_active %}selected{% endif %}>כן</option>
-            <option value="False" {% if not project.is_active %}selected{% endif %}>לא</option>
-        </select>
-        <br>
+        {{ form.as_p }}
         <input type="submit" value="שנה פרויקט">
     </form>
 
     <button id="goBack" style="font-size: 15px;">חזור</button>
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script>
         document.getElementById("goBack").addEventListener("click", function() {
             window.history.back();
-        });
-        $(document).ready(function() {
-            $('#new_project_members').select2();
         });
     </script>
 </body>
