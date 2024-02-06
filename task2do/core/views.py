@@ -249,6 +249,10 @@ def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
+def change_project_manager(request, project_id):
+    project = Project.objects.get(id=project_id)
+    return render(request, 'core/change_project_manager.html', {'project': project})
+
 
 # # Manager's requests
 #TODO check if we rather have it as both manager and user requests because both need to see their requests
