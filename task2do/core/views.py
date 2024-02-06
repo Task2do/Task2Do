@@ -260,8 +260,6 @@ def change_project_manager(request, project_id):
 
 
 # # Manager's requests
-#TODO check if we rather have it as both manager and user requests because both need to see their requests
-#also need is_manager if we do want to do that
 @login_required(login_url='manager_login')
 def requests_page(request):
     # Your view logic here
@@ -472,10 +470,28 @@ def upcoming_deadlines(request):
 
 # # User's requests
 
+@login_required
 def new_request_submission(request):
-    # Your view logic here
-    return render(request, 'core/new_request_submission.html')
+    if request.method == 'POST':
+        # Extract form data
+        type = request.POST['type']
+        username = request.user.username
+        header = request.POST['header']
+        description = request.POST['description']
 
+        # TODO: Validate form data here
+
+        #TODO: Create new Request object and save it to the database
+        new_request = Request(type=type, header=header, description=description)
+        #TODO: Set the sender and receiver
+
+        new_request.save()
+
+        # Redirect to my_requests page
+        return redirect('my_requests')
+
+    # Render the form
+    return render(request, 'core/new_request_submission.html')
 
 def new_association_request_submission_user(request):
     # Your view logic here
