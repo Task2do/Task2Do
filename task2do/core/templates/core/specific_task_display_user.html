@@ -7,12 +7,12 @@
 <body>
     <h1>{{ task.title }}</h1>
 
-    <p>Project: {{ task.project.name }}</p>
-    <p>Deadline: {{ task.due_date }}</p>
-    <p>Description: {{ task.description }}</p>
-    <p>Status: {{ task.status }}</p>
+    <p>פרוייקט: {{ task.project.name }}</p>
+    <p>תאריך סיום: {{ task.due_date }}</p>
+    <p>תיאור: {{ task.description }}</p>
+    <p>סטטוס: {{ task.status }}</p>
     {% if task.parent_task %}
-        <p>Parent Task: {{ task.parent_task.title }}</p>
+        <p>משימת אב: {{ task.parent_task.title }}</p>
     {% endif %}
 
     {% if task.due_date > today_date %}
