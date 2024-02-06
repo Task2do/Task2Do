@@ -3,14 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>New Request Submission</title>
+    <script>
+        window.onload = function() {
+            var typeSelect = document.getElementById("type");
+            typeSelect.addEventListener("change", function() {
+                var selectedType = typeSelect.value;
+                var headerInput = document.getElementById("header");
+                if (selectedType != 'בקשת שיוך') {
+                    headerInput.value = 'בקשת שיוך';
+                } else {
+                    headerInput.value = '';
+                }
+            });
+        };
+    </script>
 </head>
 <body>
-    <h1>New Request Submission</h1>
-
-    <form method="post" action="{% url 'create_request' %}">
+    <h1>הגשת בקשה חדשה</h1>
+    <!-- TODO: check what's not working in logic and fix it !-->
+    <form method="post" action="{% url 'new_request_submission' %}">
         {% csrf_token %}
-        {% if user.personal_data.worker %}
-            <label for="type">Type:</label>
+        {% if not user.personal_data.worker.isnull %}
+            <label for="type">סוג הבקשה:</label>
             <select id="type" name="type">
                 {% for project in user.personal_data.worker.projects.all %}
                     <option value="{{ project.name }}">{{ project.name }}</option>
@@ -18,21 +32,21 @@
                 <option value="בקשת שיוך">בקשת שיוך</option>
             </select>
         {% else %}
-            <input type="hidden" id="type" name="type" value="בקשת שיוך">
+            <input id="type" name="type" value="בקשת שיוך">
+            <p>סוג הבקשה: בקשת שיוך</p>
         {% endif %}
-
+        <br>
         {% if request.POST.type != 'בקשת שיוך' %}
-            <label for="header">Header:</label>
-            <input type="text" id="header" name="header" required>
-
-            <label for="description">Description:</label>
+            <label for="request_name">כותרת הבקשה:</label>
+            <input type="text" id="request_name" name="header" required>
+            <br>
+            <label for="description">תיאור:</label>
             <textarea id="description" name="description" required></textarea>
         {% else %}
-            <label for="username">Username:</label>
+            <label for="username">שם משתמש המנהל:</label>
             <input type="text" id="username" name="username" required>
-            <input type="hidden" id="header" name="header" value="בקשת שיוך">
         {% endif %}
-
+        <br>
         <input type="submit" value="שלח">
         <button id="discardButton" type="button">בטל</button>
     </form>

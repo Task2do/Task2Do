@@ -25,19 +25,19 @@
         {% for request in requests_to_me%}
             <p>{{ request.header }} - {{ request.type }}</p>
             <button id="goto_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-        {%if request.type=='JOIN'%}
-        <script>
-            document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                location.href = "{% url 'view_request_association' request.id %}";
-            });
-        </script>
+        {% if request.type != "JOIN" %}
+            <script>
+                document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                    location.href = "{% url 'specific_request_view' request.id %}";
+                });
+            </script>
         {% else %}
-    <script>
-        document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-            location.href = "{% url 'specific_request_view' request.id %}";
-        });
-    </script>
-    {% endif %}
+            <script>
+                document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                    location.href = "{% url '' request.id %}";
+                });
+            </script>
+        {% endif %}
         {% endfor %}
     </ul>
     <h1>בקשות שלי</h1>
@@ -47,19 +47,19 @@
                     {{ request.header }} - {{ request.type }}
             </p>
             <button id="goto_my_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-        {% if  %}
-    <script>
-        document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-            location.href = "{% url 'specific_request_view' request.id %}";
-        });
-    </script>
-    {% else %}
-    <script>
-        document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-            location.href = "{% url '' request.id %}";
-        });
-    </script>
-    {% endif %}
+        {% if request.type == "JOIN" %}
+        <script>
+            document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                location.href = "{% url 'specific_request_view' request.id %}";
+            });
+        </script>
+        {% else %}
+        <script>
+            document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                location.href = "{% url '' request.id %}";
+            });
+        </script>
+        {% endif %}
         {% endfor %}
     </ul>
 

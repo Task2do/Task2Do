@@ -19,6 +19,8 @@ from .forms import ForgotPasswordForm, CreateProjectForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
+from django.utils import timezone
+
 
 # import for request
 from django.contrib.contenttypes.models import ContentType
@@ -367,9 +369,13 @@ def subtask_definition_screen_user(request):
     return render(request, 'core/subtask_definition_screen_user.html')
 
 
+
+@login_required(login_url='user_login')
 def upcoming_deadlines(request):
-    # Your view logic here
-    return render(request, 'core/upcoming_deadlines.html')
+    now = timezone.now()
+    upcoming_tasks = Task.objects.filter(due_date__gt=now)
+    context = {'upcoming_tasks': upcoming_tasks}
+    return render(request, 'core/upcoming_deadlines.html', context)
 
 
 # # User's requests
