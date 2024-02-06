@@ -34,7 +34,7 @@
         {% else %}
             <script>
                 document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url '' request.id %}";
+                    location.href = "{% url 'view_request_association' request.id %}";
                 });
             </script>
         {% endif %}
@@ -56,7 +56,7 @@
         {% else %}
         <script>
             document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                location.href = "{% url '' request.id %}";
+                location.href = "{% url 'view_request_association' request.id %}";
             });
         </script>
         {% endif %}
