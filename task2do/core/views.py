@@ -383,10 +383,28 @@ def task_editing_screen_user(request):
     return render(request, 'core/task_editing_screen_user.html')
 
 
+@login_required
 def new_request_submission(request):
-    # Your view logic here
-    return render(request, 'core/new_request_submission.html')
+    if request.method == 'POST':
+        # Extract form data
+        type = request.POST['type']
+        username = request.user.username
+        header = request.POST['header']
+        description = request.POST['description']
 
+        # TODO: Validate form data here
+
+        #TODO: Create new Request object and save it to the database
+        new_request = Request(type=type, header=header, description=description)
+        #TODO: Set the sender and receiver
+
+        new_request.save()
+
+        # Redirect to my_requests page
+        return redirect('my_requests')
+
+    # Render the form
+    return render(request, 'core/new_request_submission.html')
 
 def new_association_request_submission_user(request):
     # Your view logic here
