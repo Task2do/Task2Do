@@ -257,8 +257,6 @@ def change_project_manager(request, project_id):
 
 
 # # Manager's requests
-#TODO check if we rather have it as both manager and user requests because both need to see their requests
-#also need is_manager if we do want to do that
 @login_required(login_url='manager_login')
 def requests_page(request):
     # Your view logic here
