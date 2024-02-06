@@ -1,0 +1,24 @@
+<head>
+    <meta charset="UTF-8">
+</head>
+
+{% block content %}
+  <h2>צור תתי משימות</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      <li style="border: 1px solid black; margin: 10px; padding: 10px;">
+        {{ form.as_p }}
+      </li>
+    {% endfor %}
+    <button type="submit" name="next">צור</button>
+  </form>
+
+  <button id="back">חזור</button>
+  <script>
+        document.getElementById("back").addEventListener("click", function() {
+          history.back();
+        });
+    </script>
+{% endblock %}

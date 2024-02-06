@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from .models import Worker, Manager, Project, Task
+from .models import Worker, Manager, Project, Task, STATUS_CHOICES
 from django_select2.forms import Select2MultipleWidget
 
 
@@ -98,8 +98,42 @@ class CreateProjectForm(forms.ModelForm):
         super(CreateProjectForm, self).__init__(*args, **kwargs)
         self.fields['members'].queryset = Worker.objects.filter(managers=manager)
 
-# TODO: create the form form
-class TaskForm(forms.ModelForm):
+
+
+class TaskEditForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=[(CHOICE, choice) for (CHOICE, choice) in STATUS_CHOICES if CHOICE != 'CANCELED'])
+
     class Meta:
         model = Task
-        fields = ['status', 'is_active']
+        fields = ['status', 'title', 'description', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super(TaskEditForm, self).__init__(*args, **kwargs)
+        if not self.instance.parent_task:
+            self.fields['title'].disabled = True
+            self.fields['description'].disabled = True
+            self.fields['is_active'].disabled = True
+
+class ManagerTaskEditForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=[(CHOICE, choice) for (CHOICE, choice) in STATUS_CHOICES])
+
+    class Meta:
+        model = Task
+        fields = ['status', 'title', 'description', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super(ManagerTaskEditForm, self).__init__(*args, **kwargs)
+        if self.instance.parent_task:
+            self.fields['title'].disabled = True
+            self.fields['description'].disabled = True
+            self.fields['is_active'].disabled = True
+
+class SubtaskDivisionForm(forms.Form):
+    num_subtasks = forms.IntegerField(min_value=1, max_value=10, label='Number of Subtasks')
+
+class SubtaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'status']
+
+SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=1)

@@ -1,6 +1,10 @@
+from django import forms
+from django.forms import formset_factory
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from .forms import UserRegistrationForm
+from django.urls import reverse
+
+from .forms import UserRegistrationForm, TaskEditForm
 from django.http import HttpResponse, JsonResponse
 
 from django.core import serializers
@@ -15,7 +19,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, TaskForm
+from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -300,6 +304,20 @@ def task_creation_screen_manager(request):
     # Your view logic here
     return render(request, 'core/task_creation_screen_manager.html')
 
+@login_required(login_url='manager_login')
+def task_editing_screen_manager(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if request.method == 'POST':
+        form = ManagerTaskEditForm(request.POST, instance=task)
+        if 'save_changes' in request.POST:
+            if form.is_valid():
+                # form.save() TODO: Almog, please check if this is the correct way to save the form
+                return redirect('specific_task_manager', task_id=task.id)
+        elif 'discard_changes' in request.POST:
+            return redirect('specific_task_manager', task_id=task.id)
+    else:
+        form = ManagerTaskEditForm(instance=task)
+    return render(request, 'core/task_editing_screen_manager.html', {'form': form})
 
 # # Manager's workers
 @login_required(login_url='manager_login')  # is this needed?
@@ -418,43 +436,64 @@ def active_tasks_user(request):
 
 @login_required(login_url='user_login')
 def specific_task_display_user(request, task_id):
-    """
-    This view function retrieves a specific task assigned to the currently logged-in user.
-    The task is then passed to the 'core/specific_task_display_user.html' template to be displayed.
-
-    Args:
-        request (HttpRequest): The request object.
-        task_id (int): The ID of the task to be retrieved.
-
-    Returns:
-        HttpResponse: The HTTP response.
-    """
-
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
     context = {'task': task, 'today_date': date.today()}
     return render(request, 'core/specific_task_display_user.html', context)
 
 
+from .forms import TaskEditForm
+
+@login_required(login_url='user_login')
 def task_editing_screen_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
     if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
+        form = TaskEditForm(request.POST, instance=task)
+        if 'save_changes' in request.POST:
+            if form.is_valid():
+                # form.save() TODO: Almog, please check if this is the correct way to save the form
+                return redirect('specific_task_display_user', task_id=task.id)
+        elif 'discard_changes' in request.POST:
+            return redirect('specific_task_display_user', task_id=task.id)
+        elif 'create_subtasks' in request.POST:
+            return redirect('task_division_screen_user', task_id=task.id)
+    else:
+        form = TaskEditForm(instance=task)
+    return render(request, 'core/task_editing_screen_user.html', {'form': form})
+
+@login_required(login_url='user_login')
+def task_division_screen_user(request, task_id):
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    if request.method == 'POST':
+        form = SubtaskDivisionForm(request.POST)
         if form.is_valid():
-            # form.save() TODO: Almog
+            num_subtasks = form.cleaned_data.get('num_subtasks')
+            return redirect('create_subtasks', task_id=task.id, num_subtasks=num_subtasks)
+    else:
+        form = SubtaskDivisionForm()
+    return render(request, 'core/task_division_screen_user.html', {'form': form, 'task': task})
+
+@login_required(login_url='user_login')
+def create_subtasks(request, task_id, num_subtasks):
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=num_subtasks)
+    if request.method == 'POST':
+        formset = SubtaskFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                subtask = form.save(commit=False)
+                subtask.parent_task = task
+                subtask.due_date = task.due_date
+                subtask.is_active = True
+                subtask.assign_to = task.assigned_to
+                subtask.object_id = 1 #TODO: Almog, please add the object_id here, I'm not sure what to put
+                # subtask.save() #TODO: Almog
             return redirect('specific_task_display_user', task_id=task.id)
     else:
-        form = TaskForm(instance=task)
-    return render(request, 'core/task_editing_screen_user.html', {'form': form, 'task': task})
-
-
-def task_division_screen_user(request):
-    # Your view logic here
-    return render(request, 'core/task_division_screen_user.html')
-
+        formset = SubtaskFormSet()
+    return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
 
 def subtask_definition_screen_user(request):
-    # Your view logic here
-    return render(request, 'core/subtask_definition_screen_user.html')
+    pass
 
 
 @login_required(login_url='user_login')

@@ -1,45 +1,19 @@
-<!DOCTYPE html>
-<html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>Task Division</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<body>
-    <h1>Task Division</h1>
 
-    <label for="numSubtasks">Choose the number of subtasks:</label>
-    <select id="numSubtasks" name="numSubtasks">
-        {% for i in "12345678910"|make_list %}
-            <option value="{{ i }}">{{ i }}</option>
-        {% endfor %}
-    </select>
+{% block content %}
+  <h2>הכנס מספר תתי משימות</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="next">הבא</button>
+  </form>
 
-    <div id="subtaskNames"></div>
-
-    <button id="nextButton" disabled>Next</button>
-    <button id="discardButton">Discard</button>
-
-    <script>
-        $("#numSubtasks").change(function() {
-            var numSubtasks = $(this).val();
-            $("#subtaskNames").empty();
-            for (var i = 0; i < numSubtasks; i++) {
-                $("#subtaskNames").append('<input type="text" class="subtaskName" required>');
-            }
-        });
-
-        $(document).on('input', '.subtaskName', function() {
-            if ($('.subtaskName').filter(function() { return this.value == ""; }).length > 0) {
-                $("#nextButton").prop('disabled', true);
-            } else {
-                $("#nextButton").prop('disabled', false);
-            }
-        });
-
-        $("#discardButton").click(function() {
-            window.history.back();
+    <button id="back">חזור</button> <!-- Back to Home in Hebrew -->
+  <script>
+        document.getElementById("back").addEventListener("click", function() {
+          history.back();
         });
     </script>
-</body>
-</html>
+{% endblock %}
