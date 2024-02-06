@@ -6,7 +6,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 # Learn more abt GenericForeignKey: https://docs.djangoproject.com/en/stable/ref/contrib/contenttypes/#generic-relations
 from django.contrib.contenttypes.models import ContentType
 
-
 # global variables
 # the type of the request
 REQUEST_TYPE = [
@@ -33,8 +32,7 @@ class PersonalData(models.Model):
     PersonalData model representing personal data of a user.
     '''
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='personal_data')
-    b_date = models.DateField() # addional by Task2Do
-
+    b_date = models.DateField()  # addional by Task2Do
 
 
 class Worker(models.Model):
@@ -54,29 +52,26 @@ class Request(models.Model):
     '''
     type = models.CharField(max_length=10, choices=REQUEST_TYPE)
 
-    # Setting up GenericForeignKey for the sender
-    sender_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='request_senders',
-                                            limit_choices_to={'model__in': ('worker', 'manager')})
-    sender_object_id = models.PositiveIntegerField()
-    last_sender = GenericForeignKey('sender_content_type', 'sender_object_id')
+    # sender connection
+    last_sender = models.ForeignKey(PersonalData, on_delete=models.CASCADE, related_name='last_sender', null=True)
 
-    # Setting up GenericForeignKey for the receiver
-    receiver_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='request_receivers',
-                                              limit_choices_to={'model__in': ('worker', 'manager')})
-    receiver_object_id = models.PositiveIntegerField()
-    last_receiver = GenericForeignKey('receiver_content_type', 'receiver_object_id')
+    # receiver connection
+    last_receiver = models.ForeignKey(PersonalData, on_delete=models.CASCADE, related_name='last_receiver', null=True)
 
     is_active = models.BooleanField(default=True)
 
     header = models.CharField(max_length=128)
     # For tracking the history of content
-    contents = GenericRelation('RequestContentHistory')
+    contents = models.ForeignKey('RequestContentHistory', on_delete=models.CASCADE, null=True, blank=True,
+                                 related_name='request_contents')
 
 
 class RequestContentHistory(models.Model):
     request = models.ForeignKey(Request, related_name='content_history', on_delete=models.CASCADE)
     content = models.TextField(max_length=2048)
     updated_at = models.DateTimeField(auto_now_add=True)
+    previous_content = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                                         related_name='previous_contents')
 
 
 class Task(models.Model):
@@ -107,7 +102,3 @@ class Project(models.Model):
     members = models.ManyToManyField(Worker, related_name='projects')
     tasks = models.ManyToManyField(Task, related_name='project_tasks')
     # TODO: add a field for the project's due date
-
-
-
-
