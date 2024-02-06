@@ -167,14 +167,24 @@ class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, worker):
         return f"{worker.personal_data.user.username} - {worker.personal_data.user.first_name} {worker.personal_data.user.last_name}"
 
+
+class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, worker):
+        return f"{worker.personal_data.user.first_name} {worker.personal_data.user.last_name} - {worker.personal_data.user.username}"
+
 class EditProjectWorkersForm(forms.ModelForm):
+    members = WorkerMultipleChoiceField(
+        queryset=Worker.objects.all(),
+        widget=Select2MultipleWidget(attrs={'data-placeholder': 'Select Workers'})
+    )
+
     class Meta:
         model = Project
         fields = ['members']
 
     def __init__(self, *args, **kwargs):
+        manager_id = kwargs.pop('manager_id', None)
         super(EditProjectWorkersForm, self).__init__(*args, **kwargs)
-        self.fields['members'] = WorkerMultipleChoiceField(
-            queryset=Worker.objects.all(),
-            widget=forms.CheckboxSelectMultiple,
-        )
+        if manager_id:
+            manager = Manager.objects.get(id=manager_id)
+            self.fields['members'].queryset = Worker.objects.filter(managers=manager)

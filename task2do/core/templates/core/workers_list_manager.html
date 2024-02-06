@@ -11,8 +11,13 @@
         {% for worker in workers %}
             <div style="border: 1px solid black; margin: 10px; padding: 10px;">
             <li>
-                {{ worker.first_name }} {{ worker.last_name }}
-                <button class="chooseWorkerBtn" data-worker-id="{{ worker.id }}" style="font-size: 15px;">בחר עובד</button> <!-- Choose Worker in Hebrew -->
+                <h4>שם עובד</h4>
+                {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
+                <br>
+                <h4>שם משתמש עובד</h4>
+                {{ worker.personal_data.user.username}}
+                <br>
+                <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details_manager' worker.id %}'" style="font-size: 15px;">בחר עובד</button>
             </li>
             </div>
         {% endfor %}
@@ -25,13 +30,6 @@
             location.href = "{% url 'manager_home_screen' %}";
         });
 
-        var chooseWorkerBtns = document.getElementsByClassName("chooseWorkerBtn");
-        for (var i = 0; i < chooseWorkerBtns.length; i++) {
-            chooseWorkerBtns[i].addEventListener("click", function() {
-                var workerId = this.getAttribute("data-worker-id");
-                location.href = "{% url 'worker_details_manager'%}" + "?worker_id=" + workerId;
-            });
-        }
     </script>
 </body>
 </html>

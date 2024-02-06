@@ -301,12 +301,11 @@ def edit_specific_project_workers(request, project_id):
     return render(request, 'core/edit_specific_project_workers.html', {'form': form, 'project': project})
 
 # # Manager's workers
-@login_required(login_url='manager_login')  # is this needed?
+@login_required(login_url='manager_login')
 def workers_list_manager(request, manager_id):
-    # TODO HTML file doesnt work properly @shira_chesler&Yuval
     manager = Manager.objects.get(id=manager_id)
     workers = manager.workers.all()
-    return redirect('workers_list_manager', manager_id=manager_id)
+    return render(request, 'core/workers_list_manager.html', {'workers': workers})
 
 
 @login_required(login_url='manager_login')  # is this needed?
