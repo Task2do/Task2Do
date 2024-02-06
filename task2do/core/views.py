@@ -265,7 +265,7 @@ def task_creation_screen_manager(request, project_id):
         if form.is_valid():
             task = form.save(commit=False)
             task.project = Project.objects.get(id=project_id)
-            task.object_id = task.project.id  # Set the object_id field
+
             task.save() #TODO: Almog, there is a problem here with saving to the db
             return redirect('tasks_specific_project_manager', project_id=project_id)
     else:
@@ -521,7 +521,7 @@ def create_subtasks(request, task_id, num_subtasks):
                 subtask.due_date = task.due_date
                 subtask.is_active = True
                 subtask.assign_to = task.assigned_to
-                subtask.object_id = 1 #TODO: Almog, please add the object_id here, I'm not sure what to put
+
                 # subtask.save() #TODO: Almog
             return redirect('specific_task_display_user', task_id=task.id)
     else:

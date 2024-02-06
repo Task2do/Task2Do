@@ -83,10 +83,9 @@ class Task(models.Model):
     due_date = models.DateField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Not Started')
     is_active = models.BooleanField(default=True)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
-                                     limit_choices_to={'model__in': ('worker', 'manager')})
-    object_id = models.PositiveIntegerField()
-    author = GenericForeignKey('content_type', 'object_id')
+    # for assigning the task to a person
+
+    # optional field to add is an Author field
     assigned_to = models.ForeignKey(Worker, on_delete=models.CASCADE, related_name='assigned_tasks', default=None)
     parent_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_tasks')
 
@@ -101,4 +100,5 @@ class Project(models.Model):
     lead = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name="lead_projects")
     members = models.ManyToManyField(Worker, related_name='projects')
     tasks = models.ManyToManyField(Task, related_name='project_tasks')
-    # TODO: add a field for the project's due date
+    due_date = models.DateField(default=None, null=True, blank=True)
+
