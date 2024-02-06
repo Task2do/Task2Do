@@ -18,7 +18,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm
+from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm, SubtaskDivisionForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -439,14 +439,22 @@ def task_editing_screen_user(request, task_id):
         elif 'discard_changes' in request.POST:
             return redirect('specific_task_display_user', task_id=task.id)
         elif 'create_subtasks' in request.POST:
-            return redirect('create_subtasks', task_id=task.id)
+            return redirect('task_division_screen_user', task_id=task.id)
     else:
         form = TaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_user.html', {'form': form})
 
 @login_required(login_url='user_login')
-def task_division_screen_user(request, task_id, num_subtasks):
-    pass
+def task_division_screen_user(request, task_id):
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    if request.method == 'POST':
+        form = SubtaskDivisionForm(request.POST)
+        if form.is_valid():
+            num_subtasks = form.cleaned_data.get('num_subtasks')
+            return redirect('create_subtasks', task_id=task.id, num_subtasks=num_subtasks)
+    else:
+        form = SubtaskDivisionForm()
+    return render(request, 'core/task_division_screen_user.html', {'form': form, 'task': task})
 
 @login_required(login_url='user_login')
 def create_subtasks(request, task_id):

@@ -127,3 +127,6 @@ class ManagerTaskEditForm(forms.ModelForm):
             self.fields['title'].disabled = True
             self.fields['description'].disabled = True
             self.fields['is_active'].disabled = True
+
+class SubtaskDivisionForm(forms.Form):
+    num_subtasks = forms.IntegerField(min_value=1, max_value=10, label='Number of Subtasks')
