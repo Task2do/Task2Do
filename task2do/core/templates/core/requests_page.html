@@ -8,9 +8,9 @@
     <button id="new request" style="font-size: 30px;">צור בקשה חדשה</button>
 
     <script>
-        document.getElementById("new request").addEventListener("click", function() {
-            location.href = "{% url 'new_request_submission' %}";
-        });
+    document.getElementById("new request").addEventListener("click", function() {
+        location.href = "{% url 'new_request_submission' %}";
+    });
     </script>
     <button id="request_history" style="font-size: 30px;">היסטוריית בקשות</button>
 
@@ -34,7 +34,7 @@
         {% else %}
             <script>
                 document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url '' request.id %}";
+                    location.href = "{% url 'view_request_association' request.id %}";
                 });
             </script>
         {% endif %}
@@ -56,7 +56,7 @@
         {% else %}
         <script>
             document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                location.href = "{% url '' request.id %}";
+                location.href = "{% url 'view_request_association' request.id %}";
             });
         </script>
         {% endif %}
