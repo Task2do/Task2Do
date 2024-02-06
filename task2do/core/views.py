@@ -99,7 +99,7 @@ def logout_view(request):
 
 
 # requests
-#TODO like requests_page get to the page all the non active requests in a requests_to_me and requests_from_me
+# TODO like requests_page get to the page all the non active requests in a requests_to_me and requests_from_me
 def request_history(request):
     # Your view logic here
     return render(request, 'core/request_history.html')
@@ -111,8 +111,9 @@ def specific_request_view(request, request_id):
     # Your view logic here
     return render(request, 'core/specific_request_view.html', {'request_id': request_id})
 
-#TODO add the request_to_view and user_id to the request
-#change the data for forms(if accepted then associate with the reciever)
+
+# TODO add the request_to_view and user_id to the request
+# change the data for forms(if accepted then associate with the reciever)
 def view_request_association(request):
     # Your view logic here
     return render(request, 'core/view_request_association.html')
@@ -251,31 +252,55 @@ def worker_details_manager(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     return render(request, 'core/worker_details_manager.html', {'worker': worker})
 
+
 def change_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
     return render(request, 'core/change_project_manager.html', {'project': project})
 
 
 # # Manager's requests
-@login_required(login_url='manager_login')
+@login_required
 def requests_page(request):
-    # Your view logic here
-    # Get the ContentType for PersonalData
-    personal_data_content_type = ContentType.objects.get_for_model(PersonalData)
-
-    # Assuming PersonalData ID is directly related to the sender and receiver IDs in your Request model
-    personal_data_id = request.user.personal_data.id
+    # Get the PersonalData instance for the current user
+    personal_data = request.user.personal_data
 
     # Filter requests where the last sender is the current user's PersonalData
-    requests_from_me = Request.objects.filter(sender_content_type=personal_data_content_type,
-                                              sender_object_id=personal_data_id)
+    requests_from_me = Request.objects.filter(last_sender=personal_data)
 
     # Filter requests where the last receiver is the current user's PersonalData
-    requests_to_me = Request.objects.filter(receiver_content_type=personal_data_content_type,
-                                            receiver_object_id=personal_data_id)
+    requests_to_me = Request.objects.filter(last_receiver=personal_data)
 
     return render(request, 'core/requests_page.html',
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me})
+
+
+@login_required
+def new_request_submission(request):
+    if request.method == 'POST':
+        # Extract form data
+        type = request.POST['type']
+        user_personal_data = request.user.personal_data
+        header = request.POST['header']
+        description = request.POST['description']
+
+        # TODO: Validate form data here
+
+        # TODO: Create new Request object and save it to the database
+        new_request = Request(type=type, header=header, last_sender=user_personal_data,)
+        # TODO: Set the sender and receiver
+
+        new_request.save()
+
+        # Redirect to my_requests page
+        return redirect('my_requests')
+
+    # Render the form
+    return render(request, 'core/new_request_submission.html')
+
+
+def new_association_request_submission_user(request):
+    # Your view logic here
+    return render(request, 'core/new_association_request_submission_user.html')
 
 
 def new_association_request_manager(request):
@@ -351,7 +376,8 @@ def user_home_screen(request):
 @login_required(login_url='user_login')
 def task_history_user(request):
     worker_id = request.user.personal_data.id
-    tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assigned_to=worker_id).order_by('-due_date')
+    tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assigned_to=worker_id).order_by(
+        '-due_date')
     return render(request, 'core/task_history_user.html', {'history_tasks': tasks})
 
 
@@ -369,7 +395,8 @@ def active_tasks_user(request):
         HttpResponse: The HTTP response.
     """
     user_id = request.user.personal_data.id
-    active_tasks = Task.objects.filter(~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
+    active_tasks = Task.objects.filter(
+        ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
     context = {'active_tasks': active_tasks}
     return render(request, 'core/active_tasks_user.html', context)
 
@@ -415,7 +442,6 @@ def subtask_definition_screen_user(request):
     return render(request, 'core/subtask_definition_screen_user.html')
 
 
-
 @login_required(login_url='user_login')
 def upcoming_deadlines(request):
     """
@@ -430,37 +456,8 @@ def upcoming_deadlines(request):
         HttpResponse: The HTTP response.
     """
     now = timezone.now()
-    upcoming_tasks = Task.objects.filter(due_date__gt=now, assigned_to__personal_data__id=request.user.personal_data.id).order_by('due_date')
+    upcoming_tasks = Task.objects.filter(due_date__gt=now,
+                                         assigned_to__personal_data__id=request.user.personal_data.id).order_by(
+        'due_date')
     context = {'upcoming_tasks': upcoming_tasks}
     return render(request, 'core/upcoming_deadlines.html', context)
-
-
-
-# # User's requests
-
-@login_required
-def new_request_submission(request):
-    if request.method == 'POST':
-        # Extract form data
-        type = request.POST['type']
-        username = request.user.username
-        header = request.POST['header']
-        description = request.POST['description']
-
-        # TODO: Validate form data here
-
-        #TODO: Create new Request object and save it to the database
-        new_request = Request(type=type, header=header, description=description)
-        #TODO: Set the sender and receiver
-
-        new_request.save()
-
-        # Redirect to my_requests page
-        return redirect('my_requests')
-
-    # Render the form
-    return render(request, 'core/new_request_submission.html')
-
-def new_association_request_submission_user(request):
-    # Your view logic here
-    return render(request, 'core/new_association_request_submission_user.html')
