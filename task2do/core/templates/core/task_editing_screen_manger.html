@@ -1,54 +1,15 @@
-<!DOCTYPE html>
-<html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>עריכת משימה</title>
 </head>
-<body>
-    <h1>עריכת משימה</h1>
-
-    <form method="post" id="editTaskForm" action="{% url 'edit_task' task.id %}">
-        {% csrf_token %}
-        <label for="new_task_title">כותרת:</label>
-        <input type="text" id="new_task_title" name="new_task_title" value="{{ task.title }}">
-        <br>
-        <label for="new_task_description">תיאור:</label>
-        <input type="text" id="new_task_description" name="new_task_description" value="{{ task.description }}">
-        <br>
-        <label for="new_task_due_date">תאריך סיום:</label>
-        <input type="date" id="new_task_due_date" name="new_task_due_date" value="{{ task.due_date|date:'Y-m-d' }}">
-        <br>
-        <label for="new_task_status">מצב:</label>
-        <select id="new_task_status" name="new_task_status">
-            <option value="ON HOLD" {% if task.status == 'ON HOLD' %}selected{% endif %}>On Hold</option>
-            <option value="BLOCKED" {% if task.status == 'BLOCKED' %}selected{% endif %}>Blocked</option>
-            <option value="COMPLETED" {% if task.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
-        </select>
-        <br>
-        <label for="new_task_is_active">האם המשימה פעילה:</label>
-        <select id="new_task_is_active" name="new_task_is_active">
-            <option value="True" {% if task.is_active %}selected{% endif %}>כן</option>
-            <option value="False" {% if not task.is_active %}selected{% endif %}>לא</option>
-        </select>
-        <br>
-        <input type="submit" value="שנה משימה">
-    </form>
-
-    <button id="deleteTaskButton" style="font-size: 15px;">מחק משימה</button>
-    <br>
-    <button id="goBack" style="font-size: 15px;">חזור</button>
-
-    <script>
-        document.getElementById("goBack").addEventListener("click", function() {
-            window.history.back();
-        });
-
-        document.getElementById("deleteTaskButton").addEventListener("click", function() {
-            if (confirm("האם אתה בטוח שאתה רוצה למחוק את המשימה?")) {
-                document.getElementById("editTaskForm").action = "{% url 'delete_task' task.id %}";
-                document.getElementById("editTaskForm").submit();
-            }
-        });
-    </script>
-</body>
-</html>
+{% block content %}
+  <h2>ערוך משימה</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if not form.instance.parent_task %}
+      <button type="submit" name="create_subtasks">צור תתי משימות</button>
+    {% endif %}
+    <button type="submit" name="save_changes">שמור שינויים</button>
+    <button type="submit" name="discard_changes">בטל שינויים</button>
+  </form>
+{% endblock %}

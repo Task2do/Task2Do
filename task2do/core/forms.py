@@ -113,3 +113,17 @@ class TaskEditForm(forms.ModelForm):
             self.fields['title'].disabled = True
             self.fields['description'].disabled = True
             self.fields['is_active'].disabled = True
+
+class ManagerTaskEditForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=[(CHOICE, choice) for (CHOICE, choice) in STATUS_CHOICES])
+
+    class Meta:
+        model = Task
+        fields = ['status', 'title', 'description', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super(ManagerTaskEditForm, self).__init__(*args, **kwargs)
+        if self.instance.parent_task:
+            self.fields['title'].disabled = True
+            self.fields['description'].disabled = True
+            self.fields['is_active'].disabled = True

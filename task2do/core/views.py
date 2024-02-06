@@ -18,7 +18,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm
+from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -240,6 +240,20 @@ def task_creation_screen_manager(request):
     # Your view logic here
     return render(request, 'core/task_creation_screen_manager.html')
 
+@login_required(login_url='manager_login')
+def task_editing_screen_manager(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if request.method == 'POST':
+        form = ManagerTaskEditForm(request.POST, instance=task)
+        if 'save_changes' in request.POST:
+            if form.is_valid():
+                # form.save() TODO: Almog, please check if this is the correct way to save the form
+                return redirect('specific_task_manager', task_id=task.id)
+        elif 'discard_changes' in request.POST:
+            return redirect('specific_task_manager', task_id=task.id)
+    else:
+        form = ManagerTaskEditForm(instance=task)
+    return render(request, 'core/task_editing_screen_manager.html', {'form': form})
 
 # # Manager's workers
 @login_required(login_url='manager_login')  # is this needed?
