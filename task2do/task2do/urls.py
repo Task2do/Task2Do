@@ -52,8 +52,7 @@ urlpatterns = [
     path('my_requests/', views.requests_page, name='requests_page'),
     path('task_history_user/', views.task_history_user, name='task_history_user'),
     path('specific_task_display_user/<int:task_id>/', views.specific_task_display_user, name='specific_task_display_user'),
-    path('task_division_screen_user/', views.task_division_screen_user, name='task_division_screen_user'),
-    path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
+    path('task_division_screen_user/<int:task_id>/', views.task_division_screen_user, name='task_division_screen_user'),    path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
     path('subtask_definition_screen_user/', views.subtask_definition_screen_user, name='subtask_definition_screen_user'),
 
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
@@ -66,5 +65,6 @@ urlpatterns = [
     path('worker_details_manager/<int:worker_id>/', views.worker_details_manager, name='worker_details_manager'),
     path('change_project_manager/<int:project_id>/', views.change_project_manager, name='change_project_manager'),
     path('task_editing_screen_user/<int:task_id>/', views.task_editing_screen_user, name='task_editing_screen_user'),
+    path('create_subtasks/<int:task_id>/', views.create_subtasks, name='create_subtasks'),
 ]
 

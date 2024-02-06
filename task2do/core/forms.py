@@ -98,8 +98,35 @@ class CreateProjectForm(forms.ModelForm):
         super(CreateProjectForm, self).__init__(*args, **kwargs)
         self.fields['members'].queryset = Worker.objects.filter(managers=manager)
 
+
 # TODO: create the form form
-class TaskForm(forms.ModelForm):
+class UserTaskForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('NOT_STARTED', 'Not Started'),
+        ('IN_PROGRESS', 'In Progress'),
+        ('ADVANCED', 'Advanced'),
+        ('COMPLETED', 'Completed'),
+        ('ON HOLD', 'On Hold'),
+    ]
+
+    status = forms.ChoiceField(choices=STATUS_CHOICES)
+    num_subtasks = forms.ChoiceField(choices=[(i, str(i)) for i in range(1, 11)], label='Number of Subtasks')
+
     class Meta:
         model = Task
-        fields = ['status', 'is_active']
+        fields = ['status', 'num_subtasks']
+
+
+from .models import STATUS_CHOICES
+
+
+from django import forms
+from django.forms import formset_factory
+from .models import Task
+
+class SubtaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'status']
+
+SubtaskFormSet = formset_factory(SubtaskForm, extra=0)

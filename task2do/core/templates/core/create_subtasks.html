@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Create Subtasks</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-$END$
+    <h1>Create Subtasks</h1>
+
+    <form method="post" id="subtaskForm">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="subtask">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+        <input type="submit" id="submitBtn" value="Submit" disabled>
+    </form>
+
+    <button id="backButton">Back</button>
+
+    <script>
+        // Enable the submit button when all forms are filled
+        $(document).on('input', '.subtask input', function() {
+            var allFilled = true;
+            $('.subtask input').each(function() {
+                if ($(this).val() == '') {
+                    allFilled = false;
+                    return false;  // Break the loop
+                }
+            });
+            $('#submitBtn').prop('disabled', !allFilled);
+        });
+
+        // Go back to the previous page when the back button is clicked
+        $("#backButton").click(function() {
+            window.history.back();
+        });
+    </script>
 </body>
 </html>

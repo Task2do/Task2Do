@@ -10,33 +10,20 @@
 
     <label for="numSubtasks">Choose the number of subtasks:</label>
     <select id="numSubtasks" name="numSubtasks">
-        {% for i in "12345678910"|make_list %}
+        {% for i in "123456789"|make_list %}
             <option value="{{ i }}">{{ i }}</option>
         {% endfor %}
     </select>
 
-    <div id="subtaskNames"></div>
 
     <button id="nextButton" disabled>Next</button>
     <button id="discardButton">Discard</button>
 
     <script>
-        $("#numSubtasks").change(function() {
-            var numSubtasks = $(this).val();
-            $("#subtaskNames").empty();
-            for (var i = 0; i < numSubtasks; i++) {
-                $("#subtaskNames").append('<input type="text" class="subtaskName" required>');
-            }
+        $("#nextButton").click(function() {
+            var numSubtasks = $("#numSubtasks").val();
+            window.location.href = "{% url 'create_subtasks' task.id %}?numSubtasks=" + numSubtasks;
         });
-
-        $(document).on('input', '.subtaskName', function() {
-            if ($('.subtaskName').filter(function() { return this.value == ""; }).length > 0) {
-                $("#nextButton").prop('disabled', true);
-            } else {
-                $("#nextButton").prop('disabled', false);
-            }
-        });
-
         $("#discardButton").click(function() {
             window.history.back();
         });
