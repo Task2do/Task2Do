@@ -9,10 +9,12 @@
 
     <ul>
         {% for worker in workers %}
+            <div style="border: 1px solid black; margin: 10px; padding: 10px;">
             <li>
                 {{ worker.first_name }} {{ worker.last_name }}
                 <button class="chooseWorkerBtn" data-worker-id="{{ worker.id }}" style="font-size: 15px;">בחר עובד</button> <!-- Choose Worker in Hebrew -->
             </li>
+            </div>
         {% endfor %}
     </ul>
 
@@ -27,7 +29,7 @@
         for (var i = 0; i < chooseWorkerBtns.length; i++) {
             chooseWorkerBtns[i].addEventListener("click", function() {
                 var workerId = this.getAttribute("data-worker-id");
-                location.href = "{% url 'worker_details'%}" + "?worker_id=" + workerId;
+                location.href = "{% url 'worker_details_manager'%}" + "?worker_id=" + workerId;
             });
         }
     </script>

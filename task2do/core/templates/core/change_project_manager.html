@@ -2,30 +2,40 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>שינוי פרויקט</title>
+    <title>עריכת פרויקט</title>
 </head>
 <body>
-    <h1>שינוי פרויקט</h1>
+    <h1>עריכת פרויקט</h1>
 
     <form method="post" action="{% url 'change_project' task.id %}">
         {% csrf_token %}
-        <label for="new_project_name">שם הפרויקט החדש:</label>
-        <input type="text" id="new_project_name" name="new_project_name" value="{{ task.project.name }}">
+        <label for="new_project_name">שם הפרויקט:</label>
+        <input type="text" id="new_project_name" name="new_project_name" value="{{ project.name }}">
         <br>
-        <label for="new_project_description">תיאור הפרויקט החדש:</label>
-        <input type="text" id="new_project_description" name="new_project_description" value="{{ task.project.description }}">
+        <label for="new_project_description">תיאור הפרויקט:</label>
+        <input type="text" id="new_project_description" name="new_project_description" value="{{ project.description }}">
         <br>
-        <label for="new_project_lead">מנהל הפרויקט החדש:</label>
-        <input type="text" id="new_project_lead" name="new_project_lead" value="{{ task.project.lead.user.username }}">
+        <label for="new_project_due_date">תאריך סיום:</label>
+        <input type="date" id="new_project_due_date" name="new_project_due_date" value="{{ project.due_date|date:'Y-m-d' }}">
+        <br>
+        <label for="new_project_is_active">האם הפרויקט פעיל:</label>
+        <select id="new_project_is_active" name="new_project_is_active">
+            <option value="True" {% if project.is_active %}selected{% endif %}>כן</option>
+            <option value="False" {% if not project.is_active %}selected{% endif %}>לא</option>
+        </select>
         <br>
         <input type="submit" value="שנה פרויקט">
     </form>
 
-    <button id="closeWindow" style="font-size: 15px;">סגור חלון</button>
+    <button id="goBack" style="font-size: 15px;">חזור</button>
 
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script>
-        document.getElementById("closeWindow").addEventListener("click", function() {
-            window.close();
+        document.getElementById("goBack").addEventListener("click", function() {
+            window.history.back();
+        });
+        $(document).ready(function() {
+            $('#new_project_members').select2();
         });
     </script>
 </body>

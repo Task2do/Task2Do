@@ -64,5 +64,6 @@ urlpatterns = [
     path('specific_task_manager/<int:task_id>/', views.specific_task_manager, name='specific_task_manager'),
     path('workers_list_manager/<int:manager_id>/', views.workers_list_manager, name='workers_list_manager'),
     path('worker_details_manager/<int:worker_id>/', views.worker_details_manager, name='worker_details_manager'),
+    path('change_project_manager/<int:project_id>/', views.change_project_manager, name='change_project_manager'),
 ]
 

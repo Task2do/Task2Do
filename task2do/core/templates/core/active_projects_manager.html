@@ -6,7 +6,7 @@
 </head>
 <body>
     <button style="font-size: 15px; margin-bottom: 20px;">
-        <a href="{% url 'create_new_project' %}">Create New Project</a>
+        <a href="{% url 'create_new_project' %}">צור פרוייקט חדש</a>
     </button>
     <h1>פרויקטים פעילים</h1>
 
@@ -14,10 +14,10 @@
         {% for project in active_projects %}
             <li style="border: 1px solid black; margin: 10px; padding: 10px;">
                 <h2>{{ project.name }}</h2>
-                <p>Number of Tasks: {{ project.tasks.count }}</p>
-                <p>Number of Workers: {{ project.members.count }}</p>
+                <p>מספר משימות: {{ project.tasks.count }}</p>
+                <p>מספר עובדים מוקצים: {{ project.members.count }}</p>
                 <button style="font-size: 15px;">
-                    <a href="{% url 'specific_project_manager' project.id %}">Project Details</a>
+                    <a href="{% url 'specific_project_manager' project.id %}">פרטי פרוייקט</a>
                 </button>
             </li>
         {% endfor %}

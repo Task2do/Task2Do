@@ -3,20 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>משימות פרויקט</title>
+    <style>
+        .past-deadline {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>משימות פרויקט - {{ project.name }}</h1>
 
-    <ul>
-        {% for task in project.tasks.all %}
-            <li>
-                <h2>{{ task.title }}</h2>
-                <p>{{ task.description }}</p>
-                <p>תאריך סיום: {{ task.due_date }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <h3>פרטי משימות</h3>
+    <h4>משימות פעילות</h4>
+    {% for task in project.tasks.filter(is_active=True, due_date__gte=now).order_by('due_date') %}
+    <div style="border: 1px solid black; margin: 10px; padding: 10px;">
+        <h5>שם המשימה: {{ task.title }}</h5>
+        <p>מועד סיום המשימה: {{ task.due_date }}</p>
+        <p>עובד על המשימה: {{ task.assigned_to }}</p>
+        <p>סטטוס המשימה: {{ task.status }}</p>
+        <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
+    </div>
+    {% endfor %}
+    {% for task in project.tasks.filter(is_active=True, due_date__lt=now).order_by('due_date') %}
+    <div style="border: 1px solid black; margin: 10px; padding: 10px; color: red;">
+        <h5>שם המשימה: {{ task.title }}</h5>
+        <p>מועד סיום המשימה: {{ task.due_date }}</p>
+        <p>עובד על המשימה: {{ task.assigned_to }}</p>
+        <p>סטטוס המשימה: {{ task.status }}</p>
+        <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
+    </div>
+    {% endfor %}
+    <h4>משימות לא פעילות</h4>
+    {% for task in project.tasks.filter(is_active=False, due_date__gte=now).order_by('due_date') %}
+    <div style="border: 1px solid black; margin: 10px; padding: 10px;">
+        <h5>שם המשימה: {{ task.title }}</h5>
+        <p>מועד סיום המשימה: {{ task.due_date }}</p>
+        <p>עובד על המשימה: {{ task.assigned_to }}</p>
+        <p>סטטוס המשימה: {{ task.status }}</p>
+        <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
+    </div>
+    {% endfor %}
+    {% for task in project.tasks.filter(is_active=False, due_date__lt=now).order_by('due_date') %}
+    <div style="border: 1px solid black; margin: 10px; padding: 10px;">
+        <h5>שם המשימה: {{ task.title }}</h5>
+        <p>מועד סיום המשימה: {{ task.due_date }}</p>
+        <p>עובד על המשימה: {{ task.assigned_to }}</p>
+        <p>סטטוס המשימה: {{ task.status }}</p>
+        <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
+    </div>
+    {% endfor %}
 
+    <button style="font-size: 15px;" onclick="location.href='{% url 'task_creation_screen_manager' %}'">צור משימה חדשה</button>
     <button style="font-size: 15px;" onclick="location.href='{% url 'project_list' %}'">חזור לרשימת הפרויקטים</button>
 </body>
 </html>

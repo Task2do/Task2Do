@@ -8,9 +8,12 @@
     <h1>פרטי עובד</h1> <!-- Worker Details Heading in Hebrew -->
 
     <ul>
-        <li>שם מלא: {{ worker.first_name }} {{ worker.last_name }}</li>
-        <li>אימייל: {{ worker.email }}</li>
-        <!-- Add other worker details as needed -->
+        <li>שם משתמש: {{ worker.personal_data.user.username }}</li>
+        <li>שם פרטי: {{ worker.personal_data.user.first_name }}</li>
+        <li>שם משפחה: {{ worker.personal_data.user.last_name }}</li>
+        <li>אימייל: {{ worker.personal_data.user.email }}</li>
+        <li>תאריך לידה: {{ worker.personal_data.b_date }}</li>
+        <li>תאריך התחברות אחרון: {{ worker.last_login }}</li>
     </ul>
 
     <button id="backToList" style="font-size: 15px;">חזור לרשימת העובדים</button> <!-- Back to Workers List in Hebrew -->
