@@ -1,3 +1,4 @@
+from django import forms
 from django.forms import formset_factory
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -18,7 +19,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm, SubtaskDivisionForm
+from .forms import ForgotPasswordForm, CreateProjectForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -457,8 +458,24 @@ def task_division_screen_user(request, task_id):
     return render(request, 'core/task_division_screen_user.html', {'form': form, 'task': task})
 
 @login_required(login_url='user_login')
-def create_subtasks(request, task_id):
-    pass
+def create_subtasks(request, task_id, num_subtasks):
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=num_subtasks)
+    if request.method == 'POST':
+        formset = SubtaskFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                subtask = form.save(commit=False)
+                subtask.parent_task = task
+                subtask.due_date = task.due_date
+                subtask.is_active = True
+                subtask.assign_to = task.assigned_to
+                subtask.object_id = 1 #TODO: Almog, please add the object_id here, I'm not sure what to put
+                # subtask.save() #TODO: Almog
+            return redirect('specific_task_display_user', task_id=task.id)
+    else:
+        formset = SubtaskFormSet()
+    return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
 
 def subtask_definition_screen_user(request):
     pass

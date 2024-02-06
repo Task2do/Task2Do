@@ -130,3 +130,10 @@ class ManagerTaskEditForm(forms.ModelForm):
 
 class SubtaskDivisionForm(forms.Form):
     num_subtasks = forms.IntegerField(min_value=1, max_value=10, label='Number of Subtasks')
+
+class SubtaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'status']
+
+SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=1)
