@@ -137,3 +137,54 @@ class SubtaskForm(forms.ModelForm):
         fields = ['title', 'description', 'status']
 
 SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=1)
+
+
+class ProjectChangeForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'description', 'is_active']
+        # todo: add due date
+
+
+from django import forms
+from .models import Task, Worker
+
+class TaskCreationForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'assigned_to', 'due_date', 'description']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        project_id = kwargs.pop('project_id')
+        super(TaskCreationForm, self).__init__(*args, **kwargs)
+        self.fields['assigned_to'].queryset = Worker.objects.filter(projects__id=project_id)
+
+
+class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, worker):
+        return f"{worker.personal_data.user.username} - {worker.personal_data.user.first_name} {worker.personal_data.user.last_name}"
+
+
+class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, worker):
+        return f"{worker.personal_data.user.first_name} {worker.personal_data.user.last_name} - {worker.personal_data.user.username}"
+
+class EditProjectWorkersForm(forms.ModelForm):
+    members = WorkerMultipleChoiceField(
+        queryset=Worker.objects.all(),
+        widget=Select2MultipleWidget(attrs={'data-placeholder': 'Select Workers'})
+    )
+
+    class Meta:
+        model = Project
+        fields = ['members']
+
+    def __init__(self, *args, **kwargs):
+        manager_id = kwargs.pop('manager_id', None)
+        super(EditProjectWorkersForm, self).__init__(*args, **kwargs)
+        if manager_id:
+            manager = Manager.objects.get(id=manager_id)
+            self.fields['members'].queryset = Worker.objects.filter(managers=manager)

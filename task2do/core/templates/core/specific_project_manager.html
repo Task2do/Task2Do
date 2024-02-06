@@ -7,8 +7,8 @@
 <body>
     <h1>פרטי הפרוייקט</h1>
 
-    <h2>{{ project.title }}</h2>
-    <p>{{ project.description }}</p>
+    <h2>{{ project.name }} :שם הפרוייקט</h2>
+    <p>{{ project.description }} :תיאור הפרוייקט</p>
     <p>תאריך סיום: {{ project.due_date }}</p>
 
     <br>
@@ -20,14 +20,17 @@
 
     <script>
         document.getElementById("changeProject").addEventListener("click", function() {
-            window.open("{% url 'change_project_manager' project.id %}", "_blank");
+            location.href = "{% url 'change_project_manager' project.id %}";
         });
     </script>
 
     <script>
         document.getElementById("project_tasks").addEventListener("click", function() {
-            window.open("{% url 'tasks_specific_project_manager' project.id %}", "_blank");
+            location.href = "{% url 'tasks_specific_project_manager' project.id %}";
         });
     </script>
+    <br>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'active_projects_manager' %}'">לכל הפרוייקטים הפעילים</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_history_manager' %}'">לכל הפרוייקטים הלא פעילים</button>
 </body>
 </html>

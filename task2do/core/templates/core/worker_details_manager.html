@@ -20,7 +20,7 @@
 
     <script>
         document.getElementById("backToList").addEventListener("click", function() {
-            location.href = "{% url 'workers_list' %}";
+            history.back();
         });
     </script>
 </body>
