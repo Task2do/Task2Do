@@ -130,7 +130,7 @@ def new_request_submission(request):
         # TODO: Validate form data here
 
         # TODO: Create new Request object and save it to the database
-        new_request = Request(type=type, header=header, last_sender=user_personal_data,)
+        new_request = Request(type=type, header=header, last_sender=user_personal_data, )
         # TODO: Set the sender and receiver
 
         new_request.save()
@@ -140,6 +140,7 @@ def new_request_submission(request):
 
     # Render the form
     return render(request, 'core/new_request_submission.html')
+
 
 # TODO like requests_page get to the page all the non active requests in a requests_to_me and requests_from_me
 def request_history(request):
@@ -168,9 +169,12 @@ def new_association_request_manager(request):
 
 # TODO: page needs request_to_view
 # needs to accept the form to add content to request or close it
+@login_required
 def specific_request_view(request, request_id):
-    # Your view logic here
-    return render(request, 'core/specific_request_view.html', {'request_id': request_id})
+    # Retrieve the specific request by its ID
+    specific_request = Request.objects.get(id=request_id)
+
+    return render(request, 'core/specific_request_view.html', {'request': specific_request})
 
 
 # TODO add the request_to_view and user_id to the request
