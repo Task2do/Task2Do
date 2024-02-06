@@ -245,20 +245,9 @@ def specific_project_manager(request, project_id):
 
 @login_required(login_url='manager_login')
 def active_projects_manager(request):
-    manager_id = request.user.personal_data.id
-    active_projects = Project.objects.filter(is_active=True, lead_id=manager_id)
-
-    projects_data = []
-    for project in active_projects:
-        num_tasks = project.tasks.count()
-        num_workers = project.members.count()
-        projects_data.append({
-            'project': project,
-            'num_tasks': num_tasks,
-            'num_workers': num_workers,
-        })
-
-    context = {'projects_data': projects_data}
+    user_id = request.user.personal_data.id
+    active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id))
+    context = {'active_projects': active_projects}
     return render(request, 'core/active_projects_manager.html', context)
 
 
