@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from .models import Worker, Manager, Project
+from .models import Worker, Manager, Project, Task
 from django_select2.forms import Select2MultipleWidget
 
 
@@ -97,3 +97,9 @@ class CreateProjectForm(forms.ModelForm):
         manager = kwargs.pop('manager')
         super(CreateProjectForm, self).__init__(*args, **kwargs)
         self.fields['members'].queryset = Worker.objects.filter(managers=manager)
+
+# TODO: create the form form
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['status', 'is_active']

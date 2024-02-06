@@ -15,12 +15,12 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm
+from .forms import ForgotPasswordForm, CreateProjectForm, TaskForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
 from django.utils import timezone
-
+from datetime import date
 
 # import for request
 from django.contrib.contenttypes.models import ContentType
@@ -287,6 +287,18 @@ def new_association_request_manager(request):
 
 # USER views
 def user_login(request):
+    """
+    This view function handles the user login process.
+    If the request method is POST, it authenticates the user with the provided username and password.
+    If the user is authenticated successfully, they are logged in and redirected to the user home screen.
+    If the user is not authenticated, an error message is displayed.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -347,15 +359,52 @@ def task_history_user(request):
 
 @login_required(login_url='user_login')
 def active_tasks_user(request):
+    """
+    This view function retrieves all active tasks assigned to the currently logged-in user.
+    An active task is defined as a task that is not canceled and is marked as active.
+    The tasks are then passed to the 'core/active_tasks_user.html' template to be displayed.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
     user_id = request.user.personal_data.id
-    active_tasks = Task.objects.filter(~Q(status='CANCELED') & Q(is_active=True), assigned_to=user_id)
+    active_tasks = Task.objects.filter(~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
     context = {'active_tasks': active_tasks}
     return render(request, 'core/active_tasks_user.html', context)
 
 
+@login_required(login_url='user_login')
 def specific_task_display_user(request, task_id):
-    # Your view logic here
-    return render(request, 'core/specific_task_display_user.html', {'task_id': task_id})
+    """
+    This view function retrieves a specific task assigned to the currently logged-in user.
+    The task is then passed to the 'core/specific_task_display_user.html' template to be displayed.
+
+    Args:
+        request (HttpRequest): The request object.
+        task_id (int): The ID of the task to be retrieved.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
+
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    context = {'task': task, 'today_date': date.today()}
+    return render(request, 'core/specific_task_display_user.html', context)
+
+
+def task_editing_screen_user(request, task_id):
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            # form.save() TODO: Almog
+            return redirect('specific_task_display_user', task_id=task.id)
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'core/task_editing_screen_user.html', {'form': form, 'task': task})
 
 
 def task_division_screen_user(request):
@@ -371,17 +420,25 @@ def subtask_definition_screen_user(request):
 
 @login_required(login_url='user_login')
 def upcoming_deadlines(request):
+    """
+    This view function retrieves all upcoming tasks assigned to the currently logged-in user.
+    An upcoming task is defined as a task whose due date is in the future.
+    The tasks are then passed to the 'core/upcoming_deadlines.html' template to be displayed.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
     now = timezone.now()
-    upcoming_tasks = Task.objects.filter(due_date__gt=now)
+    upcoming_tasks = Task.objects.filter(due_date__gt=now, assigned_to__personal_data__id=request.user.personal_data.id).order_by('due_date')
     context = {'upcoming_tasks': upcoming_tasks}
     return render(request, 'core/upcoming_deadlines.html', context)
 
 
-# # User's requests
-def task_editing_screen_user(request):
-    # Your view logic here
-    return render(request, 'core/task_editing_screen_user.html')
 
+# # User's requests
 
 def new_request_submission(request):
     # Your view logic here
