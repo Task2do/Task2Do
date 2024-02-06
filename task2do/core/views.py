@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 
-from .forms import UserRegistrationForm, SubtaskForm
+from .forms import UserRegistrationForm, TaskEditForm
 from django.http import HttpResponse, JsonResponse
 
 from django.core import serializers
@@ -18,7 +18,7 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, CreateProjectForm, UserTaskForm
+from .forms import ForgotPasswordForm, CreateProjectForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -406,62 +406,40 @@ def active_tasks_user(request):
 
 @login_required(login_url='user_login')
 def specific_task_display_user(request, task_id):
-
-
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
     context = {'task': task, 'today_date': date.today()}
     return render(request, 'core/specific_task_display_user.html', context)
 
 
-@login_required(login_url='user_login')
+from .forms import TaskEditForm
+
 @login_required(login_url='user_login')
 def task_editing_screen_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
     if request.method == 'POST':
-        form = UserTaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-            num_subtasks = form.cleaned_data['num_subtasks']
-            return render(request, 'task_division_screen_user', {'task.id': task.id, 'num_subtasks': num_subtasks})
+        form = TaskEditForm(request.POST, instance=task)
+        if 'save_changes' in request.POST:
+            if form.is_valid():
+                # form.save() TODO: Almog, please check if this is the correct way to save the form
+                return redirect('specific_task_display_user', task_id=task.id)
+        elif 'discard_changes' in request.POST:
+            return redirect('specific_task_display_user', task_id=task.id)
+        elif 'create_subtasks' in request.POST:
+            return redirect('create_subtasks', task_id=task.id)
     else:
-        form = UserTaskForm(instance=task)
-    return render(request, 'core/task_editing_screen_user.html', {'form': form, 'task': task})
-
-from django.http import HttpResponseRedirect
+        form = TaskEditForm(instance=task)
+    return render(request, 'core/task_editing_screen_user.html', {'form': form})
 
 @login_required(login_url='user_login')
 def task_division_screen_user(request, task_id, num_subtasks):
-    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
-    return HttpResponseRedirect(reverse('create_subtasks', args=[task.id]) + f'?numSubtasks={num_subtasks}')
-
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .forms import SubtaskForm, formset_factory
-from .models import Task
+    pass
 
 @login_required(login_url='user_login')
 def create_subtasks(request, task_id):
-    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
-    num_subtasks = int(request.GET.get('numSubtasks', 0))  # Get the number of subtasks from the query string
-    SubtaskFormSet = formset_factory(SubtaskForm, extra=num_subtasks)
-    if request.method == 'POST':
-        formset = SubtaskFormSet(request.POST, prefix='subtasks')
-        if formset.is_valid():
-            for form in formset:
-                subtask = form.save(commit=False)
-                subtask.parent_task = task
-                subtask.due_date = task.due_date
-                subtask.project = task.project
-                subtask.save()
-            return HttpResponseRedirect(
-                'next_page')  # Replace 'next_page' with the actual URL or name of the view where you want to redirect the user
-    else:
-        formset = SubtaskFormSet(prefix='subtasks')
-    return render(request, 'core/create_subtasks.html', {'task': task, 'formset': formset})
+    pass
 
 def subtask_definition_screen_user(request):
-    # Your view logic here
-    return render(request, 'core/subtask_definition_screen_user.html')
+    pass
 
 
 @login_required(login_url='user_login')

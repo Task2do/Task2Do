@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 import re
 
-from .models import Worker, Manager, Project, Task
+from .models import Worker, Manager, Project, Task, STATUS_CHOICES
 from django_select2.forms import Select2MultipleWidget
 
 
@@ -99,34 +99,17 @@ class CreateProjectForm(forms.ModelForm):
         self.fields['members'].queryset = Worker.objects.filter(managers=manager)
 
 
-# TODO: create the form form
-class UserTaskForm(forms.ModelForm):
-    STATUS_CHOICES = [
-        ('NOT_STARTED', 'Not Started'),
-        ('IN_PROGRESS', 'In Progress'),
-        ('ADVANCED', 'Advanced'),
-        ('COMPLETED', 'Completed'),
-        ('ON HOLD', 'On Hold'),
-    ]
 
-    status = forms.ChoiceField(choices=STATUS_CHOICES)
-    num_subtasks = forms.ChoiceField(choices=[(i, str(i)) for i in range(1, 11)], label='Number of Subtasks')
+class TaskEditForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=[(CHOICE, choice) for (CHOICE, choice) in STATUS_CHOICES if CHOICE != 'CANCELED'])
 
     class Meta:
         model = Task
-        fields = ['status', 'num_subtasks']
+        fields = ['status', 'title', 'description', 'is_active']
 
-
-from .models import STATUS_CHOICES
-
-
-from django import forms
-from django.forms import formset_factory
-from .models import Task
-
-class SubtaskForm(forms.ModelForm):
-    class Meta:
-        model = Task
-        fields = ['title', 'description', 'status']
-
-SubtaskFormSet = formset_factory(SubtaskForm, extra=0)
+    def __init__(self, *args, **kwargs):
+        super(TaskEditForm, self).__init__(*args, **kwargs)
+        if not self.instance.parent_task:
+            self.fields['title'].disabled = True
+            self.fields['description'].disabled = True
+            self.fields['is_active'].disabled = True

@@ -1,31 +1,15 @@
-{% load filters %}
-<!DOCTYPE html>
-<html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Task</title>
 </head>
-<body>
-    <h1>Edit Task: {{ task.title }}</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="עדכן משימה">
-    </form>
-
-    <button id="CreateSubTasks" style="font-size: 15px;">צור תתי משימות</button>
-    <button id="backButton" style="font-size: 15px;">חזור</button> <!-- Back to Previous Page in Hebrew -->
-
-    <script>
-        document.getElementById("backButton").addEventListener("click", function() {
-            window.history.back();
-        });
-    </script>
-    <script>
-        document.getElementById("CreateSubTasks").addEventListener("click", function() {
-            window.location.href = "{% url 'task_division_screen_user' task.id %}";
-        });
-    </script>
-</body>
-</html>
+{% block content %}
+  <h2>ערוך משימה</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if not form.instance.parent_task %}
+      <button type="submit" name="create_subtasks">צור תתי משימות</button>
+    {% endif %}
+    <button type="submit" name="save_changes">שמור שינויים</button>
+    <button type="submit" name="discard_changes">בטל שינויים</button>
+  </form>
+{% endblock %}
