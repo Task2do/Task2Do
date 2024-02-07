@@ -25,7 +25,7 @@
 
     <script>
         document.getElementById("backButton").addEventListener("click", function() {
-            window.history.back();
+            location.href = "{% url 'active_tasks_user' %}";
         });
     </script>
 </body>

@@ -19,7 +19,9 @@ from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .forms import ForgotPasswordForm, NewRequestForm, CreateProjectForm, EditProjectWorkersForm, TaskCreationForm, ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm, NewAssociationRequestForm, NewProjectRequestForm
+from .forms import ForgotPasswordForm, NewRequestForm, CreateProjectForm, EditProjectWorkersForm, TaskCreationForm, \
+    ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm, NewAssociationRequestForm, \
+    NewProjectRequestForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
@@ -29,6 +31,9 @@ from datetime import date
 # import for request
 from django.contrib.contenttypes.models import ContentType
 
+
+# TODO: Add @login_required where needed
+# TODO: user type login authentication
 
 # Add more views for different functionalities like creating users, tasks, etc.
 
@@ -106,6 +111,7 @@ def logout_view(request):
 from django.shortcuts import render
 from .models import Request
 
+
 @login_required(login_url='manager_login' or 'user_login')
 def request_history(request):
     # Get the PersonalData instance for the current user
@@ -124,6 +130,7 @@ def request_history(request):
 # needs to accept the form to add content to request or close it
 from .forms import NewProjectRequestForm
 from .models import Request, RequestContentHistory
+
 
 @login_required(login_url='manager_login' or 'user_login')
 def new_project_request(request):
@@ -153,10 +160,8 @@ def new_project_request(request):
         form = NewProjectRequestForm(user=request.user)
     return render(request, 'core/new_project_request.html', {'form': form})
 
-# TODO add the request_to_view and user_id to the request
+
 # change the data for forms(if accepted then associate with the reciever)
-from django.shortcuts import get_object_or_404, render
-from .models import Request, RequestContentHistory, Worker, Manager
 @login_required(login_url='manager_login' or 'user_login')
 def view_request_association(request, request_id):
     request_to_view = get_object_or_404(Request, id=request_id)
@@ -200,6 +205,7 @@ def view_request_association(request, request_id):
     # Pass the Request object and user_id to the template
     context = {'request_to_view': request_to_view, 'user_id': user_id}
     return render(request, 'core/view_request_association.html', context)
+
 
 # MANAGER views
 def manager_login(request):
@@ -254,15 +260,18 @@ def manager_home_screen(request):
 
 
 # # Manager's projects
+@login_required(login_url='manager_login')
 def specific_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
     return render(request, 'core/specific_project_manager.html', {'project': project})
+
 
 @login_required(login_url='manager_login')
 def specific_project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
     workers = project.members.all()
     return render(request, 'core/specific_project_workers.html', {'project': project, 'workers': workers})
+
 
 @login_required(login_url='manager_login')
 def active_projects_manager(request):
@@ -318,7 +327,6 @@ def tasks_specific_project_manager(request, project_id):
     active_tasks_past_deadline = [task for task in all_tasks if task.is_active and task.due_date < now]
     inactive_tasks_past_deadline = [task for task in all_tasks if not task.is_active and task.due_date < now]
 
-
     context = {
         'project': project,
         'active_tasks': active_tasks,
@@ -330,6 +338,7 @@ def tasks_specific_project_manager(request, project_id):
     return render(request, 'core/tasks_specific_project_manager.html', context)
 
 
+@login_required(login_url='manager_login')
 def specific_task_manager(request, task_id):
     task = Task.objects.get(id=task_id)
     project = task.project_tasks.all().first()
@@ -346,7 +355,7 @@ def task_creation_screen_manager(request, project_id):
             task.assigned_to = form.cleaned_data['assigned_to']
             task.due_date = form.cleaned_data['due_date']
             task.status = 'NOT STARTED'
-            task.save() #TODO: Almog, there is a problem here with saving to the db
+            task.save()  # TODO: Almog, there is a problem here with saving to the db
             project.tasks.add(task)
             project.save()
             return redirect('tasks_specific_project_manager', project_id=project_id)
@@ -365,13 +374,14 @@ def task_editing_screen_manager(request, task_id):
                 updated_task = form.save(commit=False)
                 if updated_task.status == 'COMPLETED':
                     updated_task.is_active = False
-                updated_task.save() # TODO: Almog, please check if this is the correct way to save the form
+                updated_task.save()  # TODO: Almog, please check if this is the correct way to save the form
                 return redirect('specific_task_manager', task_id=task.id)
         elif 'discard_changes' in request.POST:
             return redirect('specific_task_manager', task_id=task.id)
     else:
         form = ManagerTaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_manager.html', {'form': form, 'task_id': task_id})
+
 
 @login_required(login_url='manager_login')
 def edit_specific_project_workers(request, project_id):
@@ -384,6 +394,7 @@ def edit_specific_project_workers(request, project_id):
     else:
         form = EditProjectWorkersForm(instance=project)
     return render(request, 'core/edit_specific_project_workers.html', {'form': form, 'project': project})
+
 
 # # Manager's workers
 @login_required(login_url='manager_login')
@@ -432,6 +443,7 @@ def requests_page(request):
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me, 'user_type': user_type})
 
 
+@login_required
 def new_association_request(request):
     if request.method == 'POST':
         form = NewAssociationRequestForm(request.POST)
@@ -457,6 +469,8 @@ def new_association_request(request):
         form = NewAssociationRequestForm()
     return render(request, 'core/new_association_request.html', {'form': form, 'messages': messages})
 
+
+@login_required
 def new_request_submission(request):
     user_type = 'manager' if isinstance(request.user, Manager) else 'worker'
     if request.method == 'POST':
@@ -473,6 +487,21 @@ def new_request_submission(request):
     else:
         form = NewRequestForm(user_type=user_type)
     return render(request, 'core/new_request_submission.html', {'form': form})
+
+
+from django.shortcuts import get_object_or_404, render
+
+
+@login_required
+def specific_request_view(request, request_id):
+    # Get the Request object with the given request_id
+    request_obj = get_object_or_404(Request, id=request_id)
+
+    # Pass the Request object to the template
+    context = {'request_to_view': request_obj}
+
+    # Render the 'specific_request_view.html' template with the context
+    return render(request, 'core/specific_request_view.html', context)
 
 
 # USER views
@@ -562,7 +591,8 @@ def active_tasks_user(request):
         HttpResponse: The HTTP response.
     """
     user_id = request.user.personal_data.id
-    active_tasks = Task.objects.filter(
+    # print(user_id)
+    active_tasks = Task.objects.filter(  # TODO: Almog
         ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
     context = {'active_tasks': active_tasks}
     return render(request, 'core/active_tasks_user.html', context)
@@ -577,6 +607,7 @@ def specific_task_display_user(request, task_id):
 
 from .forms import TaskEditForm
 
+
 @login_required(login_url='user_login')
 def task_editing_screen_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
@@ -584,7 +615,7 @@ def task_editing_screen_user(request, task_id):
         form = TaskEditForm(request.POST, instance=task)
         if 'save_changes' in request.POST:
             if form.is_valid():
-                # form.save() TODO: Almog, please check if this is the correct way to save the form
+                form.save()  # TODO: Almog, please check if this is the correct way to save the form
                 return redirect('specific_task_display_user', task_id=task.id)
         elif 'discard_changes' in request.POST:
             return redirect('specific_task_display_user', task_id=task.id)
@@ -593,6 +624,7 @@ def task_editing_screen_user(request, task_id):
     else:
         form = TaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_user.html', {'form': form})
+
 
 @login_required(login_url='user_login')
 def task_division_screen_user(request, task_id):
@@ -606,6 +638,7 @@ def task_division_screen_user(request, task_id):
         form = SubtaskDivisionForm()
     return render(request, 'core/task_division_screen_user.html', {'form': form, 'task': task})
 
+
 @login_required(login_url='user_login')
 def create_subtasks(request, task_id, num_subtasks):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
@@ -618,16 +651,16 @@ def create_subtasks(request, task_id, num_subtasks):
                 subtask.parent_task = task
                 subtask.due_date = task.due_date
                 subtask.is_active = True
-                subtask.assign_to = task.assigned_to
+                if task.assigned_to is not None:
+                    subtask.assigned_to = task.assigned_to
+                else:
+                    subtask.assigned_to = request.user.personal_data.id
 
-                # subtask.save() #TODO: Almog
+                subtask.save()  # TODO: Almog
             return redirect('specific_task_display_user', task_id=task.id)
     else:
         formset = SubtaskFormSet()
     return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
-
-def subtask_definition_screen_user(request):
-    pass
 
 
 @login_required(login_url='user_login')

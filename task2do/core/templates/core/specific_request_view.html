@@ -2,32 +2,27 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי משימה</title>
+    <title>פרטי בקשה</title>
 </head>
 <body>
-    
-    <h1>{{ request_to_view.header}}</h1>
 
-    <h2>היסטוריית הבקשה</h2>
-    {% for message in request_to_view.contents%}
+    <h1>{{ request_to_view.header }}</h1>
+
+    <h3>פרטי הבקשה</h3>
+    <p>שולח הבקשה: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
+    <p>מקבל הבקשה: {{ request_to_view.last_receiver.user.username }} - {{ request_to_view.last_receiver.user.first_name }} {{ request_to_view.last_receiver.user.last_name }}</p>
+    <p>סוג הבקשה: {{ request_to_view.type }}</p>
+    <p>פעילה: {{ request_to_view.is_active }}</p>
+    <p>תאריך הבקשה: {{ request_to_view.contents.updated_at }}</p>
+
+    <h3>היסטוריית הבקשה</h3>
+    {% for message in request_to_view.contents.previous_contents.all %}
     <p>:תגובה</p>
     <p>{{ message.content }} </p>
     <p>at {{message.updated_at}}</p>
     {% endfor %}
-    {% if request.is_active %}
-    <h3>הגב לבקשה</h3>
 
-
-        <form method="post" >
-            {% csrf_token %}
-            <label for="new_content">תוכן:</label>
-            <input type="text" id="new_description" name="new_description">
-            <br>
-            <input type="checkbox" id="close_request" name="close_request">
-            <br>
-            <input type="submit" value="הגב">
-        </form>
-    {% endif %}
     <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">חזור לרשימת הבקשות</button>
+
 </body>
 </html>
