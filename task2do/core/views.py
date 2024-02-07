@@ -405,9 +405,9 @@ def workers_list_manager(request, manager_id):
 
 
 @login_required(login_url='manager_login')  # is this needed?
-def worker_details_manager(request, worker_id):
+def worker_details(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
-    return render(request, 'core/worker_details_manager.html', {'worker': worker})
+    return render(request, 'core/worker_details.html', {'worker': worker})
 
 
 @login_required(login_url='manager_login')
