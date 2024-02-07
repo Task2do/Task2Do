@@ -261,9 +261,9 @@ def manager_home_screen(request):
 
 # # Manager's projects
 @login_required(login_url='manager_login')
-def specific_project_manager(request, project_id):
+def view_project(request, project_id):
     project = Project.objects.get(id=project_id)
-    return render(request, 'core/specific_project_manager.html', {'project': project})
+    return render(request, 'core/view_project.html', {'project': project})
 
 
 @login_required(login_url='manager_login')
@@ -293,7 +293,7 @@ def create_new_project(request):
             project.members.set(form.cleaned_data['members'])  # Use set() method here
             project.save()
 
-            return redirect('specific_project_manager', project_id=project.id)
+            return redirect('view_project', project_id=project.id)
     else:
         form = CreateProjectForm(manager_id=request.user.personal_data.id)
     return render(request, 'core/create_new_project.html', {'form': form})
@@ -417,7 +417,7 @@ def edit_project(request, project_id):
         form = ProjectChangeForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
-            return redirect('specific_project_manager', project_id=project.id)
+            return redirect('view_project', project_id=project.id)
     else:
         form = ProjectChangeForm(instance=project)
     return render(request, 'core/edit_project.html', {'form': form, 'project': project})
