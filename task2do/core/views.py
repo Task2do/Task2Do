@@ -599,10 +599,10 @@ def active_tasks_user(request):
 
 
 @login_required(login_url='user_login')
-def specific_task_display_user(request, task_id):
+def task_display_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
     context = {'task': task, 'today_date': date.today()}
-    return render(request, 'core/specific_task_display_user.html', context)
+    return render(request, 'core/task_display_user.html', context)
 
 
 from .forms import TaskEditForm
@@ -616,9 +616,9 @@ def task_editing_screen_user(request, task_id):
         if 'save_changes' in request.POST:
             if form.is_valid():
                 form.save()  # TODO: Almog, please check if this is the correct way to save the form
-                return redirect('specific_task_display_user', task_id=task.id)
+                return redirect('task_display_user', task_id=task.id)
         elif 'discard_changes' in request.POST:
-            return redirect('specific_task_display_user', task_id=task.id)
+            return redirect('task_display_user', task_id=task.id)
         elif 'create_subtasks' in request.POST:
             return redirect('task_division_screen_user', task_id=task.id)
     else:
@@ -657,7 +657,7 @@ def create_subtasks(request, task_id, num_subtasks):
                     subtask.assigned_to = request.user.personal_data.id
 
                 subtask.save()  # TODO: Almog
-            return redirect('specific_task_display_user', task_id=task.id)
+            return redirect('task_display_user', task_id=task.id)
     else:
         formset = SubtaskFormSet()
     return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
