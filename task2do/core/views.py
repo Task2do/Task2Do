@@ -411,7 +411,7 @@ def worker_details_manager(request, worker_id):
 
 
 @login_required(login_url='manager_login')
-def change_project_manager(request, project_id):
+def edit_project(request, project_id):
     project = Project.objects.get(id=project_id)
     if request.method == 'POST':
         form = ProjectChangeForm(request.POST, instance=project)
@@ -420,7 +420,7 @@ def change_project_manager(request, project_id):
             return redirect('specific_project_manager', project_id=project.id)
     else:
         form = ProjectChangeForm(instance=project)
-    return render(request, 'core/change_project_manager.html', {'form': form, 'project': project})
+    return render(request, 'core/edit_project.html', {'form': form, 'project': project})
 
 
 # # Manager's requests
