@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>New Association Request</title>
+</head>
+<body>
+    <h1>הגשת בקשת שיוך חדשה</h1>
+    <form method="post" action="{% url 'new_association_request' %}">
+        {% csrf_token %}
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {% if form.username.errors %}
+            <div class="error">{{ form.username.errors }}</div>
+        {% endif %}
+        <input type="submit" value="שלח">
+        <button id="discardButton" type="button">בטל</button>
+    </form>
+
+    <script>
+        document.getElementById("discardButton").addEventListener("click", function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>New Project Request</title>
+</head>
+<body>
+    <h1>הגשת בקשת פרויקט חדשה</h1>
+    <form method="post" action="{% url 'new_project_request' %}">
+        {% csrf_token %}
+        {{ form.project.label_tag }}
+        {{ form.project }}
+        <br>
+        {{ form.title.label_tag }}
+        {{ form.title }}
+        <br>
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        <br>
+        {{ form.request_type.label_tag }}
+        {{ form.request_type }}
+        <br>
+        <input type="submit" value="שלח">
+        <button id="discardButton" type="button">בטל</button>
+    </form>
+
+    <script>
+        document.getElementById("discardButton").addEventListener("click", function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
