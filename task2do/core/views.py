@@ -339,10 +339,10 @@ def project_tasks(request, project_id):
 
 
 @login_required(login_url='manager_login')
-def specific_task_manager(request, task_id):
+def task_display_manager(request, task_id):
     task = Task.objects.get(id=task_id)
     project = task.project_tasks.all().first()
-    return render(request, 'core/specific_task_manager.html', {'task': task, 'project_id': project.id})
+    return render(request, 'core/task_display_manager.html', {'task': task, 'project_id': project.id})
 
 
 @login_required(login_url='manager_login')
@@ -375,9 +375,9 @@ def task_editing_screen_manager(request, task_id):
                 if updated_task.status == 'COMPLETED':
                     updated_task.is_active = False
                 updated_task.save()  # TODO: Almog, please check if this is the correct way to save the form
-                return redirect('specific_task_manager', task_id=task.id)
+                return redirect('task_display_manager', task_id=task.id)
         elif 'discard_changes' in request.POST:
-            return redirect('specific_task_manager', task_id=task.id)
+            return redirect('task_display_manager', task_id=task.id)
     else:
         form = ManagerTaskEditForm(instance=task)
     return render(request, 'core/task_editing_screen_manager.html', {'form': form, 'task_id': task_id})
