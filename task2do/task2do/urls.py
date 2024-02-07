@@ -40,7 +40,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('specific_request_view/<int:request_id>/', views.specific_request_view, name='specific_request_view'),
     path('request_history/', views.request_history, name='request_history'),
-    path('project_history_manager/', views.project_history_manager, name='project_history_manager'),
+    path('project_history/', views.project_history, name='project_history'),
     path('task_creation_screen_manager/<int:project_id>/', views.task_creation_screen_manager, name='task_creation_screen_manager'),
     # user urls for home screen
     path('active_tasks_user/', views.active_tasks_user, name='active_tasks_user'),

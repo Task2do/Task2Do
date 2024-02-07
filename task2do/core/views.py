@@ -300,7 +300,7 @@ def create_new_project(request):
 
 
 @login_required(login_url='manager_login')
-def project_history_manager(request):
+def project_history(request):
     manager = Manager.objects.get(personal_data__user=request.user)
     projects = manager.lead_projects.all().filter(is_active=False, due_date__lt=timezone.now())
     projects_data = []
@@ -312,7 +312,7 @@ def project_history_manager(request):
             'num_tasks': num_tasks,
             'num_workers': num_workers,
         })
-    return render(request, 'core/project_history_manager.html', {'projects_data': projects_data})
+    return render(request, 'core/project_history.html', {'projects_data': projects_data})
 
 
 # # Manager's tasks
