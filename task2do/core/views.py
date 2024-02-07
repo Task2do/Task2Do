@@ -346,7 +346,7 @@ def task_display_manager(request, task_id):
 
 
 @login_required(login_url='manager_login')
-def task_creation_screen_manager(request, project_id):
+def task_creation_screen(request, project_id):
     if request.method == 'POST':
         form = TaskCreationForm(request.POST, project_id=project_id)
         if form.is_valid():
@@ -361,7 +361,7 @@ def task_creation_screen_manager(request, project_id):
             return redirect('project_tasks', project_id=project_id)
     else:
         form = TaskCreationForm(project_id=project_id)
-    return render(request, 'core/task_creation_screen_manager.html', {'form': form, 'project_id': project_id})
+    return render(request, 'core/task_creation_screen.html', {'form': form, 'project_id': project_id})
 
 
 @login_required(login_url='manager_login')

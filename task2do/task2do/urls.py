@@ -41,7 +41,7 @@ urlpatterns = [
     path('view_request_project/<int:request_id>/', views.view_request_project, name='view_request_project'),
     path('request_history/', views.request_history, name='request_history'),
     path('project_history/', views.project_history, name='project_history'),
-    path('task_creation_screen_manager/<int:project_id>/', views.task_creation_screen_manager, name='task_creation_screen_manager'),
+    path('task_creation_screen/<int:project_id>/', views.task_creation_screen, name='task_creation_screen'),
     # user urls for home screen
     path('active_tasks_user/', views.active_tasks_user, name='active_tasks_user'),
     path('upcoming_deadlines/', views.upcoming_deadlines, name='upcoming_deadlines'),
