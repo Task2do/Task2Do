@@ -267,10 +267,10 @@ def view_project(request, project_id):
 
 
 @login_required(login_url='manager_login')
-def specific_project_workers(request, project_id):
+def project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
     workers = project.members.all()
-    return render(request, 'core/specific_project_workers.html', {'project': project, 'workers': workers})
+    return render(request, 'core/project_workers.html', {'project': project, 'workers': workers})
 
 
 @login_required(login_url='manager_login')
@@ -384,16 +384,16 @@ def task_editing_screen_manager(request, task_id):
 
 
 @login_required(login_url='manager_login')
-def edit_specific_project_workers(request, project_id):
+def edit_project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
     if request.method == 'POST':
         form = EditProjectWorkersForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
-            return redirect('specific_project_workers', project_id=project_id)
+            return redirect('project_workers', project_id=project_id)
     else:
         form = EditProjectWorkersForm(instance=project)
-    return render(request, 'core/edit_specific_project_workers.html', {'form': form, 'project': project})
+    return render(request, 'core/edit_project_workers.html', {'form': form, 'project': project})
 
 
 # # Manager's workers
