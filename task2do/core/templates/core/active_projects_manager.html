@@ -20,7 +20,7 @@
                     <p style="color: red;">תאריך סיום הפרוייקט: {{ project.due_date }}</p>
                     <h5 style="color: red;">תאריך סיום הפרוייקט חלף</h5>
                     <button style="font-size: 15px;">
-                        <a href="{% url 'specific_project_manager' project.id %}">פרטי פרויקט</a>
+                        <a href="{% url 'view_projects' project.id %}">פרטי פרויקט</a>
                     </button>
                 </li>
             {% else %}
@@ -29,7 +29,7 @@
                 <p>מספר משימות: {{ project.tasks.count }}</p>
                 <p>מספר עובדים מוקצים: {{ project.members.count }}</p>
                 <button style="font-size: 15px;">
-                    <a href="{% url 'specific_project_manager' project.id %}">פרטי פרויקט</a>
+                    <a href="{% url 'view_projects' project.id %}">פרטי פרויקט</a>
                 </button>
             </li>
             {% endif %}

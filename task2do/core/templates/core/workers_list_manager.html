@@ -17,7 +17,7 @@
                 <h4>שם משתמש עובד</h4>
                 {{ worker.personal_data.user.username}}
                 <br>
-                <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details_manager' worker.id %}'" style="font-size: 15px;">בחר עובד</button>
+                <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details' worker.id %}'" style="font-size: 15px;">בחר עובד</button>
             </li>
             </div>
         {% endfor %}

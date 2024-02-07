@@ -7,7 +7,7 @@
 <body>
     <h1>עריכת פרויקט</h1>
 
-    <form method="post" action="{% url 'change_project_manager' project.id %}">
+    <form method="post" action="{% url 'edit_project' project.id %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="שנה פרויקט">

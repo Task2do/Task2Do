@@ -18,7 +18,7 @@
     </div>
     {% endfor %}
 
-    <button style="font-size: 15px;" onclick="location.href='{% url 'specific_project_manager' project.id %}'">חזור</button>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'edit_specific_project_workers' project.id %}'">ערוך</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'view_project' project.id %}'">חזור</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'edit_project_workers' project.id %}'">ערוך</button>
 </body>
 </html>

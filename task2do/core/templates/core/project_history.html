@@ -14,7 +14,7 @@
                 <p>Number of Tasks: {{ project_data.num_tasks }}</p>
                 <p>Number of Workers: {{ project_data.num_workers }}</p>
                 <button style="font-size: 15px;">
-                    <a href="{% url 'specific_project_manager' project_data.project.id %}">Project Details</a>
+                    <a href="{% url 'view_project' project_data.project.id %}">Project Details</a>
                 </button>
             </li>
         {% endfor %}

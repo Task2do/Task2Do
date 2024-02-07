@@ -15,22 +15,22 @@
     <button id="project_tasks" style="font-size: 30px;">משימות הפרוייקט</button>
     <br>
     <br>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'specific_project_workers' project.id %}'">ראה עובדים</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_workers' project.id %}'">ראה עובדים</button>
     <button id="changeProject" style="font-size: 15px;">ערוך פרויקט</button>
 
     <script>
         document.getElementById("changeProject").addEventListener("click", function() {
-            location.href = "{% url 'change_project_manager' project.id %}";
+            location.href = "{% url 'edit_project' project.id %}";
         });
     </script>
 
     <script>
         document.getElementById("project_tasks").addEventListener("click", function() {
-            location.href = "{% url 'tasks_specific_project_manager' project.id %}";
+            location.href = "{% url 'project_tasks' project.id %}";
         });
     </script>
     <br>
     <button style="font-size: 15px;" onclick="location.href='{% url 'active_projects_manager' %}'">לכל הפרוייקטים הפעילים</button>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'project_history_manager' %}'">לכל הפרוייקטים הלא פעילים</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_history' %}'">לכל הפרוייקטים הלא פעילים</button>
 </body>
 </html>

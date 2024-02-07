@@ -14,7 +14,7 @@
                 <p>פרוייקט: {{ task.project.name }}</p>
                 <p>דד ליין: {{ task.due_date }}</p>
                 <button style="font-size: 15px;">
-                    <a href="{% url 'specific_task_display_user' task.id %}">Enter Task</a>
+                    <a href="{% url 'task_display_user' task.id %}">Enter Task</a>
                 </button>
             </li>
         {% endfor %}

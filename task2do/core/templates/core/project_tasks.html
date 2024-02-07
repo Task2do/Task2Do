@@ -21,7 +21,7 @@
             <p>עובד על המשימה: {{ task.assigned_to.personal_data.user.username }} - {{ task.assigned_to.personal_data.user.first_name }} {{ task.assigned_to.personal_data.user.last_name }}</p>
             <p>סטטוס המשימה: {{ task.status }}</p>
             <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
-            <button onclick="window.location.href='{% url 'specific_task_manager' task.id %}'">צפה במשימה</button>
+            <button onclick="window.location.href='{% url 'task_display_manager' task.id %}'">צפה במשימה</button>
         </div>
     {% endfor %}
     {% for task in active_tasks_past_deadline %}
@@ -31,7 +31,7 @@
             <p>עובד על המשימה: {{ task.assigned_to.personal_data.user.username }} - {{ task.assigned_to.personal_data.user.first_name }} {{ task.assigned_to.personal_data.user.last_name }}</p>
             <p>סטטוס המשימה: {{ task.status }}</p>
             <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
-            <button onclick="window.location.href='{% url 'specific_task_manager' task.id %}'">צפה במשימה</button>
+            <button onclick="window.location.href='{% url 'task_display_manager' task.id %}'">צפה במשימה</button>
         </div>
     {% endfor %}
     <h4>משימות לא פעילות</h4>
@@ -42,7 +42,7 @@
             <p>עובד על המשימה: {{ task.assigned_to.personal_data.user.username }} - {{ task.assigned_to.personal_data.user.first_name }} {{ task.assigned_to.personal_data.user.last_name }}</p>
             <p>סטטוס המשימה: {{ task.status }}</p>
             <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
-            <button onclick="window.location.href='{% url 'specific_task_manager' task.id %}'">צפה במשימה</button>
+            <button onclick="window.location.href='{% url 'task_display_manager' task.id %}'">צפה במשימה</button>
         </div>
     {% endfor %}
     {% for task in inactive_tasks_past_deadline %}
@@ -52,11 +52,11 @@
             <p>עובד על המשימה: {{ task.assigned_to.personal_data.user.username }} - {{ task.assigned_to.personal_data.user.first_name }} {{ task.assigned_to.personal_data.user.last_name }}</p>
             <p>סטטוס המשימה: {{ task.status }}</p>
             <button onclick="window.location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
-            <button onclick="window.location.href='{% url 'specific_task_manager' task.id %}'">צפה במשימה</button>
+            <button onclick="window.location.href='{% url 'task_display_manager' task.id %}'">צפה במשימה</button>
         </div>
     {% endfor %}
 
     <button style="font-size: 15px;" onclick="location.href='{% url 'task_creation_screen_manager' project.id %}'">צור משימה חדשה</button>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'specific_project_manager' project.id %}'">חזור לפרויקט</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'task_display_manager' project.id %}'">חזור לפרויקט</button>
 </body>
 </html>

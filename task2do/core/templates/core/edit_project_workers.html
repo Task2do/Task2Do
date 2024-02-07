@@ -6,11 +6,11 @@
 </head>
 <body>
     <h1>עריכת עובדים בפרויקט - {{ project.name }}</h1>
-    <form method="post" action="{% url 'edit_specific_project_workers' project.id %}">
+    <form method="post" action="{% url 'edit_project_workers' project.id %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="שמור שינויים">
     </form>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'specific_project_workers' project.id %}'">חזור</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'project_workers' project.id %}'">חזור</button>
 </body>
 </html>
