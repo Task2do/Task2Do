@@ -103,25 +103,103 @@ def logout_view(request):
 
 
 # requests
-# TODO like requests_page get to the page all the non active requests in a requests_to_me and requests_from_me
+from django.shortcuts import render
+from .models import Request
+
+@login_required(login_url='manager_login' or 'user_login')
 def request_history(request):
-    # Your view logic here
-    return render(request, 'core/request_history.html')
+    # Get the PersonalData instance for the current user
+    personal_data = request.user.personal_data
+
+    # Filter requests where the last sender is the current user's PersonalData
+    requests_from_me = Request.objects.filter(last_sender=personal_data, is_active=False)
+
+    # Filter requests where the last receiver is the current user's PersonalData
+    requests_to_me = Request.objects.filter(last_receiver=personal_data, is_active=False)
+    # Pass the requests to the template
+    context = {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me}
+    return render(request, 'core/request_history.html', context)
 
 
-# TODO: page needs request_to_view
 # needs to accept the form to add content to request or close it
-def specific_request_view(request, request_id):
-    # Your view logic here
-    return render(request, 'core/specific_request_view.html', {'request_id': request_id})
+from .forms import NewProjectRequestForm
+from .models import Request, RequestContentHistory
 
+@login_required(login_url='manager_login' or 'user_login')
+def new_project_request(request):
+    if request.method == 'POST':
+        form = NewProjectRequestForm(request.POST, user=request.user)
+        if form.is_valid():
+            project = form.cleaned_data.get('project')
+            title = form.cleaned_data.get('title')
+            description = form.cleaned_data.get('description')
+            request_type = form.cleaned_data.get('request_type')
+
+            new_request = Request.objects.create(
+                type=request_type,
+                last_sender=request.user.personal_data,
+                last_receiver=project.lead.personal_data,
+                header=title,
+                is_active=True,
+            )
+
+            RequestContentHistory.objects.create(
+                request=new_request,
+                content=description
+            )
+
+            return redirect('requests_page')
+    else:
+        form = NewProjectRequestForm(user=request.user)
+    return render(request, 'core/new_project_request.html', {'form': form})
 
 # TODO add the request_to_view and user_id to the request
 # change the data for forms(if accepted then associate with the reciever)
-def view_request_association(request):
-    # Your view logic here
-    return render(request, 'core/view_request_association.html')
+from django.shortcuts import get_object_or_404, render
+from .models import Request, RequestContentHistory, Worker, Manager
+@login_required(login_url='manager_login' or 'user_login')
+def view_request_association(request, request_id):
+    request_to_view = get_object_or_404(Request, id=request_id)
 
+    if request.method == 'POST':
+        if 'accept' in request.POST:
+            # Check if a Worker object with the personal_data attribute set to request_to_view.last_sender exists
+            if Worker.objects.filter(personal_data_id=request_to_view.last_sender.id).exists():
+                worker = Worker.objects.get(personal_data_id=request_to_view.last_sender.id)
+                manager = Manager.objects.get(personal_data_id=request_to_view.last_receiver.id)
+                worker.managers.add(manager)
+                worker.save()
+
+                # Set the request to inactive
+                request_to_view.is_active = False
+                request_to_view.save()
+                render(request, 'core/requests_page.html')
+
+            elif Manager.objects.filter(personal_data_id=request_to_view.last_sender.id).exists():
+                manager = Manager.objects.get(personal_data_id=request_to_view.last_sender.id)
+                worker = Worker.objects.get(personal_data_id=request_to_view.last_receiver.id)
+                worker.managers.add(manager)
+                worker.save()
+
+                request_to_view.is_active = False
+                request_to_view.save()
+                render(request, 'core/requests_page.html')
+
+            else:
+                return HttpResponse("Worker with the given personal data does not exist.")
+
+        elif 'reject' in request.POST:
+            # If the reject button was pressed, just set the request to inactive
+            request_to_view.is_active = False
+            request_to_view.save()
+            render(request, 'core/requests_page.html')
+
+    # Get the user_id from the request.user object
+    user_id = request.user.id
+
+    # Pass the Request object and user_id to the template
+    context = {'request_to_view': request_to_view, 'user_id': user_id}
+    return render(request, 'core/view_request_association.html', context)
 
 # MANAGER views
 def manager_login(request):
@@ -131,7 +209,6 @@ def manager_login(request):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            print(user)
             login(request, user)
             return redirect('manager_home_screen')
         else:
@@ -191,33 +268,32 @@ def specific_project_workers(request, project_id):
 def active_projects_manager(request):
     user_id = request.user.personal_data.id
     active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id))
-    context = {'active_projects': active_projects}
+    context = {'active_projects': active_projects, 'now': timezone.now()}
     return render(request, 'core/active_projects_manager.html', context)
 
 
 @login_required(login_url='manager_login')
 def create_new_project(request):
     if request.method == 'POST':
-        form = CreateProjectForm(request.POST)
+        form = CreateProjectForm(request.POST, manager_id=request.user.personal_data.id)
         if form.is_valid():
             project = form.save(commit=False)
             project.lead = Manager.objects.get(personal_data__user=request.user)
-            # TODO: add a field for the project's due date
+            project.due_date = form.cleaned_data['due_date']
             project.save()
             project.members.set(form.cleaned_data['members'])  # Use set() method here
             project.save()
 
             return redirect('specific_project_manager', project_id=project.id)
     else:
-        form = CreateProjectForm()
+        form = CreateProjectForm(manager_id=request.user.personal_data.id)
     return render(request, 'core/create_new_project.html', {'form': form})
 
 
 @login_required(login_url='manager_login')
 def project_history_manager(request):
     manager = Manager.objects.get(personal_data__user=request.user)
-    #TODO: Add due_date__lt=timezone.now() to the filter
-    projects = manager.lead_projects.all()
+    projects = manager.lead_projects.all().filter(is_active=False, due_date__lt=timezone.now())
     projects_data = []
     for project in projects:
         num_tasks = project.tasks.count()
@@ -235,12 +311,13 @@ def project_history_manager(request):
 def tasks_specific_project_manager(request, project_id):
     project = Project.objects.get(id=project_id)
     all_tasks = project.tasks.all()
-    now = timezone.now()
+    now = timezone.now().date()
 
     active_tasks = [task for task in all_tasks if task.is_active and task.due_date >= now]
     inactive_tasks = [task for task in all_tasks if not task.is_active and task.due_date >= now]
     active_tasks_past_deadline = [task for task in all_tasks if task.is_active and task.due_date < now]
     inactive_tasks_past_deadline = [task for task in all_tasks if not task.is_active and task.due_date < now]
+
 
     context = {
         'project': project,
@@ -255,7 +332,8 @@ def tasks_specific_project_manager(request, project_id):
 
 def specific_task_manager(request, task_id):
     task = Task.objects.get(id=task_id)
-    return render(request, 'core/specific_task_manager.html', {'task': task})
+    project = task.project_tasks.all().first()
+    return render(request, 'core/specific_task_manager.html', {'task': task, 'project_id': project.id})
 
 
 @login_required(login_url='manager_login')
@@ -264,9 +342,13 @@ def task_creation_screen_manager(request, project_id):
         form = TaskCreationForm(request.POST, project_id=project_id)
         if form.is_valid():
             task = form.save(commit=False)
-            task.project = Project.objects.get(id=project_id)
-
+            project = Project.objects.get(id=project_id)
+            task.assigned_to = form.cleaned_data['assigned_to']
+            task.due_date = form.cleaned_data['due_date']
+            task.status = 'NOT STARTED'
             task.save() #TODO: Almog, there is a problem here with saving to the db
+            project.tasks.add(task)
+            project.save()
             return redirect('tasks_specific_project_manager', project_id=project_id)
     else:
         form = TaskCreationForm(project_id=project_id)
@@ -280,13 +362,16 @@ def task_editing_screen_manager(request, task_id):
         form = ManagerTaskEditForm(request.POST, instance=task)
         if 'save_changes' in request.POST:
             if form.is_valid():
-                # form.save() TODO: Almog, please check if this is the correct way to save the form
+                updated_task = form.save(commit=False)
+                if updated_task.status == 'COMPLETED':
+                    updated_task.is_active = False
+                updated_task.save() # TODO: Almog, please check if this is the correct way to save the form
                 return redirect('specific_task_manager', task_id=task.id)
         elif 'discard_changes' in request.POST:
             return redirect('specific_task_manager', task_id=task.id)
     else:
         form = ManagerTaskEditForm(instance=task)
-    return render(request, 'core/task_editing_screen_manager.html', {'form': form})
+    return render(request, 'core/task_editing_screen_manager.html', {'form': form, 'task_id': task_id})
 
 @login_required(login_url='manager_login')
 def edit_specific_project_workers(request, project_id):
@@ -330,21 +415,64 @@ def change_project_manager(request, project_id):
 # # Manager's requests
 @login_required
 def requests_page(request):
+    try:
+        manager = Manager.objects.get(id=request.user.personal_data.id)
+        user_type = 'manager'
+    except Manager.DoesNotExist:
+        user_type = 'worker'
     # Get the PersonalData instance for the current user
     personal_data = request.user.personal_data
 
     # Filter requests where the last sender is the current user's PersonalData
-    requests_from_me = Request.objects.filter(last_sender=personal_data)
+    requests_from_me = Request.objects.filter(last_sender=personal_data, is_active=True)
 
     # Filter requests where the last receiver is the current user's PersonalData
-    requests_to_me = Request.objects.filter(last_receiver=personal_data)
-
-    user_type = 'manager' if isinstance(request.user, Manager) else 'worker'
+    requests_to_me = Request.objects.filter(last_receiver=personal_data, is_active=True)
     return render(request, 'core/requests_page.html',
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me, 'user_type': user_type})
 
+
+def new_association_request(request):
+    if request.method == 'POST':
+        form = NewAssociationRequestForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            user = User.objects.filter(username=username).first()
+            if user:
+                new_request = Request.objects.create(
+                    type='ASOC',
+                    last_sender=request.user.personal_data,
+                    last_receiver=user.personal_data,
+                    header='Association Request',
+                    is_active=True,
+                )
+                new_content = RequestContentHistory.objects.create(
+                    request=new_request,
+                    content="This is a new association request."
+                )
+                return redirect('requests_page')
+            else:
+                form.add_error('username', 'This username does not exist.')
+    else:
+        form = NewAssociationRequestForm()
+    return render(request, 'core/new_association_request.html', {'form': form, 'messages': messages})
+
 def new_request_submission(request):
-    pass
+    user_type = 'manager' if isinstance(request.user, Manager) else 'worker'
+    if request.method == 'POST':
+        form = NewRequestForm(request.POST, user_type=user_type)
+        if form.is_valid():
+            # Extract form data
+            type = form.cleaned_data.get('type')
+
+            # Redirect based on the request type
+            if type == 'association':
+                return redirect('new_association_request')
+            elif type == 'project':
+                return redirect('new_project_request')
+    else:
+        form = NewRequestForm(user_type=user_type)
+    return render(request, 'core/new_request_submission.html', {'form': form})
 
 
 # USER views

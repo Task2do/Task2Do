@@ -8,8 +8,14 @@
     <button id="new request" style="font-size: 30px;">צור בקשה חדשה</button>
 
     <script>
-    document.getElementById("new request").addEventListener("click", function() {
-        location.href = "{% url 'new_request_submission' %}";
+        var user_type = "{{ user_type }}";
+        document.getElementById("new request").addEventListener("click", function() {
+            if (user_type === 'manager') {
+                location.href = "{% url 'new_association_request' %}";
+            }
+            else {
+                location.href = "{% url 'new_request_submission' %}";
+            }
     });
     </script>
     <button id="request_history" style="font-size: 30px;">היסטוריית בקשות</button>
@@ -25,19 +31,19 @@
         {% for request in requests_to_me%}
             <p>{{ request.header }} - {{ request.type }}</p>
             <button id="goto_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-        {% if request.type != "JOIN" %}
-            <script>
-                document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'specific_request_view' request.id %}";
-                });
-            </script>
-        {% else %}
-            <script>
-                document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'view_request_association' request.id %}";
-                });
-            </script>
-        {% endif %}
+            {% if request.type != "ASOC" %}
+                <script>
+                    document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                        location.href = "{% url 'specific_request_view' request.id %}";
+                    });
+                </script>
+            {% else %}
+                <script>
+                    document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                        location.href = "{% url 'view_request_association' request.id %}";
+                    });
+                </script>
+            {% endif %}
         {% endfor %}
     </ul>
     <h1>בקשות שלי</h1>
@@ -47,27 +53,33 @@
                     {{ request.header }} - {{ request.type }}
             </p>
             <button id="goto_my_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-        {% if request.type == "JOIN" %}
-        <script>
-            document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                location.href = "{% url 'specific_request_view' request.id %}";
-            });
-        </script>
-        {% else %}
-        <script>
-            document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                location.href = "{% url 'view_request_association' request.id %}";
-            });
-        </script>
-        {% endif %}
+            {% if request.type == "ASOC" %}
+            <script>
+                document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
+                    location.href = "{% url 'view_request_association' request.id %}";
+                });
+            </script>
+            {% else %}
+            <script>
+                document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
+                    location.href = "{% url 'specific_request_view' request.id %}";
+                });
+            </script>
+            {% endif %}
         {% endfor %}
     </ul>
 
-    <button id="backToPrev" style="font-size: 15px;">חזור לבקשות</button>
+    <button id="backToHome" style="font-size: 15px;">חזור לדף הבית</button>
     <script>
-        document.getElementById("backToPrev").addEventListener("click", function() {
-            window.history.back();
-        });
+        var user_type = "{{ user_type }}";
+        document.getElementById("backToHome").addEventListener("click", function() {
+            if (user_type === 'manager') {
+                location.href = "{% url 'manager_home_screen' %}";
+            }
+            else {
+                location.href = "{% url 'user_home_screen' %}";
+            }
+    });
     </script>
 </body>
 </html>

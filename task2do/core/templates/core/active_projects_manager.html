@@ -12,14 +12,27 @@
 
     <ul>
         {% for project in active_projects %}
+            {% if project.deadline|date:"Y-m-d" < now|date:"Y-m-d" %}
+                <li style="border: 1px solid red; margin: 10px; padding: 10px;">
+                    <h2 style="color: red;">{{ project.name }}</h2>
+                    <p style="color: red;">מספר משימות: {{ project.tasks.count }}</p>
+                    <p style="color: red;">מספר עובדים מוקצים: {{ project.members.count }}</p>
+                    <p style="color: red;">תאריך סיום הפרוייקט: {{ project.due_date }}</p>
+                    <h5 style="color: red;">תאריך סיום הפרוייקט חלף</h5>
+                    <button style="font-size: 15px;">
+                        <a href="{% url 'specific_project_manager' project.id %}">פרטי פרויקט</a>
+                    </button>
+                </li>
+            {% else %}
             <li style="border: 1px solid black; margin: 10px; padding: 10px;">
                 <h2>{{ project.name }}</h2>
                 <p>מספר משימות: {{ project.tasks.count }}</p>
                 <p>מספר עובדים מוקצים: {{ project.members.count }}</p>
                 <button style="font-size: 15px;">
-                    <a href="{% url 'specific_project_manager' project.id %}">פרטי פרוייקט</a>
+                    <a href="{% url 'specific_project_manager' project.id %}">פרטי פרויקט</a>
                 </button>
             </li>
+            {% endif %}
         {% endfor %}
     </ul>
 

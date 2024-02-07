@@ -85,18 +85,27 @@ class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
 
 
+
+class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, worker):
+        return f"{worker.personal_data.user.first_name} {worker.personal_data.user.last_name} - {worker.personal_data.user.username}"
+
 class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'description', 'members']
+        fields = ['name', 'description', 'members', 'due_date']
         widgets = {
-            'members': Select2MultipleWidget
+            'members': Select2MultipleWidget,
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
-        manager = kwargs.pop('manager')
+        manager_id = kwargs.pop('manager_id')
         super(CreateProjectForm, self).__init__(*args, **kwargs)
-        self.fields['members'].queryset = Worker.objects.filter(managers=manager)
+        self.fields['members'] = WorkerMultipleChoiceField(
+            queryset=Worker.objects.filter(managers__id=manager_id),
+            widget=Select2MultipleWidget
+        )
 
 
 
@@ -142,12 +151,15 @@ SubtaskFormSet = forms.formset_factory(SubtaskForm, extra=1)
 class ProjectChangeForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'description', 'is_active']
-        # todo: add due date
+        fields = ['name', 'description', 'is_active', 'due_date']
 
 
 from django import forms
 from .models import Task, Worker
+
+class WorkerChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, worker):
+        return f"{worker.personal_data.user.first_name} {worker.personal_data.user.last_name} - {worker.personal_data.user.username}"
 
 class TaskCreationForm(forms.ModelForm):
     class Meta:
@@ -160,7 +172,7 @@ class TaskCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         project_id = kwargs.pop('project_id')
         super(TaskCreationForm, self).__init__(*args, **kwargs)
-        self.fields['assigned_to'].queryset = Worker.objects.filter(projects__id=project_id)
+        self.fields['assigned_to'] = WorkerChoiceField(queryset=Worker.objects.filter(projects__id=project_id))
 
 
 class WorkerMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -211,3 +223,21 @@ class NewProjectRequestForm(forms.ModelForm):
         model = Project
         fields = ['name', 'description']
 
+
+from django import forms
+from .models import Project, REQUEST_TYPE
+
+class ProjectChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, project):
+        return project.name
+
+class NewProjectRequestForm(forms.Form):
+    project = ProjectChoiceField(queryset=Project.objects.none())
+    title = forms.CharField(max_length=100)
+    description = forms.CharField(widget=forms.Textarea)
+    request_type = forms.ChoiceField(choices=([(REQUEST, request) for (REQUEST, request) in REQUEST_TYPE if REQUEST != 'ASOC']))
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(NewProjectRequestForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.filter(members__personal_data__user=user)

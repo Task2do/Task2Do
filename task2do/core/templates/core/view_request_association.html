@@ -2,30 +2,22 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי משימה</title>
+    <title>פרטי בקשה</title>
 </head>
 <body>
-    
+
     <h1>{{ request_to_view.header}}</h1>
 
-    <h2>היסטוריית הבקשה</h2>
-    {% for message in request_to_view.contents%}
-    <p>:תגובה</p>
-    <p>{{ message.content }} </p>
-    <p>at {{message.updated_at}}</p>
-    {% endfor %}
-    {% if request_to_view.is_active and user_id==request_to_view.last_reciever %}
-    <h3>הגב לבקשה</h3>
+    <h3>פרטי הבקשה</h3>
+    <p>שולח הבקשה: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
+    <p>תאריך הבקשה: {{ request_to_view.contents.updated_at }}</p>
 
-
+    {% if request_to_view.is_active and user_id != request_to_view.last_sender.id %}
+    <h3>Accept or Reject Request</h3>
         <form method="post" >
             {% csrf_token %}
-            <label for="new_content">תוכן:</label>
-            <input type="text" id="new_description" name="new_description">
-            <br>
-            <input type="checkbox" id="accept" name="accept">
-            <br>
-            <input type="submit" value="הגב">
+            <input type="submit" name="accept" value="קבל">
+            <input type="submit" name="reject" value="דחה">
         </form>
     {% endif %}
     <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">חזור לרשימת הבקשות</button>

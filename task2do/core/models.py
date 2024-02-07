@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 # global variables
 # the type of the request
 REQUEST_TYPE = [
-    ('JOIN', 'join'),  # when joining a project
+    ('ASOC', 'Asociation'),  # request for association
     ('LEAVE', 'leave'),  # when leaving a project
     ('CREATE', 'create'),  # when creating a task
     ('UPDATE', 'update'),  # when updating a task

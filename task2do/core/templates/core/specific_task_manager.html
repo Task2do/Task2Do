@@ -19,6 +19,6 @@
     {% endif %}
 
     <button style="font-size: 15px;" onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'project_tasks' project.id %}'">חזור לרשימת המשימות</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'tasks_specific_project_manager' project_id %}'">חזור לרשימת המשימות</button>
 </body>
 </html>
