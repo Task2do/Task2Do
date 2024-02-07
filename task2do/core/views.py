@@ -493,15 +493,15 @@ from django.shortcuts import get_object_or_404, render
 
 
 @login_required
-def specific_request_view(request, request_id):
+def view_request_project(request, request_id):
     # Get the Request object with the given request_id
     request_obj = get_object_or_404(Request, id=request_id)
 
     # Pass the Request object to the template
     context = {'request_to_view': request_obj}
 
-    # Render the 'specific_request_view.html' template with the context
-    return render(request, 'core/specific_request_view.html', context)
+    # Render the 'view_request_project.html' template with the context
+    return render(request, 'core/view_request_project.html', context)
 
 
 # USER views
