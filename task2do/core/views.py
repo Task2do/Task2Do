@@ -570,11 +570,11 @@ def user_home_screen(request):
 
 # # User's tasks
 @login_required(login_url='user_login')
-def task_history_user(request):
+def task_history(request):
     worker_id = request.user.personal_data.id
     tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assigned_to=worker_id).order_by(
         '-due_date')
-    return render(request, 'core/task_history_user.html', {'history_tasks': tasks})
+    return render(request, 'core/task_history.html', {'history_tasks': tasks})
 
 
 @login_required(login_url='user_login')
