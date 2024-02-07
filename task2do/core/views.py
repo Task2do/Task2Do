@@ -317,7 +317,7 @@ def project_history_manager(request):
 
 # # Manager's tasks
 @login_required(login_url='manager_login')
-def tasks_specific_project_manager(request, project_id):
+def project_tasks(request, project_id):
     project = Project.objects.get(id=project_id)
     all_tasks = project.tasks.all()
     now = timezone.now().date()
@@ -335,7 +335,7 @@ def tasks_specific_project_manager(request, project_id):
         'inactive_tasks_past_deadline': inactive_tasks_past_deadline,
     }
 
-    return render(request, 'core/tasks_specific_project_manager.html', context)
+    return render(request, 'core/project_tasks.html', context)
 
 
 @login_required(login_url='manager_login')
@@ -358,7 +358,7 @@ def task_creation_screen_manager(request, project_id):
             task.save()  # TODO: Almog, there is a problem here with saving to the db
             project.tasks.add(task)
             project.save()
-            return redirect('tasks_specific_project_manager', project_id=project_id)
+            return redirect('project_tasks', project_id=project_id)
     else:
         form = TaskCreationForm(project_id=project_id)
     return render(request, 'core/task_creation_screen_manager.html', {'form': form, 'project_id': project_id})
