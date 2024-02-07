@@ -274,11 +274,11 @@ def project_workers(request, project_id):
 
 
 @login_required(login_url='manager_login')
-def active_projects_manager(request):
+def active_projects(request):
     user_id = request.user.personal_data.id
     active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id))
     context = {'active_projects': active_projects, 'now': timezone.now()}
-    return render(request, 'core/active_projects_manager.html', context)
+    return render(request, 'core/active_projects.html', context)
 
 
 @login_required(login_url='manager_login')

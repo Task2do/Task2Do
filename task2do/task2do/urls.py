@@ -34,7 +34,7 @@ urlpatterns = [
     # manager urls for home screen
     path('manager_home_screen/', views.manager_home_screen, name='manager_home_screen'),
     path('user_home_screen/', views.user_home_screen, name='user_home_screen'),
-    path('active_projects_manager/', views.active_projects_manager, name='active_projects_manager'),
+    path('active_projects/', views.active_projects, name='active_projects'),
     # path('view_project/<int:project_id>/', views.view_project, name='view_project'),
     path('workers_list_manager/<int:manager_id>/', views.workers_list_manager, name='workers_list_manager'),
     path('logout/', views.logout_view, name='logout'),
@@ -54,7 +54,6 @@ urlpatterns = [
     path('view_request_association/<int:request_id>/', views.view_request_association, name='view_request_association'),
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
     path('create_new_project/', views.create_new_project, name='create_new_project'),
-    path('active_projects_manager/', views.active_projects_manager, name='active_projects_manager'),
     path('view_project/<int:project_id>/', views.view_project, name='view_project'),
     path('project_tasks/<int:project_id>/', views.project_tasks, name='project_tasks'),
     path('task_display_manager/<int:task_id>/', views.task_display_manager, name='task_display_manager'),
