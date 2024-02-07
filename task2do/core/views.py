@@ -578,11 +578,11 @@ def task_history(request):
 
 
 @login_required(login_url='user_login')
-def active_tasks_user(request):
+def active_tasks(request):
     """
     This view function retrieves all active tasks assigned to the currently logged-in user.
     An active task is defined as a task that is not canceled and is marked as active.
-    The tasks are then passed to the 'core/active_tasks_user.html' template to be displayed.
+    The tasks are then passed to the 'core/active_tasks.html' template to be displayed.
 
     Args:
         request (HttpRequest): The request object.
@@ -595,7 +595,7 @@ def active_tasks_user(request):
     active_tasks = Task.objects.filter(  # TODO: Almog
         ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
     context = {'active_tasks': active_tasks}
-    return render(request, 'core/active_tasks_user.html', context)
+    return render(request, 'core/active_tasks.html', context)
 
 
 @login_required(login_url='user_login')
