@@ -2,26 +2,64 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>התחברות משתמש</title>
+    <title>user login</title>
+    <style>
+        /* Center the login form horizontally */
+        .centered-form {
+            position: absolute;
+            top: 20%; /* Adjust the percentage to move it higher or lower */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Define button styles */
+        .custom-button {
+            color: blue; /* Text color */
+            font-size: 16px; /* Font size */
+            border: 2px solid lightblue; /* Outline color */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 5px; /* Margin */
+            background-color: transparent; /* Transparent background */
+            cursor: pointer; /* Change cursor on hover */
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: blue; /* Change background color on hover */
+            color: white; /* Change text color on hover */
+        }
+
+        /* Define smaller button styles */
+        .small-button {
+            font-size: 12px; /* Smaller font size */
+            padding: 5px 10px; /* Smaller padding */
+        }
+    </style>
 </head>
 <body>
-    <h2>התחברות משתמש</h2>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="username">שם משתמש:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">סיסמא:</label><br>
-        <input type="password" id="password" name="password"><br>
-        <input type="submit" value="התחבר">
-        <input type="button" value="חזור" onclick="window.history.back()">
-        <button type="button" onclick="location.href='{% url 'user_forgot_password' %}'">שכחתי סיסמא</button> <!-- Forgot Password in Hebrew -->
-    </form>
+    <div class="centered-form">
+        <h2>user login</h2>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">password:</label><br>
+            <input type="password" id="password" name="password"><br>
+            <!-- Update the color of the "login" button here -->
+            <input type="submit" value="login" class="custom-button" style="color: black;">
+            <!-- Make the "back" button smaller and change its color -->
+            <input type="button" value="back" onclick="window.history.back()" class="custom-button small-button" style="color: black;">
+            <!-- Make the "forgot password" button smaller and change its color -->
+            <button type="button" onclick="location.href='{% url 'user_forgot_password' %}'" class="custom-button small-button" style="color: black;">forgot password</button> <!-- Forgot Password in Hebrew -->
+        </form>
+    </div>
 </body>
 </html>
