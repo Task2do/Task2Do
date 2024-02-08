@@ -34,7 +34,7 @@
             {% if request.type != "ASOC" %}
                 <script>
                     document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                        location.href = "{% url 'specific_request_view' request.id %}";
+                        location.href = "{% url 'view_request_project' request.id %}";
                     });
                 </script>
             {% else %}

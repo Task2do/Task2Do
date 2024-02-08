@@ -24,7 +24,7 @@ urlpatterns = [
     path('', views.open_screen, name='open_screen'),
 
     #signup
-    path('signup/', views.signup_view, name='signup'),
+    path('sign_up/', views.signup_view, name='signup'),
     path('signup_success/', views.signup_success, name='signup_success'),
     # login
     path('user_login/', views.user_login, name='user_login'),
