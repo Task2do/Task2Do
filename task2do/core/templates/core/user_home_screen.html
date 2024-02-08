@@ -1,19 +1,46 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>מסך הבית של המשתמש</title> <!-- User Home Screen in Hebrew -->
+    <title>User Home Screen</title>
+    <style>
+        /* Define button styles */
+        .custom-button {
+            color: white; /* Text color */
+            font-size: 20px; /* Font size for smaller buttons */
+            border: 2px solid darkblue; /* Blue outline color */
+            border-radius: 25px; /* Rounded corners for smaller buttons */
+            padding: 10px 20px; /* Padding for smaller buttons */
+            margin: 5px; /* Margin */
+            background-color: cornflowerblue; /* Blue background for smaller buttons */
+            cursor: pointer; /* Change cursor on hover */
+        }
+
+        /* Define larger button styles */
+        .large-button {
+            font-size: 20px; /* Font size for larger buttons */
+            border-radius: 50px; /* Larger rounded corners */
+            padding: 20px 40px; /* Larger padding */
+            background-color: cornflowerblue; /* Blue background for larger buttons */
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: cornflowerblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker outline on hover */
+        }
+    </style>
 </head>
 <body>
     <div style="text-align: center;">
-        <button style="font-size: 30px;" onclick="location.href='{% url 'active_tasks' %}'">משימות פעילות</button> <!-- Active Tasks in Hebrew -->
-        <button style="font-size: 30px;" onclick="location.href='{% url 'upcoming_deadlines' %}'">מועדי סיום קרובים</button> <!-- Close Deadlines in Hebrew -->
+        <button class="custom-button large-button" onclick="location.href='{% url 'active_tasks' %}'">Active Tasks</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'upcoming_deadlines' %}'">Upcoming Deadlines</button>
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'requests_page' %}'">בקשות</button> <!-- Requests in Hebrew -->
+        <button class="custom-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'task_history' %}'">היסטוריית משימות</button> <!-- Tasks History in Hebrew -->
+        <button class="custom-button" onclick="location.href='{% url 'task_history' %}'">Tasks History</button>
         <br>
-        <button style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">התנתק</button> <!-- Sign Out in Hebrew -->
+        <button class="custom-button" style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
     </div>
 </body>
 </html>

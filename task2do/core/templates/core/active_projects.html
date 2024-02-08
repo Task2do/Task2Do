@@ -1,42 +1,60 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>פרויקטים פעילים</title>
+    <title>Active Projects</title>
+    <style>
+        /* Define button styles */
+        .custom-button {
+            color: white; /* Text color */
+            font-size: 15px; /* Font size */
+            border: none; /* No border */
+            border-radius: 0; /* Square corners */
+            padding: 10px 20px; /* Padding */
+            margin: 5px; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+        }
+    </style>
 </head>
 <body>
-    <button style="font-size: 15px; margin-bottom: 20px;">
-        <a href="{% url 'create_new_project' %}">צור פרוייקט חדש</a>
+    <button class="custom-button" style="margin-bottom: 20px;">
+        <a href="{% url 'create_new_project' %}">Create New Project</a>
     </button>
-    <h1>פרויקטים פעילים</h1>
+    <h1>Active Projects</h1>
 
     <ul>
         {% for project in active_projects %}
             {% if project.deadline|date:"Y-m-d" < now|date:"Y-m-d" %}
                 <li style="border: 1px solid red; margin: 10px; padding: 10px;">
                     <h2 style="color: red;">{{ project.name }}</h2>
-                    <p style="color: red;">מספר משימות: {{ project.tasks.count }}</p>
-                    <p style="color: red;">מספר עובדים מוקצים: {{ project.members.count }}</p>
-                    <p style="color: red;">תאריך סיום הפרוייקט: {{ project.due_date }}</p>
-                    <h5 style="color: red;">תאריך סיום הפרוייקט חלף</h5>
-                    <button style="font-size: 15px;">
-                        <a href="{% url 'view_project' project.id %}">פרטי פרויקט</a>
+                    <p style="color: red;">Number of Tasks: {{ project.tasks.count }}</p>
+                    <p style="color: red;">Number of Assigned Workers: {{ project.members.count }}</p>
+                    <p style="color: red;">Project Due Date: {{ project.due_date }}</p>
+                    <h5 style="color: red;">Project Due Date Passed</h5>
+                    <button class="custom-button">
+                        <a href="{% url 'view_projects' project.id %}">Project Details</a>
                     </button>
                 </li>
             {% else %}
-            <li style="border: 1px solid black; margin: 10px; padding: 10px;">
-                <h2>{{ project.name }}</h2>
-                <p>מספר משימות: {{ project.tasks.count }}</p>
-                <p>מספר עובדים מוקצים: {{ project.members.count }}</p>
-                <button style="font-size: 15px;">
-                    <a href="{% url 'view_projects' project.id %}">פרטי פרויקט</a>
-                </button>
-            </li>
+                <li style="border: 1px solid black; margin: 10px; padding: 10px;">
+                    <h2>{{ project.name }}</h2>
+                    <p>Number of Tasks: {{ project.tasks.count }}</p>
+                    <p>Number of Assigned Workers: {{ project.members.count }}</p>
+                    <button class="custom-button">
+                        <a href="{% url 'view_projects' project.id %}">Project Details</a>
+                    </button>
+                </li>
             {% endif %}
         {% endfor %}
     </ul>
 
-    <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button>
+    <button class="custom-button" id="backToHome">Back to Home Screen</button>
 
     <script>
         document.getElementById("backToHome").addEventListener("click", function() {
