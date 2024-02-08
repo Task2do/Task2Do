@@ -50,7 +50,6 @@ urlpatterns = [
     path('task_display_user/<int:task_id>/', views.task_display_user, name='task_display_user'),
     path('choose_subtasks_num/<int:task_id>/', views.choose_subtasks_num, name='choose_subtasks_num'),
     path('new_request_submission/', views.new_request_submission, name='new_request_submission'),
-    path('subtask_definition_screen_user/', views.subtask_definition_screen_user, name='subtask_definition_screen_user'),
     path('view_request_association/<int:request_id>/', views.view_request_association, name='view_request_association'),
     path('task_editing_screen_user/', views.task_editing_screen_user, name='task_editing_screen_user'),
     path('create_new_project/', views.create_new_project, name='create_new_project'),
@@ -67,5 +66,6 @@ urlpatterns = [
     path('new_association_request/', views.new_association_request, name='new_association_request'),
     path('task_editing_screen_manager/<int:task_id>/', views.task_editing_screen_manager, name='task_editing_screen_manager'),
     path('new_project_request/', views.new_project_request, name='new_project_request'),
+
 ]
 
