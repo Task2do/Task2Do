@@ -1,35 +1,84 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>רשימת עובדים</title> <!-- Workers List in Hebrew -->
+    <title>Workers List</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Define button styles */
+        .chooseWorkerBtn {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 0;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+        }
+
+        /* Define hover effect */
+        .chooseWorkerBtn:hover {
+            background-color: darkblue;
+        }
+
+        /* Adjust the height of the container */
+        body {
+            height: 95vh; /* Adjusted height */
+        }
+
+        /* Adjust the margin for the list items */
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        /* Adjust the border for the list items */
+        .worker-item {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>רשימת עובדים</h1> <!-- Workers List Heading in Hebrew -->
+    <h1>Workers List</h1>
 
     <ul>
         {% for worker in workers %}
-            <div style="border: 1px solid black; margin: 10px; padding: 10px;">
-            <li>
-                <h4>שם עובד</h4>
-                {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
-                <br>
-                <h4>שם משתמש עובד</h4>
-                {{ worker.personal_data.user.username}}
-                <br>
-                <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details' worker.id %}'" style="font-size: 15px;">בחר עובד</button>
-            </li>
+            <div class="worker-item">
+                <li>
+                    <h4>Worker Name</h4>
+                    {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
+                    <br>
+                    <h4>Worker Username</h4>
+                    {{ worker.personal_data.user.username}}
+                    <br>
+                    <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details' worker.id %}'">Choose Worker</button>
+                </li>
             </div>
         {% endfor %}
     </ul>
 
-    <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button> <!-- Back to Home Screen in Hebrew -->
+    <button id="backToHome" class="chooseWorkerBtn">Back to Home Screen</button>
 
     <script>
         document.getElementById("backToHome").addEventListener("click", function() {
             location.href = "{% url 'manager_home_screen' %}";
         });
-
     </script>
 </body>
 </html>
