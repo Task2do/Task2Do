@@ -11,20 +11,20 @@ from django_select2.forms import Select2MultipleWidget
 
 class UserRegistrationForm(forms.ModelForm):
     USER_TYPE_CHOICES = (
-        ('manager', 'מנהל משימה'),
-        ('worker', 'משתמש'),
+        ('manager', 'manager'),
+        ('worker', 'worker'),
     )
 
-    username = forms.CharField(label='שם משתמש')
-    password = forms.CharField(widget=forms.PasswordInput, label='סיסמא')
-    email = forms.EmailField(label='אימייל')
-    first_name = forms.CharField(label='שם פרטי')
-    last_name = forms.CharField(label='שם משפחה')
+    username = forms.CharField(label='username')
+    password = forms.CharField(widget=forms.PasswordInput, label='password')
+    email = forms.EmailField(label='email')
+    first_name = forms.CharField(label='first name')
+    last_name = forms.CharField(label='surname')
     birth_date = forms.DateField(
         widget=forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
-        label='תאריך לידה'
+        label='date of birth'
     )
-    user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES, label='סוג משתמש')
+    user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES, label='user type')
 
     class Meta:
         model = User

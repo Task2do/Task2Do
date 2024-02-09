@@ -2,19 +2,46 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>מסך הבית של המנהל</title>
+    <title>Manager Home Screen</title>
+    <style>
+        /* Define button styles */
+        .custom-button {
+            color: white; /* Text color */
+            font-size: 20px; /* Font size for smaller buttons */
+            border: 2px solid darkblue; /* Blue outline color */
+            border-radius: 25px; /* Rounded corners for smaller buttons */
+            padding: 10px 20px; /* Padding for smaller buttons */
+            margin: 5px; /* Margin */
+            background-color: cornflowerblue; /* Blue background for smaller buttons */
+            cursor: pointer; /* Change cursor on hover */
+        }
+
+        /* Define larger button styles */
+        .large-button {
+            font-size: 20px; /* Font size for larger buttons */
+            border-radius: 50px; /* Larger rounded corners */
+            padding: 20px 40px; /* Larger padding */
+            background-color: cornflowerblue; /* Blue background for larger buttons */
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: cornflowerblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker outline on hover */
+        }
+    </style>
 </head>
 <body>
     <div style="text-align: center;">
-        <button style="font-size: 30px;" onclick="location.href='{% url 'active_projects' %}'">פרויקטים פעילים</button> <!-- Active Projects in Hebrew -->
+        <button class="custom-button large-button" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">העובדים שלי</button> <!-- My Workers in Hebrew -->
+        <button class="custom-button" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My Workers</button>
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'requests_page' %}'">בקשות</button>
+        <button class="custom-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
         <br>
-        <button style="font-size: 20px;" onclick="location.href='{% url 'project_history' %}'">היסטוריית פרויקטים</button>
+        <button class="custom-button" onclick="location.href='{% url 'project_history' %}'">Project History</button>
         <br>
-        <button style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">התנתק</button> <!-- Sign Out in Hebrew -->
+        <button class="custom-button" style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
     </div>
 </body>
 </html>
