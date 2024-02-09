@@ -578,7 +578,7 @@ def active_tasks(request):
     """
     user_id = request.user.personal_data.id
     # print(user_id)
-    active_tasks = Task.objects.filter(  # TODO: Almog
+    active_tasks = Task.objects.filter(  # followup by Almog
         ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
     context = {'active_tasks': active_tasks}
     return render(request, 'core/active_tasks.html', context)
@@ -641,7 +641,7 @@ def create_subtasks(request, task_id, num_subtasks):
                     worker = Worker.objects.get(personal_data__id=request.user.personal_data.id)
                     subtask.assigned_to = worker
 
-                subtask.save()  # TODO: Almog
+                subtask.save()  # followup by Almog
             return redirect('task_display_user', task_id=task.id)
     else:
         formset = SubtaskFormSet()

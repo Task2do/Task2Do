@@ -38,9 +38,10 @@
                     <p style="color: red;">Project Due Date: {{ project.due_date }}</p>
                     <h5 style="color: red;">Project Due Date Passed</h5>
                     <button class="custom-button">
-                        <a href="{% url 'view_projects' project.id %}">Project Details</a>
+                        <a href="{% url 'view_project' project.id %}">Project Details</a>
                     </button>
                 </li>
+
             {% else %}
                 <li style="border: 1px solid black; margin: 10px; padding: 10px;">
                     <h2>{{ project.name }}</h2>
