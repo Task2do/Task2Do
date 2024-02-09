@@ -1,10 +1,9 @@
 from django import forms
 from django.forms import formset_factory
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 
-from .forms import UserRegistrationForm, TaskEditForm
 from django.http import HttpResponse, JsonResponse
 
 from django.core import serializers
@@ -14,6 +13,9 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
 
+# needs to accept the form to add content to request or close it
+from .forms import NewProjectRequestForm
+
 from django.utils.http import urlsafe_base64_encode
 from jwt.utils import force_bytes
 
@@ -21,15 +23,12 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from .forms import ForgotPasswordForm, NewRequestForm, CreateProjectForm, EditProjectWorkersForm, TaskCreationForm, \
     ManagerTaskEditForm, SubtaskDivisionForm, SubtaskForm, ProjectChangeForm, NewAssociationRequestForm, \
-    NewProjectRequestForm
-from .models import Manager, Worker, Project, Task, PersonalData, Request
+    NewProjectRequestForm, TaskEditForm, UserRegistrationForm
+from .models import Manager, Worker, Project, Task, PersonalData, Request, RequestContentHistory
 from django.db.models import Q
 from .backend import ManagerBackend, WorkerBackend
 from django.utils import timezone
 from datetime import date
-
-# import for request
-from django.contrib.contenttypes.models import ContentType
 
 
 # TODO: Add @login_required where needed
@@ -107,11 +106,6 @@ def logout_view(request):
     return redirect('open_screen')  # Redirect to the open screen after logging out
 
 
-# requests
-from django.shortcuts import render
-from .models import Request
-
-
 @login_required(login_url='manager_login' or 'user_login')
 def request_history(request):
     # Get the PersonalData instance for the current user
@@ -125,11 +119,6 @@ def request_history(request):
     # Pass the requests to the template
     context = {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me}
     return render(request, 'core/request_history.html', context)
-
-
-# needs to accept the form to add content to request or close it
-from .forms import NewProjectRequestForm
-from .models import Request, RequestContentHistory
 
 
 @login_required(login_url='manager_login' or 'user_login')
@@ -489,9 +478,6 @@ def new_request_submission(request):
     return render(request, 'core/new_request_submission.html', {'form': form})
 
 
-from django.shortcuts import get_object_or_404, render
-
-
 @login_required
 def view_request_project(request, request_id):
     # Get the Request object with the given request_id
@@ -605,9 +591,6 @@ def task_display_user(request, task_id):
     return render(request, 'core/task_display_user.html', context)
 
 
-from .forms import TaskEditForm
-
-
 @login_required(login_url='user_login')
 def task_editing_screen_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
@@ -654,7 +637,9 @@ def create_subtasks(request, task_id, num_subtasks):
                 if task.assigned_to is not None:
                     subtask.assigned_to = task.assigned_to
                 else:
-                    subtask.assigned_to = request.user.personal_data.id
+                    # Retrieve the Worker instance that corresponds to request.user.personal_data.id
+                    worker = Worker.objects.get(personal_data__id=request.user.personal_data.id)
+                    subtask.assigned_to = worker
 
                 subtask.save()  # TODO: Almog
             return redirect('task_display_user', task_id=task.id)
