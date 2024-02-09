@@ -31,13 +31,6 @@ from django.utils import timezone
 from datetime import date
 
 
-# TODO: Add @login_required where needed
-# TODO: user type login authentication
-
-# Add more views for different functionalities like creating users, tasks, etc.
-
-# should be helpful functions
-
 # adding tasks and projects to the database
 def add_task_to_worker(request, worker_id, task_id):
     worker = Worker.objects.get(_id=worker_id)
@@ -202,6 +195,7 @@ def manager_login(request):
         username = request.POST['username']
         password = request.POST['password']
 
+        # TODO: user type login authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -507,6 +501,8 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+
+        # TODO: user type login authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user, backend='core.backend.WorkerBackend')
