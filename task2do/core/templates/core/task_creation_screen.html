@@ -7,7 +7,7 @@
 <body>
     <h1>יצירת משימה חדשה</h1>
 
-    <form id="taskForm" method="post" action="{% url 'task_creation_screen_manager' project_id %}">
+    <form id="taskForm" method="post" action="{% url 'task_creation_screen' project_id %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" id="createButton" value="יצירת משימה">

@@ -86,7 +86,7 @@
         {% for request in requests_from_me %}
             <li>
                 <p>{{ request.header }} - {{ request.type }}</p>
-                <button class="custom-button" onclick="location.href='{% url 'specific_request_view' request.id %}'">More</button>
+                <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
             </li>
         {% endfor %}
     </ul>

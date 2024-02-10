@@ -56,7 +56,7 @@
         </div>
     {% endfor %}
 
-    <button style="font-size: 15px;" onclick="location.href='{% url 'task_creation_screen_manager' project.id %}'">צור משימה חדשה</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'task_creation_screen' project.id %}'">צור משימה חדשה</button>
     <button style="font-size: 15px;" onclick="location.href='{% url 'task_display_manager' project.id %}'">חזור לפרויקט</button>
 </body>
 </html>
