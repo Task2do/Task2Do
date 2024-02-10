@@ -209,8 +209,6 @@ def manager_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-
-        # TODO: user type login authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
             try:
@@ -541,7 +539,6 @@ def user_login(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        # TODO: user type login authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
             try:
