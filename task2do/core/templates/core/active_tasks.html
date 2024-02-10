@@ -4,22 +4,48 @@
     <meta charset="UTF-8">
     <title>Active Tasks</title>
     <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
         /* Define button styles */
         .custom-button {
-            color: white; /* Text color */
-            font-size: 15px; /* Font size */
-            border: 2px solid darkblue; /* Blue outline color */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin: 5px; /* Margin */
-            background-color: cornflowerblue; /* Blue background */
-            cursor: pointer; /* Change cursor on hover */
+            color: white;
+            font-size: 15px;
+            border: 2px solid darkblue;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 10px; /* Increased margin */
+            background-color: cornflowerblue;
+            cursor: pointer;
         }
 
         /* Define hover effect */
         .custom-button:hover {
-            background-color: cornflowerblue; /* Darker blue on hover */
-            border-color: darkblue; /* Darker outline on hover */
+            background-color: darkblue;
+            border-color: darkblue;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 20px; /* Increased padding */
+        }
+
+        h1 {
+            margin: 30px 0; /* Increased margin */
         }
     </style>
 </head>
@@ -28,7 +54,7 @@
 
     <ul>
         {% for task in active_tasks %}
-            <li style="border: 1px solid black; margin: 10px; padding: 10px;">
+            <li>
                 <h2>{{ task.title }}</h2>
                 <p>Project: {{ task.project.name }}</p>
                 <p>Deadline: {{ task.due_date }}</p>

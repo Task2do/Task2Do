@@ -1,4 +1,5 @@
 import pytest
+import os
 from django.contrib.auth.models import User
 from .models import Manager, Worker, Project, Task, PersonalData, Request
 from .forms import UserRegistrationForm, TaskCreationForm, CreateProjectForm
@@ -6,6 +7,9 @@ from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
+
+# Set the Django settings module environment variable
+os.environ['DJANGO_SETTINGS_MODULE'] = 'task2do.task2do.settings'
 
 
 @pytest.mark.django_db

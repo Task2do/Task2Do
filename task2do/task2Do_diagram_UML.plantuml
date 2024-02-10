@@ -1,0 +1,102 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class auth_user {
+   password: varchar(128)
+   last_login: timestamp with time zone
+   is_superuser: boolean
+   username: varchar(150)
+   first_name: varchar(150)
+   last_name: varchar(150)
+   email: varchar(254)
+   is_staff: boolean
+   is_active: boolean
+   date_joined: timestamp with time zone
+   id: integer
+}
+class core_manager {
+   last_login: timestamp with time zone
+   personal_data_id: bigint
+   id: bigint
+}
+class core_personaldata {
+   b_date: date
+   user_id: integer
+   id: bigint
+}
+class core_project {
+   name: varchar(100)
+   description: text
+   is_active: boolean
+   lead_id: bigint
+   due_date: date
+   id: bigint
+}
+class core_project_members {
+   project_id: bigint
+   worker_id: bigint
+   id: bigint
+}
+class core_project_tasks {
+   project_id: bigint
+   task_id: bigint
+   id: bigint
+}
+class core_request {
+   type: varchar(10)
+   header: varchar(128)
+   is_active: boolean
+   contents_id: bigint
+   last_receiver_id: bigint
+   last_sender_id: bigint
+   id: bigint
+}
+class core_requestcontenthistory {
+   content: text
+   updated_at: timestamp with time zone
+   request_id: bigint
+   previous_content_id: bigint
+   id: bigint
+}
+class core_task {
+   title: varchar(64)
+   description: text
+   due_date: date
+   status: varchar(50)
+   parent_task_id: bigint
+   assigned_to_id: bigint
+   is_active: boolean
+   id: bigint
+}
+class core_worker {
+   last_login: timestamp with time zone
+   personal_data_id: bigint
+   id: bigint
+}
+class core_worker_managers {
+   worker_id: bigint
+   manager_id: bigint
+   id: bigint
+}
+
+core_manager                -[#595959,plain]-^  core_personaldata          : "personal_data_id:id"
+core_personaldata           -[#595959,plain]-^  auth_user                  : "user_id:id"
+core_project                -[#595959,plain]-^  core_manager               : "lead_id:id"
+core_project_members        -[#595959,plain]-^  core_project               : "project_id:id"
+core_project_members        -[#595959,plain]-^  core_worker                : "worker_id:id"
+core_project_tasks          -[#595959,plain]-^  core_project               : "project_id:id"
+core_project_tasks          -[#595959,plain]-^  core_task                  : "task_id:id"
+core_request                -[#595959,plain]-^  core_personaldata          : "last_sender_id:id"
+core_request                -[#595959,plain]-^  core_personaldata          : "last_receiver_id:id"
+core_request                -[#595959,plain]-^  core_requestcontenthistory : "contents_id:id"
+core_requestcontenthistory  -[#595959,plain]-^  core_request               : "request_id:id"
+core_requestcontenthistory  -[#595959,plain]-^  core_requestcontenthistory : "previous_content_id:id"
+core_task                   -[#595959,plain]-^  core_task                  : "parent_task_id:id"
+core_task                   -[#595959,plain]-^  core_worker                : "assigned_to_id:id"
+core_worker                 -[#595959,plain]-^  core_personaldata          : "personal_data_id:id"
+core_worker_managers        -[#595959,plain]-^  core_manager               : "manager_id:id"
+core_worker_managers        -[#595959,plain]-^  core_worker                : "worker_id:id"
+@enduml

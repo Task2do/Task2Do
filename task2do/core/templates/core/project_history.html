@@ -1,26 +1,72 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>היסטוריית פרויקטים</title>
+    <title>Project History</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Define button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border: 2px solid white; /* Change border color to white */
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Make button inline */
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: darkblue;
+            border-color: darkblue;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 30px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>היסטוריית פרויקטים</h1>
+    <h1>Project History</h1>
 
     <ul>
         {% for project_data in projects_data %}
-            <li style="border: 1px solid black; margin: 10px; padding: 10px;">
+            <li>
                 <h2>{{ project_data.project.name }}</h2>
                 <p>Number of Tasks: {{ project_data.num_tasks }}</p>
                 <p>Number of Workers: {{ project_data.num_workers }}</p>
-                <button style="font-size: 15px;">
-                    <a href="{% url 'view_project' project_data.project.id %}">Project Details</a>
-                </button>
+                <a href="{% url 'view_project' project_data.project.id %}" class="custom-button">Project Details</a>
             </li>
         {% endfor %}
     </ul>
 
-    <button id="backToHome" style="font-size: 15px;">חזור למסך הבית</button> <!-- Back to Home Screen in Hebrew -->
+    <a href="{% url 'manager_home_screen' %}" class="custom-button" id="backToHome">Back to Home Screen</a>
 
     <script>
         document.getElementById("backToHome").addEventListener("click", function() {
