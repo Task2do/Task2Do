@@ -99,9 +99,13 @@ def logout_view(request):
     return redirect('open_screen')  # Redirect to the open screen after logging out
 
 
-@login_required(login_url='manager_login' or 'user_login')
 def request_history(request):
-    # Get the PersonalData instance for the current user
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     personal_data = request.user.personal_data
 
     # Filter requests where the last sender is the current user's PersonalData
@@ -114,8 +118,13 @@ def request_history(request):
     return render(request, 'core/request_history.html', context)
 
 
-@login_required(login_url='manager_login' or 'user_login')
 def new_project_request(request):
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     if request.method == 'POST':
         form = NewProjectRequestForm(request.POST, user=request.user)
         if form.is_valid():
@@ -144,8 +153,14 @@ def new_project_request(request):
 
 
 # change the data for forms(if accepted then associate with the reciever)
-@login_required(login_url='manager_login' or 'user_login')
+
 def view_request_association(request, request_id):
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     request_to_view = get_object_or_404(Request, id=request_id)
 
     if request.method == 'POST':
@@ -198,8 +213,12 @@ def manager_login(request):
         # TODO: user type login authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            return redirect('manager_home_screen')
+            try:
+                manager = Manager.objects.get(personal_data__user=user)
+                login(request, user)
+                return redirect('manager_home_screen')
+            except Manager.DoesNotExist:
+                messages.error(request, 'Login failed - This is not a manager. Please try login as user.')
         else:
             messages.error(request, 'Login failed. Please try again.')
     return render(request, 'core/manager_login.html')
@@ -407,8 +426,13 @@ def edit_project(request, project_id):
 
 
 # # Manager's requests
-@login_required
 def requests_page(request):
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     try:
         manager = Manager.objects.get(id=request.user.personal_data.id)
         user_type = 'manager'
@@ -426,8 +450,13 @@ def requests_page(request):
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me, 'user_type': user_type})
 
 
-@login_required
 def new_association_request(request):
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     if request.method == 'POST':
         form = NewAssociationRequestForm(request.POST)
         if form.is_valid():
@@ -453,8 +482,13 @@ def new_association_request(request):
     return render(request, 'core/new_association_request.html', {'form': form, 'messages': messages})
 
 
-@login_required
 def new_request_submission(request):
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     user_type = 'manager' if isinstance(request.user, Manager) else 'worker'
     if request.method == 'POST':
         form = NewRequestForm(request.POST, user_type=user_type)
@@ -472,8 +506,13 @@ def new_request_submission(request):
     return render(request, 'core/new_request_submission.html', {'form': form})
 
 
-@login_required
 def view_request_project(request, request_id):
+    if not request.user.is_authenticated:
+        try:
+            manager = Manager.objects.get(personal_data__user=request.user)
+            return redirect('manager_login')
+        except Manager.DoesNotExist:
+            return redirect('user_login')
     # Get the Request object with the given request_id
     request_obj = get_object_or_404(Request, id=request_id)
 
@@ -505,8 +544,12 @@ def user_login(request):
         # TODO: user type login authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user, backend='core.backend.WorkerBackend')
-            return redirect('user_home_screen')
+            try:
+                worker = Worker.objects.get(personal_data__user=user)
+                login(request, user, backend='core.backend.WorkerBackend')
+                return redirect('user_home_screen')
+            except Worker.DoesNotExist:
+                messages.error(request, 'Login failed - This is not a user. Please try login as manager.')
         else:
             messages.error(request, 'Login failed. Please try again.')
     return render(request, 'core/user_login.html')
