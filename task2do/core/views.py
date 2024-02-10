@@ -399,7 +399,7 @@ def edit_project_workers(request, project_id):
 # # Manager's workers
 @login_required(login_url='manager_login')
 def workers_list_manager(request, manager_id):
-    manager = Manager.objects.get(id=manager_id)
+    manager = get_object_or_404(Manager, id=manager_id)
     workers = manager.workers.all()
     return render(request, 'core/workers_list_manager.html', {'workers': workers})
 
