@@ -1,85 +1,107 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>בקשות</title>
+    <title>Requests</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Define button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: darkblue;
+        }
+
+        /* Adjust the height of the container */
+        body {
+            height: 95vh;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        ul {
+            padding: 0;
+            margin: 10px;
+        }
+
+        p {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
-    <button id="new request" style="font-size: 30px;">צור בקשה חדשה</button>
+    <button id="newRequestBtn" class="custom-button">Create New Request</button>
 
     <script>
-        var user_type = "{{ user_type }}";
-        document.getElementById("new request").addEventListener("click", function() {
-            if (user_type === 'manager') {
+        var userType = "{{ user_type }}";
+        document.getElementById("newRequestBtn").addEventListener("click", function() {
+            if (userType === 'manager') {
                 location.href = "{% url 'new_association_request' %}";
-            }
-            else {
+            } else {
                 location.href = "{% url 'new_request_submission' %}";
             }
-    });
+        });
     </script>
-    <button id="request_history" style="font-size: 30px;">היסטוריית בקשות</button>
+
+    <button id="requestHistoryBtn" class="custom-button">Request History</button>
 
     <script>
-        document.getElementById("request_history").addEventListener("click", function() {
+        document.getElementById("requestHistoryBtn").addEventListener("click", function() {
             location.href = "{% url 'request_history' %}";
         });
     </script>
-    <h1>בקשות אליי</h1>
+
+    <h1>Requests to Me</h1>
 
     <ul>
-        {% for request in requests_to_me%}
-            <p>{{ request.header }} - {{ request.type }}</p>
-            <button id="goto_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-            {% if request.type != "ASOC" %}
-                <script>
-                    document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                        location.href = "{% url 'view_request_project' request.id %}";
-                    });
-                </script>
-            {% else %}
-                <script>
-                    document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                        location.href = "{% url 'view_request_association' request.id %}";
-                    });
-                </script>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    <h1>בקשות שלי</h1>
-    <ul>
-        {% for request in requests_from_me%}
-            <p>
-                    {{ request.header }} - {{ request.type }}
-            </p>
-            <button id="goto_my_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-            {% if request.type == "ASOC" %}
-            <script>
-                document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'view_request_association' request.id %}";
-                });
-            </script>
-            {% else %}
-            <script>
-                document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'specific_request_view' request.id %}";
-                });
-            </script>
-            {% endif %}
+        {% for request in requests_to_me %}
+            <li>
+                <p>{{ request.header }} - {{ request.type }}</p>
+                <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+            </li>
         {% endfor %}
     </ul>
 
-    <button id="backToHome" style="font-size: 15px;">חזור לדף הבית</button>
+    <h1>My Requests</h1>
+
+    <ul>
+        {% for request in requests_from_me %}
+            <li>
+                <p>{{ request.header }} - {{ request.type }}</p>
+                <button class="custom-button" onclick="location.href='{% url 'specific_request_view' request.id %}'">More</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button id="backToHomeBtn" class="custom-button">Back to Home Page</button>
+
     <script>
-        var user_type = "{{ user_type }}";
-        document.getElementById("backToHome").addEventListener("click", function() {
-            if (user_type === 'manager') {
+        document.getElementById("backToHomeBtn").addEventListener("click", function() {
+            if (userType === 'manager') {
                 location.href = "{% url 'manager_home_screen' %}";
-            }
-            else {
+            } else {
                 location.href = "{% url 'user_home_screen' %}";
             }
-    });
+        });
     </script>
 </body>
 </html>
+
