@@ -1,36 +1,68 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>היסטוריית משימות</title>
+    <title>Task History</title>
     <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h1 {
+            margin-bottom: 20px;
+        }
+
         .task-box {
             border: 1px solid black;
             margin: 10px;
             padding: 10px;
             border-radius: 5px;
         }
+
+        /* Define button styles */
+        button {
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin-top: 20px; /* Margin from the tasks */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
     </style>
 </head>
 <body>
-    <h1>היסטוריית משימות</h1>
+    <h1>Task History</h1>
 
     <ul>
         {% for task in history_tasks %}
             <li class="task-box">
                 <h2>{{ task.title }}</h2>
                 <p>{{ task.description }}</p>
-                <p>תאריך סיום: {{ task.due_date }}</p>
-                <p>סטטוס: {{ task.status }}</p>
+                <p>Due Date: {{ task.due_date }}</p>
+                <p>Status: {{ task.status }}</p>
             </li>
         {% endfor %}
     </ul>
-    <button id="back" style="font-size: 15px;">חזרה</button>
+    <button id="back">Back</button>
+
     <script>
         document.getElementById("back").addEventListener("click", function() {
             window.history.back();
         });
     </script>
-
 </body>
 </html>

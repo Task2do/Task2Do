@@ -1,31 +1,65 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Task Details</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h1, p {
+            margin-bottom: 10px;
+        }
+
+        /* Define button styles */
+        button {
+            color: white; /* Text color */
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 10px; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
+    </style>
 </head>
 <body>
     <h1>{{ task.title }}</h1>
 
-    <p>פרוייקט: {{ task.project.name }}</p>
-    <p>תאריך סיום: {{ task.due_date }}</p>
-    <p>תיאור: {{ task.description }}</p>
-    <p>סטטוס: {{ task.status }}</p>
+    <p>Project: {{ task.project.name }}</p>
+    <p>Due Date: {{ task.due_date }}</p>
+    <p>Description: {{ task.description }}</p>
+    <p>Status: {{ task.status }}</p>
     {% if task.parent_task %}
-        <p>משימת אב: {{ task.parent_task.title }}</p>
+        <p>Parent Task: {{ task.parent_task.title }}</p>
     {% endif %}
 
     {% if task.due_date > today_date %}
-        <button style="font-size: 15px;">
+        <button>
             <a href="{% url 'task_editing_screen_user' task.id %}">Edit Task</a>
         </button>
     {% endif %}
 
-    <button id="backButton" style="font-size: 15px;">חזור</button> <!-- Back to Previous Page in Hebrew -->
+    <button id="backButton">Back</button>
 
     <script>
         document.getElementById("backButton").addEventListener("click", function() {
-            location.href = "{% url 'active_tasks' %}";
+            history.back();
         });
     </script>
 </body>

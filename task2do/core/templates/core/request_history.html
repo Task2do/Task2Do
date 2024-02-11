@@ -1,63 +1,81 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>בקשות</title>
+    <title>Requests</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h1, p {
+            margin: 10px 0; /* Increased margin at the top and bottom */
+        }
+
+        /* Define button styles */
+        button {
+            color: white; /* Text color */
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 10px; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
+    </style>
 </head>
 <body>
-   
-    <h1>בקשות אליי</h1>
+    <h1>Requests To Me</h1>
 
     <ul>
-        {% for request in requests_to_me%}
+        {% for request in requests_to_me %}
             <p>{{ request.header }} - {{ request.type }}</p>
-            <button id="goto_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-            {% if request.type != "ASOC" %}
-                <script>
-                    document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                        location.href = "{% url 'view_request_project' request.id %}";
-                    });
-                </script>
-            {% else %}
-                <script>
-                    document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                        location.href = "{% url 'view_request_association' request.id %}";
-                    });
-                </script>
-            {% endif %}
-        {% endfor %}
+            <button onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+        {% if request.type == "ASOC" %}
+            <script>
+                document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
+                    location.href = "{% url 'view_request_association' request.id %}";
+                });
+            </script>
+        {% endif %}
+        </ul>
     </ul>
-    <h1>בקשות שלי</h1>
+
+    <h1>My Requests</h1>
     <ul>
-        {% for request in requests_from_me%}
-            <p>
-                    {{ request.header }} - {{ request.type }}
-            </p>
-            <button id="goto_my_request{{request.id}}" style="font-size: 15px;">...עוד</button>
-            {% if request.type == "ASOC" %}
+        {% for request in requests_from_me %}
+            <p>{{ request.header }} - {{ request.type }}</p>
+            <button onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+        {% if request.type == "ASOC" %}
             <script>
                 document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
                     location.href = "{% url 'view_request_association' request.id %}";
                 });
             </script>
-            {% else %}
-            <script>
-                document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'view_request_project' request.id %}";
-                });
-            </script>
-            {% endif %}
-        {% endfor %}
+        {% endif %}
+        </ul>
     </ul>
 
-
-
-    <button id="backToPrev" style="font-size: 15px;">חזור לבקשות</button>
+    <button id="backToPrev">Back to Requests</button>
     <script>
         document.getElementById("backToPrev").addEventListener("click", function() {
             window.history.back();
         });
     </script>
-
 </body>
 </html>

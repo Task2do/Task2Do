@@ -1,25 +1,59 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי בקשה</title>
+    <title>Request Details</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h1, h3, p {
+            margin-bottom: 10px;
+        }
+
+        /* Define button styles */
+        input[type="submit"], button {
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 10px 0; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        input[type="submit"]:hover, button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
+    </style>
 </head>
 <body>
 
-    <h1>{{ request_to_view.header}}</h1>
+    <h1>{{ request_to_view.header }}</h1>
 
-    <h3>פרטי הבקשה</h3>
-    <p>שולח הבקשה: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
-    <p>תאריך הבקשה: {{ request_to_view.contents.updated_at }}</p>
+    <h3>Request Details</h3>
+    <p>Sender: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
+    <p>Request Date: {{ request_to_view.contents.updated_at }}</p>
 
     {% if request_to_view.is_active and user_id != request_to_view.last_sender.id %}
     <h3>Accept or Reject Request</h3>
-        <form method="post" >
+        <form method="post">
             {% csrf_token %}
-            <input type="submit" name="accept" value="קבל">
-            <input type="submit" name="reject" value="דחה">
+            <input type="submit" name="accept" value="Accept">
+            <input type="submit" name="reject" value="Reject">
         </form>
     {% endif %}
-    <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">חזור לרשימת הבקשות</button>
+    <button onclick="location.href='{% url 'requests_page' %}'">Back to Requests List</button>
 </body>
 </html>

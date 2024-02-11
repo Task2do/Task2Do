@@ -1,24 +1,57 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי משימה</title>
+    <title>Task Details</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h1, h2, p {
+            margin-bottom: 10px;
+        }
+
+        /* Define button styles */
+        button {
+            color: white; /* Text color */
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 10px; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
+    </style>
 </head>
 <body>
-    <h1>פרטי משימה - {{ task.title }}</h1>
+    <h1>Task Details - {{ task.title }}</h1>
 
     <h2>{{ task.title }}</h2>
     <p>{{ task.description }}</p>
-    <p>תאריך סיום: {{ task.due_date }}</p>
-    <p>מצב: {{ task.status }}</p>
-    <p>משימה פעילה: {{ task.is_active }}</p>
-    <p>עובד שהוקצה למשימה: {{ task.assigned_to.personal_data.user.username }}</p>
+    <p>Due Date: {{ task.due_date }}</p>
+    <p>Status: {{ task.status }}</p>
+    <p>Assigned Worker: {{ task.assigned_to.personal_data.user.username }}</p>
 
     {% if task.due_date > today_date %}
-        <p style="color: red;">שים לב - המועד הסיום כבר עבר</p>
+        <p style="color: red;">Attention - Due date has passed</p>
     {% endif %}
 
-    <button style="font-size: 15px;" onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">ערוך משימה</button>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'project_tasks' project_id %}'">חזור לרשימת המשימות</button>
+    <button onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">Edit Task</button>
+    <button onclick="location.href='{% url 'project_tasks' project_id %}'">Back to Task List</button>
 </body>
 </html>

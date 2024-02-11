@@ -1,24 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Create Subtasks</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h2 {
+            margin-top: 50px; /* Increased margin at the top */
+            margin-bottom: 30px; /* Increased margin at the bottom */
+        }
+
+        form {
+            text-align: center;
+        }
+
+        /* Define button styles */
+        button[type="submit"], button#back {
+            color: white; /* Text color */
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 10px; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        button[type="submit"]:hover, button#back:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
+
+        /* Style form list items */
+        li {
+            border: 1px solid black; /* Black border */
+            margin: 10px; /* Margin */
+            padding: 10px; /* Padding */
+            list-style: none; /* Remove bullet point */
+        }
+    </style>
 </head>
+<body>
+    <h2>Create Subtasks</h2>
 
-{% block content %}
-  <h2>צור תתי משימות</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    {% for form in formset %}
-      <li style="border: 1px solid black; margin: 10px; padding: 10px;">
-        {{ form.as_p }}
-      </li>
-    {% endfor %}
-    <button type="submit" name="next">צור</button>
-  </form>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <li>
+                {{ form.as_p }}
+            </li>
+        {% endfor %}
+        <button type="submit" name="next">Create</button>
+    </form>
 
-  <button id="back">חזור</button>
-  <script>
+    <button id="back">Back</button>
+    <script>
         document.getElementById("back").addEventListener("click", function() {
-          history.back();
+            history.back();
         });
     </script>
-{% endblock %}
+</body>
+</html>

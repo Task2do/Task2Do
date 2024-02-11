@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי בקשה</title>
+    <title>Request Details</title>
 </head>
 <body>
 
     <h1>{{ request_to_view.header }}</h1>
 
-    <h3>פרטי הבקשה</h3>
-    <p>שולח הבקשה: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
-    <p>מקבל הבקשה: {{ request_to_view.last_receiver.user.username }} - {{ request_to_view.last_receiver.user.first_name }} {{ request_to_view.last_receiver.user.last_name }}</p>
-    <p>סוג הבקשה: {{ request_to_view.type }}</p>
-    <p>פעילה: {{ request_to_view.is_active }}</p>
-    <p>תאריך הבקשה: {{ request_to_view.contents.updated_at }}</p>
+    <h3>Request Details</h3>
+    <p>Sender: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
+    <p>Receiver: {{ request_to_view.last_receiver.user.username }} - {{ request_to_view.last_receiver.user.first_name }} {{ request_to_view.last_receiver.user.last_name }}</p>
+    <p>Type: {{ request_to_view.type }}</p>
+    <p>Active: {{ request_to_view.is_active }}</p>
+    <p>Request Date: {{ request_to_view.contents.updated_at }}</p>
 
-    <h3>היסטוריית הבקשה</h3>
+    <h3>Request History</h3>
     {% for message in request_to_view.contents.previous_contents.all %}
-    <p>:תגובה</p>
-    <p>{{ message.content }} </p>
-    <p>at {{message.updated_at}}</p>
+    <p>Response:</p>
+    <p>{{ message.content }}</p>
+    <p>at {{ message.updated_at }}</p>
     {% endfor %}
 
-    <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">חזור לרשימת הבקשות</button>
+    <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">Back to Requests List</button>
 
 </body>
 </html>

@@ -1,22 +1,60 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי הפרוייקט</title>
+    <title>Project Details</title>
+    <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Adjust margin and padding for better spacing */
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        h2, p {
+            margin-bottom: 10px;
+        }
+
+        /* Define button styles */
+        button {
+            font-size: 15px; /* Font size */
+            border: 2px solid darkblue; /* Blue border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            margin: 10px 0; /* Margin */
+            background-color: cornflowerblue; /* Blue background */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+
+        /* Define hover effect */
+        button:hover {
+            background-color: darkblue; /* Darker blue on hover */
+            border-color: darkblue; /* Darker border on hover */
+        }
+    </style>
 </head>
 <body>
-    <h1>פרטי הפרוייקט</h1>
+    <h1>Project Details</h1>
 
-    <h2>{{ project.name }} :שם הפרוייקט</h2>
-    <p>{{ project.description }} :תיאור הפרוייקט</p>
-    <p>תאריך סיום: {{ project.due_date }}</p>
+    <h2>{{ project.name }}: Project Name</h2>
+    <p>{{ project.description }}: Project Description</p>
+    <p>Due Date: {{ project.due_date }}</p>
 
     <br>
-    <button id="project_tasks" style="font-size: 30px;">משימות הפרוייקט</button>
+    <button id="project_tasks">Project Tasks</button>
     <br>
     <br>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'project_workers' project.id %}'">ראה עובדים</button>
-    <button id="changeProject" style="font-size: 15px;">ערוך פרויקט</button>
+    <button onclick="location.href='{% url 'project_workers' project.id %}'">View Workers</button>
+    <button id="changeProject">Edit Project</button>
 
     <script>
         document.getElementById("changeProject").addEventListener("click", function() {
@@ -30,7 +68,7 @@
         });
     </script>
     <br>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'active_projects' %}'">לכל הפרוייקטים הפעילים</button>
-    <button style="font-size: 15px;" onclick="location.href='{% url 'project_history' %}'">לכל הפרוייקטים הלא פעילים</button>
+    <button onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
+    <button onclick="location.href='{% url 'project_history' %}'">Inactive Projects</button>
 </body>
 </html>

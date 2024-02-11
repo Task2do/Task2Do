@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>פרטי עובד</title> <!-- Worker Details in Hebrew -->
+    <title>Worker Details</title> <!-- Title translated to English -->
 </head>
 <body>
-    <h1>פרטי עובד</h1> <!-- Worker Details Heading in Hebrew -->
+    <h1>Worker Details</h1> <!-- Worker Details Heading translated to English -->
 
     <ul>
-        <li>שם משתמש: {{ worker.personal_data.user.username }}</li>
-        <li>שם פרטי: {{ worker.personal_data.user.first_name }}</li>
-        <li>שם משפחה: {{ worker.personal_data.user.last_name }}</li>
-        <li>אימייל: {{ worker.personal_data.user.email }}</li>
-        <li>תאריך לידה: {{ worker.personal_data.b_date }}</li>
-        <li>תאריך התחברות אחרון: {{ worker.last_login }}</li>
+        <li>Username: {{ worker.personal_data.user.username }}</li>
+        <li>First Name: {{ worker.personal_data.user.first_name }}</li>
+        <li>Last Name: {{ worker.personal_data.user.last_name }}</li>
+        <li>Email: {{ worker.personal_data.user.email }}</li>
+        <li>Date of Birth: {{ worker.personal_data.b_date }}</li>
+        <li>Last Login Date: {{ worker.last_login }}</li>
     </ul>
 
-    <button id="backToList" style="font-size: 15px;">חזור לרשימת העובדים</button> <!-- Back to Workers List in Hebrew -->
+    <button id="backToList" style="font-size: 15px;">Back to Workers List</button> <!-- Back to Workers List translated to English -->
 
     <script>
         document.getElementById("backToList").addEventListener("click", function() {
