@@ -44,7 +44,7 @@
 
     <h3>Request Details</h3>
     <p>Sender: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
-    <p>Request Date: {{ request_to_view.contents.updated_at }}</p>
+    <p>Request Date: {{ request_date }}</p>
 
     {% if request_to_view.is_active and user_id != request_to_view.last_sender.id %}
     <h3>Accept or Reject Request</h3>

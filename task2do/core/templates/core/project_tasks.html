@@ -99,6 +99,6 @@
     {% endfor %}
 
     <button onclick="location.href='{% url 'task_creation_screen' project.id %}'">Create New Task</button>
-    <button onclick="location.href='{% url 'task_display_manager' project.id %}'">Back to Project</button>
+    <button onclick="location.href='{% url 'view_project' project.id %}'">Back to Project</button>
 </body>
 </html>

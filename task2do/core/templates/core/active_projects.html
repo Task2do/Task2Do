@@ -62,6 +62,7 @@
                         <h2>{{ project.name }}</h2>
                         <p>Number of Tasks: {{ project.tasks.count }}</p>
                         <p>Number of Assigned Workers: {{ project.members.count }}</p>
+                        <p>Project Due Date: {{ project.due_date }}</p>
                         <button class="custom-button">
                             <a href="{% url 'view_project' project.id %}">Project Details</a>
                         </button>

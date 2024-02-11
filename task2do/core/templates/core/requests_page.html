@@ -75,7 +75,11 @@
         {% for request in requests_to_me %}
             <li>
                 <p>{{ request.header }} - {{ request.type }}</p>
-                <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                {% if request.type == 'ASOC' %}
+                    <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
+                {% else %}
+                    <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
@@ -85,8 +89,12 @@
     <ul>
         {% for request in requests_from_me %}
             <li>
-                <p>{{ request.header }} - {{ request.type }}</p>
-                <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+               <p>{{ request.header }} - {{ request.type }}</p>
+                {% if request.type == 'ASOC' %}
+                    <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
+                {% else %}
+                    <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
@@ -94,8 +102,9 @@
     <button id="backToHomeBtn" class="custom-button">Back to Home Page</button>
 
     <script>
+        var user_type = "{{ user_type }}";
         document.getElementById("backToHomeBtn").addEventListener("click", function() {
-            if (userType === 'manager') {
+            if (user_type === 'manager') {
                 location.href = "{% url 'manager_home_screen' %}";
             } else {
                 location.href = "{% url 'user_home_screen' %}";

@@ -102,8 +102,9 @@ class CreateProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         manager_id = kwargs.pop('manager_id')
         super(CreateProjectForm, self).__init__(*args, **kwargs)
+        manager = Manager.objects.get(personal_data__user__id=manager_id)
         self.fields['members'] = WorkerMultipleChoiceField(
-            queryset=Worker.objects.filter(managers__id=manager_id),
+            queryset=Worker.objects.filter(managers__id=manager.id),
             widget=Select2MultipleWidget
         )
 
@@ -196,10 +197,9 @@ class EditProjectWorkersForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         manager_id = kwargs.pop('manager_id', None)
+        manager = Manager.objects.get(personal_data__user__id=manager_id)
         super(EditProjectWorkersForm, self).__init__(*args, **kwargs)
-        if manager_id:
-            manager = Manager.objects.get(id=manager_id)
-            self.fields['members'].queryset = Worker.objects.filter(managers=manager)
+        self.fields['members'].queryset = Worker.objects.filter(managers__id=manager.id)
 
 class NewRequestForm(forms.Form):
     REQUEST_TYPE_CHOICES = (

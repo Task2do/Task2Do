@@ -13,6 +13,10 @@
             align-items: center;
         }
 
+        body {
+            flex-direction: column;
+        }
+
         /* Adjust margin and padding for better spacing */
         h1, p {
             margin-bottom: 10px;
@@ -41,7 +45,7 @@
 <body>
     <h1>{{ task.title }}</h1>
 
-    <p>Project: {{ task.project.name }}</p>
+    <p>Project: {{ project_name }}</p>
     <p>Due Date: {{ task.due_date }}</p>
     <p>Description: {{ task.description }}</p>
     <p>Status: {{ task.status }}</p>
@@ -59,7 +63,7 @@
 
     <script>
         document.getElementById("backButton").addEventListener("click", function() {
-            history.back();
+            window.location.href = "{% url 'active_tasks' %}";
         });
     </script>
 </body>

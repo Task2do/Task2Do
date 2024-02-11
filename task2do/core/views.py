@@ -198,9 +198,8 @@ def view_request_association(request, request_id):
 
     # Get the user_id from the request.user object
     user_id = request.user.id
-
-    # Pass the Request object and user_id to the template
-    context = {'request_to_view': request_to_view, 'user_id': user_id}
+    request_date = request_to_view.content_history.all().first().updated_at
+    context = {'request_to_view': request_to_view, 'user_id': user_id, 'request_date': request_date}
     return render(request, 'core/view_request_association.html', context)
 
 
@@ -277,7 +276,9 @@ def project_workers(request, project_id):
 def active_projects(request):
     user_id = request.user.personal_data.id
     active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id))
-    context = {'active_projects': active_projects, 'now': timezone.now()}
+    now = timezone.now()
+    formatted_now = now.strftime("%Y-%m-%d")
+    context = {'active_projects': active_projects, 'now': formatted_now}
     return render(request, 'core/active_projects.html', context)
 
 
@@ -387,27 +388,29 @@ def task_editing_screen_manager(request, task_id):
 def edit_project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
     if request.method == 'POST':
-        form = EditProjectWorkersForm(request.POST, instance=project)
+        manager_id = request.user.personal_data.id
+        form = EditProjectWorkersForm(request.POST, instance=project, manager_id=manager_id)
         if form.is_valid():
             form.save()
             return redirect('project_workers', project_id=project_id)
     else:
-        form = EditProjectWorkersForm(instance=project)
+        form = EditProjectWorkersForm(instance=project, manager_id=request.user.personal_data.id)
     return render(request, 'core/edit_project_workers.html', {'form': form, 'project': project})
 
 
 # # Manager's workers
 @login_required(login_url='manager_login')
 def workers_list_manager(request, manager_id):
-    manager = get_object_or_404(Manager, id=manager_id)
+    manager = get_object_or_404(Manager, personal_data__user=request.user)
     workers = manager.workers.all()
-    return render(request, 'core/workers_list_manager.html', {'workers': workers})
+    return render(request, 'core/workers_list_manager.html', {'workers': workers, manager_id: manager_id})
 
 
 @login_required(login_url='manager_login')  # is this needed?
 def worker_details(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
-    return render(request, 'core/worker_details.html', {'worker': worker})
+    last_login = worker.personal_data.user.last_login
+    return render(request, 'core/worker_details.html', {'worker': worker, 'last_login': last_login})
 
 
 @login_required(login_url='manager_login')
@@ -432,7 +435,7 @@ def requests_page(request):
         except Manager.DoesNotExist:
             return redirect('user_login')
     try:
-        manager = Manager.objects.get(id=request.user.personal_data.id)
+        manager = Manager.objects.get(personal_data__user=request.user)
         user_type = 'manager'
     except Manager.DoesNotExist:
         user_type = 'worker'
@@ -511,13 +514,19 @@ def view_request_project(request, request_id):
             return redirect('manager_login')
         except Manager.DoesNotExist:
             return redirect('user_login')
-    # Get the Request object with the given request_id
     request_obj = get_object_or_404(Request, id=request_id)
+    request_date = request_obj.content_history.all().first().updated_at
 
-    # Pass the Request object to the template
-    context = {'request_to_view': request_obj}
+    is_receiver = request_obj.last_receiver.user == request.user
 
-    # Render the 'view_request_project.html' template with the context
+    context = {'request_to_view': request_obj, 'request_date': request_date, 'is_receiver': is_receiver}
+
+    if request.method == 'POST':
+        if 'close_request' in request.POST:
+            request_obj.is_active = False
+            request_obj.save()
+            return redirect('requests_page')
+
     return render(request, 'core/view_request_project.html', context)
 
 
@@ -623,7 +632,7 @@ def active_tasks(request):
 @login_required(login_url='user_login')
 def task_display_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
-    context = {'task': task, 'today_date': date.today()}
+    context = {'task': task, 'today_date': date.today(), 'project_name': task.project_tasks.all().first().name}
     return render(request, 'core/task_display_user.html', context)
 
 

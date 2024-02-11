@@ -13,7 +13,7 @@
     <p>Receiver: {{ request_to_view.last_receiver.user.username }} - {{ request_to_view.last_receiver.user.first_name }} {{ request_to_view.last_receiver.user.last_name }}</p>
     <p>Type: {{ request_to_view.type }}</p>
     <p>Active: {{ request_to_view.is_active }}</p>
-    <p>Request Date: {{ request_to_view.contents.updated_at }}</p>
+    <p>Request Date: {{ request_date }}</p>
 
     <h3>Request History</h3>
     {% for message in request_to_view.contents.previous_contents.all %}
@@ -21,6 +21,13 @@
     <p>{{ message.content }}</p>
     <p>at {{ message.updated_at }}</p>
     {% endfor %}
+
+    {% if is_receiver %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="close_request" style="font-size: 15px;">Close Request</button>
+    </form>
+    {% endif %}
 
     <button style="font-size: 15px;" onclick="location.href='{% url 'requests_page' %}'">Back to Requests List</button>
 

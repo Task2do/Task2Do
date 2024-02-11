@@ -13,6 +13,10 @@
             align-items: center;
         }
 
+        body {
+            flex-direction: column;
+        }
+
         /* Adjust margin and padding for better spacing */
         h1, h2, p {
             margin-bottom: 10px;
@@ -40,8 +44,6 @@
 </head>
 <body>
     <h1>Task Details - {{ task.title }}</h1>
-
-    <h2>{{ task.title }}</h2>
     <p>{{ task.description }}</p>
     <p>Due Date: {{ task.due_date }}</p>
     <p>Status: {{ task.status }}</p>
