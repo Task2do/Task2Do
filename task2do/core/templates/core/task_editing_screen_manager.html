@@ -60,7 +60,8 @@ document.getElementById("deleteButton").addEventListener("click", function() {
             method: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}'
-            }
+            },
+            redirect: 'follow' // will this fix the redirect issue?
         }).then(function(response) {
             if (response.ok) {
                 alert('Task deleted successfully.');
