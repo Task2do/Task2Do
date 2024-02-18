@@ -36,18 +36,35 @@
             background-color: darkblue; /* Darker blue on hover */
             border-color: darkblue; /* Darker border on hover */
         }
+
+        .delete-button {
+            color: white;
+            background-color: orangered;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: red;
+        }
     </style>
 </head>
 <body>
-  <h2>Edit Task</h2>
-  <form method="post">
+<h2>Edit Task</h2>
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     {% if not form.instance.parent_task %}
-      <button type="submit" name="create_subtasks">Create Subtasks</button>
+        <button type="submit" name="create_subtasks">Create Subtasks</button>
     {% endif %}
     <button type="submit" name="save_changes">Save Changes</button>
     <button type="submit" name="discard_changes">Discard Changes</button>
-  </form>
+    <button id="deleteButton" class="delete-button">Delete Task</button> <!-- Add delete button by Mowgli -->
+</form>
 </body>
 </html>
