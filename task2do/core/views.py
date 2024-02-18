@@ -4,20 +4,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 
-from django.core import serializers
 from django.template import loader
-from datetime import datetime
+from datetime import datetime, date
 from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
-
-# needs to accept the form to add content to request or close it
-from .forms import NewProjectRequestForm
-
-from django.utils.http import urlsafe_base64_encode
-from jwt.utils import force_bytes
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -26,9 +19,7 @@ from .forms import ForgotPasswordForm, NewRequestForm, CreateProjectForm, EditPr
     NewProjectRequestForm, TaskEditForm, UserRegistrationForm
 from .models import Manager, Worker, Project, Task, PersonalData, Request, RequestContentHistory
 from django.db.models import Q
-from .backend import ManagerBackend, WorkerBackend
 from django.utils import timezone
-from datetime import date
 
 
 # adding tasks and projects to the database

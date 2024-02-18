@@ -26,10 +26,9 @@ STATUS_CHOICES = [
     ('COMPLETED', 'Completed'),
 ]
 
-
 class PersonalData(models.Model):
     '''
-    PersonalData model representing personal data of a user.
+    PersonalData headermodel representing personal data of a user.
     '''
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='personal_data')
     b_date = models.DateField()  # addional by Task2Do
