@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Task Deletion</title>
+</head>
+<body>
+    <h1>Are you sure you want to delete this task?</h1>
+    <p>{{ task.title }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete it</button>
+    </form>
+    <a href="{% url 'task_editing_screen_manager' task.id %}">No, take me back</a>
+</body>
+</html>

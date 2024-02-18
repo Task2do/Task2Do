@@ -65,6 +65,7 @@ urlpatterns = [
     path('edit_project_workers/<int:project_id>/', views.edit_project_workers, name='edit_project_workers'),
     path('new_association_request/', views.new_association_request, name='new_association_request'),
     path('task_editing_screen_manager/<int:task_id>/', views.task_editing_screen_manager, name='task_editing_screen_manager'),
+    path('task/<int:task_id>/delete/', views.delete_task, name='delete_task'),
     path('new_project_request/', views.new_project_request, name='new_project_request'),
 
 ]

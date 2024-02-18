@@ -376,6 +376,24 @@ def task_editing_screen_manager(request, task_id):
 
 
 @login_required(login_url='manager_login')
+def delete_task(request, task_id):
+    '''
+    This function deletes a task from the database. added by Mowgli
+    :param request:
+    :param task_id:
+    :return deletion success:
+    '''
+    task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
+    if request.method == 'POST':
+        task.is_active = False
+        task.save()
+        messages.success(request, 'Task deleted successfully.')
+        return redirect('active_tasks')
+    else:
+        return render(request, 'core/task_confirm_delete.html', {'task': task})
+
+
+@login_required(login_url='manager_login')
 def edit_project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
     if request.method == 'POST':
