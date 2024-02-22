@@ -12,6 +12,8 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: lightcyan; /* Set background color to light cyan */
         }
 
         /* Define button styles */
@@ -19,11 +21,12 @@
             color: white;
             font-size: 15px;
             border: none;
-            border-radius: 0;
+            border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
             background-color: cornflowerblue;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
@@ -36,42 +39,74 @@
             height: 95vh; /* Adjusted height */
         }
 
-        /* Adjust the margin for the list items */
-        ul {
-            padding: 0;
-            margin: 0;
+        /* Define bubble styles */
+        .worker-bubble {
+            background-color: #c7e0ff; /* Light blueish color */
+            border: 2px solid #99ccff; /* Lighter blue border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px; /* Padding */
+            margin-bottom: 10px; /* Margin between bubbles */
+            width: 80%; /* Width of the bubbles */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: flex; /* Use flexbox for positioning */
+            flex-direction: column; /* Display content in a column layout */
+            align-items: flex-start; /* Align content to the start of the column */
         }
 
-        li {
-            list-style: none;
+        /* Define hover effect for bubbles */
+        .worker-bubble:hover {
+            background-color: #b3d9ff; /* Slightly darker blueish color on hover */
         }
 
-        /* Adjust the border for the list items */
+        /* Define button margin */
+        .chooseWorkerBtn {
+            margin-top: 10px; /* Adjust button margin */
+        }
+
+        /* Define worker info styles */
+        .worker-info {
+            display: inline-block; /* Ensure name and username are in the same line */
+        }
+
+        /* Define strong tag styles */
+        .worker-info strong {
+            margin-right: 10px; /* Add some spacing between name and username */
+        }
+
+        /* Define username styles */
+        .username {
+            margin-top: 5px; /* Add margin to separate username */
+        }
+
+        /* Container for each worker item */
         .worker-item {
-            border: 1px solid black;
-            margin: 10px;
-            padding: 10px;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
+        }
+
+        /* Adjust button width to fit inside the bubble */
+        .chooseWorkerBtn {
+            width: auto; /* Allow button to adjust its width */
         }
     </style>
 </head>
 <body>
     <h1>Workers List</h1>
 
-    <ul>
-        {% for worker in workers %}
-            <div class="worker-item">
-                <li>
-                    <h4>Worker Name</h4>
-                    {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
-                    <br>
-                    <h4>Worker Username</h4>
-                    {{ worker.personal_data.user.username}}
-                    <br>
-                    <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details' worker.id %}'">Choose Worker</button>
-                </li>
+    {% for worker in workers %}
+        <div class="worker-item">
+            <div class="worker-bubble">
+                <div class="worker-info">
+                    <strong>Name:</strong> {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
+                    <div class="username">
+                        <strong>Username:</strong> {{ worker.personal_data.user.username }}
+                    </div>
+                </div>
             </div>
-        {% endfor %}
-    </ul>
+            <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details' worker.id %}'">Choose Worker</button>
+        </div>
+    {% endfor %}
 
     <button id="backToHome" class="chooseWorkerBtn">Back to Home Screen</button>
 
@@ -82,4 +117,3 @@
     </script>
 </body>
 </html>
-

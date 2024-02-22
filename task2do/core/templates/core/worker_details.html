@@ -2,21 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Worker Details</title> <!-- Title translated to English -->
+    <title>Worker Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightcyan; /* Light blue background */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333; /* Dark gray heading color */
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            background-color: #c7e0ff; /* Lighter blue background for each item */
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        strong {
+            color: #007bff; /* Blue color for labels */
+        }
+
+        button {
+            color: white; /* Text color */
+            font-size: 15px; /* Font size */
+            border: none; /* Remove border */
+            border-radius: 30px; /* Large border radius for a bubbly effect */
+            padding: 10px 20px; /* Larger padding to increase button size */
+            margin: 10px; /* Margin */
+            background-color: darkblue; /* Coral color */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+        }
+
+        button:hover {
+            background-color: blue; /* Lighter coral color on hover */
+            transform: scale(1.05); /* Scale up slightly on hover */
+        }
+    </style>
 </head>
 <body>
-    <h1>Worker Details</h1> <!-- Worker Details Heading translated to English -->
+    <div>
+        <h1>Worker Details</h1>
 
-    <ul>
-        <li>Username: {{ worker.personal_data.user.username }}</li>
-        <li>First Name: {{ worker.personal_data.user.first_name }}</li>
-        <li>Last Name: {{ worker.personal_data.user.last_name }}</li>
-        <li>Email: {{ worker.personal_data.user.email }}</li>
-        <li>Date of Birth: {{ worker.personal_data.b_date }}</li>
-        <li>Last Login Date: {{ last_login }}</li>
-    </ul>
+        <ul>
+            <li><strong>Username:</strong> {{ worker.personal_data.user.username }}</li>
+            <li><strong>First Name:</strong> {{ worker.personal_data.user.first_name }}</li>
+            <li><strong>Last Name:</strong> {{ worker.personal_data.user.last_name }}</li>
+            <li><strong>Email:</strong> {{ worker.personal_data.user.email }}</li>
+            <li><strong>Date of Birth:</strong> {{ worker.personal_data.b_date }}</li>
+            <li><strong>Last Login Date:</strong> {{ last_login }}</li>
+        </ul>
 
-    <button id="backToList" style="font-size: 15px;">Back to Workers List</button> <!-- Back to Workers List translated to English -->
+        <button id="backToList">Back to Workers List</button>
+    </div>
 
     <script>
         document.getElementById("backToList").addEventListener("click", function() {
