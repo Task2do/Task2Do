@@ -2,115 +2,143 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requests</title>
     <style>
-        /* Center content vertically and horizontally */
-        html, body {
-            height: 100%;
+        /* Reset default margin and padding */
+        * {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Define button styles */
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light cyan background */
+            padding: 20px;
+            text-align: center; /* Center align text */
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Heading styles */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px; /* Increased margin for separation */
+            color: #333;
+        }
+
+        /* List styles */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        /* List item styles */
+        li {
+            background-color: #c7e0ff; /* Light blueish color */
+            border: 2px solid #99ccff; /* Lighter blue border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Button styles */
         .custom-button {
             color: white;
             font-size: 15px;
             border: none;
             border-radius: 5px;
             padding: 10px 20px;
-            margin: 10px;
             background-color: cornflowerblue;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        /* Define hover effect */
+        /* Button hover effect */
         .custom-button:hover {
-            background-color: darkblue;
+            background-color: #6495ED; /* Slightly darker blue */
         }
 
-        /* Adjust the height of the container */
-        body {
-            height: 95vh;
+        /* Button container */
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Wrap buttons onto multiple lines if necessary */
         }
 
-        /* Adjust margin and padding for better spacing */
-        ul {
-            padding: 0;
-            margin: 10px;
-        }
-
-        p {
+        /* Individual button styles */
+        .button-container button {
             margin: 5px;
         }
     </style>
 </head>
 <body>
-    <button id="newRequestBtn" class="custom-button">Create New Request</button>
+    <div class="container">
+        <h1>Requests to Me</h1>
+        <ul>
+            {% for request in requests_to_me %}
+                <li>
+                    <span>{{ request.header }} - {{ request.type }}</span>
+                    {% if request.type == 'ASOC' %}
+                        <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
+                    {% else %}
+                        <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h1>My Requests</h1>
+        <ul>
+            {% for request in requests_from_me %}
+                <li>
+                    <span>{{ request.header }} - {{ request.type }}</span>
+                    {% if request.type == 'ASOC' %}
+                        <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
+                    {% else %}
+                        <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="button-container">
+            <button id="requestHistoryBtn" class="custom-button">Request History</button>
+            <button id="createNewRequestBtn" class="custom-button">Create New Request</button>
+        </div>
+
+        <button id="backToHomeBtn" class="custom-button">Back to Home Page</button>
+    </div>
 
     <script>
-        var userType = "{{ user_type }}";
-        document.getElementById("newRequestBtn").addEventListener("click", function() {
-            if (userType === 'manager') {
+        var user_type = "{{ user_type }}";
+        document.getElementById("backToHomeBtn").addEventListener("click", function() {
+            var url = user_type === 'manager' ? "{% url 'manager_home_screen' %}" : "{% url 'user_home_screen' %}";
+            location.href = url;
+        });
+
+        document.getElementById("requestHistoryBtn").addEventListener("click", function() {
+            location.href = "{% url 'request_history' %}";
+        });
+
+        document.getElementById("createNewRequestBtn").addEventListener("click", function() {
+            if (user_type === 'manager') {
                 location.href = "{% url 'new_association_request' %}";
             } else {
                 location.href = "{% url 'new_request_submission' %}";
             }
         });
     </script>
-
-    <button id="requestHistoryBtn" class="custom-button">Request History</button>
-
-    <script>
-        document.getElementById("requestHistoryBtn").addEventListener("click", function() {
-            location.href = "{% url 'request_history' %}";
-        });
-    </script>
-
-    <h1>Requests to Me</h1>
-
-    <ul>
-        {% for request in requests_to_me %}
-            <li>
-                <p>{{ request.header }} - {{ request.type }}</p>
-                {% if request.type == 'ASOC' %}
-                    <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
-                {% else %}
-                    <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-
-    <h1>My Requests</h1>
-
-    <ul>
-        {% for request in requests_from_me %}
-            <li>
-               <p>{{ request.header }} - {{ request.type }}</p>
-                {% if request.type == 'ASOC' %}
-                    <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
-                {% else %}
-                    <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-
-    <button id="backToHomeBtn" class="custom-button">Back to Home Page</button>
-
-    <script>
-        var user_type = "{{ user_type }}";
-        document.getElementById("backToHomeBtn").addEventListener("click", function() {
-            if (user_type === 'manager') {
-                location.href = "{% url 'manager_home_screen' %}";
-            } else {
-                location.href = "{% url 'user_home_screen' %}";
-            }
-        });
-    </script>
 </body>
 </html>
-

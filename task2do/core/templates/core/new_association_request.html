@@ -12,49 +12,75 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            background-color: #f0f8ff; /* Light cyan background */
         }
 
-        /* Adjust margin and padding for better spacing */
+        /* Heading styles */
         h1 {
-            margin-bottom: 30px; /* Increased margin at the bottom */
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
         }
 
-        form {
-            text-align: center;
+        /* Form container */
+        .form-container {
+            background-color: #99ccff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
         }
 
-        /* Define button styles */
+        /* Form input styles */
+        input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Button styles */
         input[type="submit"], button {
-            color: white; /* Text color */
-            font-size: 15px; /* Font size */
-            border: 2px solid darkblue; /* Blue border */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin: 10px; /* Margin */
-            background-color: cornflowerblue; /* Blue background */
-            cursor: pointer; /* Change cursor on hover */
-            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* Define hover effect */
+        /* Button hover effect */
         input[type="submit"]:hover, button:hover {
-            background-color: darkblue; /* Darker blue on hover */
-            border-color: darkblue; /* Darker border on hover */
+            background-color: #6495ED; /* Lighter blue on hover */
+        }
+
+        /* Cancel button styles */
+        #discardButton {
+            background-color: cornflowerblue;
+        }
+
+        /* Cancel button hover effect */
+        #discardButton:hover {
+            background-color: #999; /* Darker gray on hover */
         }
     </style>
 </head>
 <body>
     <h1>Submit New Association Request</h1>
-    <form method="post" action="{% url 'new_association_request' %}">
-        {% csrf_token %}
-        {{ form.username.label_tag }}
-        {{ form.username }}
-        {% if form.username.errors %}
-            <div class="error">{{ form.username.errors }}</div>
-        {% endif %}
-        <input type="submit" value="Submit">
-        <button id="discardButton" type="button">Cancel</button>
-    </form>
+    <div class="form-container">
+        <form method="post" action="{% url 'new_association_request' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Enter Username">
+            <br>
+            <input type="submit" value="Submit">
+            <button id="discardButton" type="button">Cancel</button>
+        </form>
+    </div>
 
     <script>
         document.getElementById("discardButton").addEventListener("click", function() {

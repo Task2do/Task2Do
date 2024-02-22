@@ -2,81 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Requests</title>
+    <title>Project History</title>
     <style>
-        /* Center content vertically and horizontally */
-        html, body {
-            height: 100%;
+        /* Reset default margin and padding */
+        * {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Adjust margin and padding for better spacing */
-        h1, p {
-            margin: 10px 0; /* Increased margin at the top and bottom */
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light cyan background */
+            padding: 20px;
+            text-align: center; /* Center align text */
         }
 
-        /* Define button styles */
-        button {
-            color: white; /* Text color */
-            font-size: 15px; /* Font size */
-            border: 2px solid darkblue; /* Blue border */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin: 10px; /* Margin */
-            background-color: cornflowerblue; /* Blue background */
-            cursor: pointer; /* Change cursor on hover */
-            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        /* Define hover effect */
-        button:hover {
-            background-color: darkblue; /* Darker blue on hover */
-            border-color: darkblue; /* Darker border on hover */
+        /* Heading styles */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px; /* Increased margin for separation */
+            color: #333;
+        }
+
+        /* List styles */
+        ul {
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        /* List item styles */
+        .bubble {
+            background-color: cornflowerblue; /* Updated background color */
+            border: 2px solid #99ccff; /* Lighter blue border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px; /* Padding */
+            margin-bottom: 20px; /* Increased margin for separation */
+            position: relative; /* Position relative for button placement */
+            color: #fff; /* Text color */
+        }
+
+        /* Button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            background-color: #6495ED; /* Slightly darker blue */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute; /* Position absolute for button placement */
+            bottom: 10px; /* Align button to the bottom */
+            right: 10px; /* Align button to the right */
+        }
+
+        /* Button hover effect */
+        .custom-button:hover {
+            background-color: #4169E1; /* Darker blue on hover */
+        }
+
+        /* Centered button container */
+        .centered-button {
+            margin-top: 20px; /* Adjust margin for spacing */
+        }
+
+        /* Centered button */
+        #backToHomeBtn {
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <h1>Requests To Me</h1>
+    <div class="container">
+        <h1>Project History</h1>
 
-    <ul>
-        {% for request in requests_to_me %}
-            <p>{{ request.header }} - {{ request.type }}</p>
-            <button onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
-        {% if request.type == "ASOC" %}
-            <script>
-                document.getElementById("goto_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'view_request_association' request.id %}";
-                });
-            </script>
-        {% endif %}
-        {% endfor %}
+        <ul>
+            {% for project_data in projects_data %}
+                <li>
+                    <div class="bubble">
+                        <h2>{{ project_data.project.name }}</h2>
+                        <p>Number of Tasks: {{ project_data.num_tasks }}</p>
+                        <p>Number of Workers: {{ project_data.num_workers }}</p>
+                        <a href="{% url 'view_project' project_data.project.id %}" class="custom-button">Project Details</a>
+                    </div>
+                </li>
+            {% endfor %}
         </ul>
-    </ul>
 
-    <h1>My Requests</h1>
-    <ul>
-        {% for request in requests_from_me %}
-            <p>{{ request.header }} - {{ request.type }}</p>
-            <button onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
-        {% if request.type == "ASOC" %}
-            <script>
-                document.getElementById("goto_my_request{{request.id}}").addEventListener("click", function() {
-                    location.href = "{% url 'view_request_association' request.id %}";
-                });
-            </script>
-        {% endif %}
-        {% endfor %}
-        </ul>
-    </ul>
+        <div class="centered-button">
+            <button id="backToHomeBtn" class="custom-button">Back to Home Screen</button>
+        </div>
+    </div>
 
-    <button id="backToPrev">Back to Requests</button>
     <script>
-        document.getElementById("backToPrev").addEventListener("click", function() {
-            window.history.back();
+        var user_type = "{{ user_type }}";
+        document.getElementById("backToHomeBtn").addEventListener("click", function() {
+            if (user_type === 'manager') {
+                location.href = "{% url 'manager_home_screen' %}";
+            } else {
+                location.href = "{% url 'user_home_screen' %}";
+            }
         });
     </script>
 </body>

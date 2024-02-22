@@ -13,7 +13,7 @@
             align-items: center;
             flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: lightcyan; /* Set background color to light cyan */
+            background-color: #f0f8ff; /* Set background color to light cyan */
         }
 
         /* Define button styles */
@@ -46,7 +46,7 @@
             border-radius: 10px; /* Rounded corners */
             padding: 15px; /* Padding */
             margin-bottom: 10px; /* Margin between bubbles */
-            width: 80%; /* Width of the bubbles */
+            width: 400px; /* Width of the bubbles */
             transition: background-color 0.3s ease; /* Smooth transition */
             display: flex; /* Use flexbox for positioning */
             flex-direction: column; /* Display content in a column layout */
@@ -96,7 +96,7 @@
 
     {% for worker in workers %}
         <div class="worker-item">
-            <div class="worker-bubble">
+            <div class="worker-bubble bubble-{{ forloop.counter }}">
                 <div class="worker-info">
                     <strong>Name:</strong> {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
                     <div class="username">

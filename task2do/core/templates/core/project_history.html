@@ -4,74 +4,104 @@
     <meta charset="UTF-8">
     <title>Project History</title>
     <style>
+        /* Reset default margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         /* Center content vertically and horizontally */
         html, body {
             height: 100%;
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light cyan background */
         }
 
-        /* Define button styles */
-        .custom-button {
-            color: white;
-            font-size: 15px;
-            border: 2px solid white; /* Change border color to white */
-            border-radius: 5px;
-            padding: 10px 20px;
-            margin: 10px;
-            background-color: cornflowerblue;
-            cursor: pointer;
-            text-decoration: none; /* Remove underline */
-            display: inline-block; /* Make button inline */
-            transition: background-color 0.3s, border-color 0.3s;
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #99ccff; /* White background */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
         }
 
-        /* Define hover effect */
-        .custom-button:hover {
-            background-color: darkblue;
-            border-color: darkblue;
+        /* Title styles */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
         }
 
-        /* Adjust margin and padding for better spacing */
+        /* List styles */
         ul {
             padding: 0;
             margin: 0;
         }
 
-        li {
-            border: 1px solid black;
-            margin: 10px;
+        /* List item styles */
+        .project-item {
+            background-color: #f5f5f5; /* Light gray background */
+            border-radius: 10px;
             padding: 20px;
+            margin-bottom: 20px;
+            list-style: none;
+            transition: background-color 0.3s;
         }
 
-        h1 {
-            margin: 30px 0;
+        /* Hover effect for list items */
+        .project-item:hover {
+            background-color: #e0e0e0; /* Darker gray background on hover */
+        }
+
+        /* Button styles */
+        .custom-button {
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        /* Button hover effect */
+        .custom-button:hover {
+            background-color: #6495ED; /* Slightly darker blue on hover */
+        }
+
+        /* Back to home button styles */
+        #backToHome {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Project History</h1>
+    <div class="container">
+        <h1>Project History</h1>
 
-    <ul>
-        {% for project_data in projects_data %}
-            <li>
-                <h2>{{ project_data.project.name }}</h2>
-                <p>Number of Tasks: {{ project_data.num_tasks }}</p>
-                <p>Number of Workers: {{ project_data.num_workers }}</p>
-                <a href="{% url 'view_project' project_data.project.id %}" class="custom-button">Project Details</a>
-            </li>
-        {% endfor %}
-    </ul>
+        <ul>
+            {% for project_data in projects_data %}
+                <li class="project-item">
+                    <h2>{{ project_data.project.name }}</h2>
+                    <p>Number of Tasks: {{ project_data.num_tasks }}</p>
+                    <p>Number of Workers: {{ project_data.num_workers }}</p>
+                    <a href="{% url 'view_project' project_data.project.id %}" class="custom-button">Project Details</a>
+                </li>
+            {% endfor %}
+        </ul>
 
-    <a href="{% url 'manager_home_screen' %}" class="custom-button" id="backToHome">Back to Home Screen</a>
-
-    <script>
-        document.getElementById("backToHome").addEventListener("click", function() {
-            location.href = "{% url 'manager_home_screen' %}";
-        });
-    </script>
+        <a href="{% url 'manager_home_screen' %}" class="custom-button" id="backToHome">Back to Home Screen</a>
+    </div>
 </body>
 </html>
