@@ -4,28 +4,52 @@
     <meta charset="UTF-8">
     <title>Sign Up Succeeded</title>
     <style>
+        body {
+            background-color: lightblue; /* Teal background color */
+            font-family: Arial, sans-serif; /* Change font family */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+        }
+
         /* Define button styles */
         .custom-button {
             color: white; /* Text color */
-            font-size: 16px; /* Font size */
-            border: 2px solid blue; /* Outline color */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin: 5px; /* Margin */
+            font-size: 20px; /* Font size increased to 20px */
+            border: none; /* Remove border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px 30px; /* Padding increased */
+            margin: 10px; /* Margin */
             background-color: blue; /* Background color */
             cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
         }
 
         /* Define hover effect */
         .custom-button:hover {
             background-color: lightblue; /* Change background color on hover */
-            border-color: lightblue; /* Change border color on hover */
+            transform: scale(1.05); /* Scale up slightly on hover */
+        }
+
+        /* Center content */
+        .container {
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px; /* Font size increased to 24px */
+            margin-bottom: 20px; /* Added margin bottom for spacing */
         }
     </style>
 </head>
 <body>
-    <h2>Sign Up Succeeded</h2>
-    <!-- Apply the custom button class to style the button -->
-    <button onclick="location.href='{% url 'open_screen' %}'" class="custom-button">Back to Open Screen</button>
+    <div class="container">
+        <h2>Sign Up Succeeded !!!</h2>
+        <!-- Apply the custom button class to style the button -->
+        <button onclick="location.href='{% url 'open_screen' %}'" class="custom-button">Back to Open Screen</button>
+    </div>
 </body>
 </html>

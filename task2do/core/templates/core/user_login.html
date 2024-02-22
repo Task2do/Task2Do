@@ -2,42 +2,62 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>user login</title>
+    <title>User Login</title>
     <style>
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Style the form container */
+        .form-container {
+            text-align: center;
+            background-color: lightblue; /* Teal background color */
+            font-family: Arial, sans-serif; /* Change font family */
+            padding: 20px; /* Padding */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
+        }
+
         /* Define button styles */
         .custom-button {
-            color: blue; /* Text color */
-            font-size: 16px; /* Font size */
-            border: 2px solid lightblue; /* Outline color */
+            color: white; /* Text color */
+            font-size: 24px; /* Font size increased to 24px */
+            border: none; /* Remove border */
             border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin: 5px; /* Margin */
-            background-color: transparent; /* Transparent background */
+            padding: 15px 30px; /* Padding increased */
+            margin: 10px; /* Margin */
+            background-color: cadetblue; /* Green background */
             cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
         }
 
         /* Define hover effect */
         .custom-button:hover {
-            background-color: blue; /* Change background color on hover */
-            color: white; /* Change text color on hover */
+            background-color: steelblue; /* Darker green on hover */
         }
 
         /* Define smaller button styles */
         .small-button {
-            font-size: 12px; /* Smaller font size */
-            padding: 5px 10px; /* Smaller padding */
+            font-size: 20px; /* Font size increased to 20px */
+            padding: 10px 20px; /* Padding increased */
         }
 
-        /* Center the form */
-        .centered-form {
-            text-align: center;
-            margin-top: 100px; /* Adjust to increase distance from the top */
+        /* Style the error messages */
+        .error-message {
+            color: red; /* Red color for error messages */
+            font-weight: bold; /* Bold font for emphasis */
+            font-size: 22px; /* Font size increased to 22px */
         }
     </style>
 </head>
 <body>
-    <div class="centered-form">
-        <h2>user login</h2>
+    <div class="form-container">
+        <h2 style="font-size: 30px;">User Login</h2> <!-- Font size increased to 30px -->
         {% if messages %}
         <ul class="messages">
             {% for message in messages %}
@@ -52,11 +72,11 @@
             <label for="password">password:</label><br>
             <input type="password" id="password" name="password"><br>
             <!-- Update the color of the "login" button here -->
-            <input type="submit" value="login" class="custom-button" style="color: black;">
+            <input type="submit" value="login" class="custom-button">
             <!-- Make the "back" button smaller and change its color -->
-            <input type="button" value="back" onclick="window.history.back()" class="custom-button small-button" style="color: black;">
+            <input type="button" value="back" onclick="window.history.back()" class="custom-button small-button">
             <!-- Make the "forgot password" button smaller and change its color -->
-            <button type="button" onclick="location.href='{% url 'user_forgot_password' %}'" class="custom-button small-button" style="color: black;">forgot password</button> <!-- Forgot Password in Hebrew -->
+            <button type="button" onclick="location.href='{% url 'user_forgot_password' %}'" class="custom-button small-button">forgot password</button> <!-- Forgot Password in Hebrew -->
         </form>
     </div>
 </body>

@@ -4,31 +4,140 @@
     <meta charset="UTF-8">
     <title>Your Django Web Page</title>
     <style>
+        body {
+            background-color: #add8e6; /* Light blue background */
+            font-family: Arial, sans-serif; /* Change font family */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
+            position: relative; /* Position relative for absolute positioning of bubbles */
+        }
+
         /* Define button styles */
         .custom-button {
-            color: blue; /* Text color */
-            font-size: 14px; /* Font size */
-            border: 2px solid blue; /* Outline color */
-            border-radius: 5px; /* Rounded corners */
-            padding: 8px 16px; /* Smaller padding */
-            margin: 5px; /* Margin */
-            background-color: transparent; /* Transparent background */
+            color: white; /* Text color */
+            font-size: 18px; /* Font size */
+            border: none; /* Remove border */
+            border-radius: 30px; /* Large border radius for a bubbly effect */
+            padding: 15px 30px; /* Larger padding to increase button size */
+            margin: 10px; /* Margin */
+            background-color: darkblue; /* Coral color */
             cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+            z-index: 1; /* Ensure buttons are above bubbles */
         }
 
         /* Define hover effect */
         .custom-button:hover {
-            background-color: blue; /* Change background color on hover */
-            color: white; /* Change text color on hover */
+            background-color: darkblue; /* Lighter coral color on hover */
+            transform: scale(1.05); /* Scale up slightly on hover */
+        }
+
+        /* Center content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            position: relative; /* Position relative for absolute positioning of bubbles */
+            z-index: 1; /* Ensure content is above bubbles */
+        }
+
+        /* Style the date and time */
+        .date-time-container {
+            margin-top: 20px; /* Adjust margin as needed */
+            text-align: center;
+        }
+
+        .date {
+            font-size: 24px; /* Larger font size for date */
+            color: darkblue; /* Date color */
+            margin-bottom: 5px; /* Add space between date and time */
+        }
+
+        .time {
+            font-size: 20px; /* Font size for time */
+            color: #666; /* Time color */
+        }
+
+        /* Style for static bubbles resembling sticky notes */
+        .sticky-note {
+            position: absolute; /* Position absolute for free positioning */
+            background-color: #c7e0ff; /* Lighter blue background */
+            border: 2px solid #99ccff; /* Lighter blue border */
+            padding: 20px; /* Padding */
+            border-radius: 10px; /* Rounded corners */
+            width: 200px; /* Width of the sticky note */
+            text-align: left; /* Align text to the left */
+            font-size: 16px; /* Font size */
+            color: #666; /* Text color */
+            z-index: 0; /* Ensure bubbles are behind buttons */
+            opacity: 0.8; /* Reduced opacity for airbrushed effect */
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+        }
+
+        /* Positioning of bubbles */
+        .sticky-note:nth-child(odd) {
+            top: 10%;
+            left: 10%;
+        }
+
+        .sticky-note:nth-child(4n+2) {
+            top: 30%;
+            left: 30%;
+        }
+
+        .sticky-note:nth-child(4n+3) {
+            top: 50%;
+            left: 50%;
+        }
+
+        .sticky-note:nth-child(4n) {
+            top: 70%;
+            left: 70%;
         }
     </style>
 </head>
 <body>
-    <div style="text-align: center;">
-        <button onclick="location.href='{% url 'signup' %}'" class="custom-button">signup</button>
-        <h2 style="color: black;">{{ today_date }}</h2>
-        <button onclick="location.href='{% url 'user_login' %}'" class="custom-button">user login</button>
-        <button onclick="location.href='{% url 'manager_login' %}'" class="custom-button">manager login</button>
+    <!-- Static bubbles resembling sticky notes -->
+    <div class="sticky-note">Task 1: Review project proposal and provide feedback.</div>
+    <div class="sticky-note">Task 2: Prepare presentation slides for team meeting.</div>
+    <div class="sticky-note">Task 3: Conduct research on market trends and competitors.</div>
+    <div class="sticky-note">Task 4: Schedule client meetings for next week.</div>
+
+    <div class="container">
+        <button onclick="location.href='{% url 'signup' %}'" class="custom-button">Sign Up</button>
+        <!-- Date and time container -->
+        <div class="date-time-container">
+            <!-- Display the current date -->
+            <div class="date" id="current-date"></div>
+            <!-- Display the current time -->
+            <div class="time" id="current-time"></div>
+        </div>
+        <button onclick="location.href='{% url 'user_login' %}'" class="custom-button">User Login</button>
+        <button onclick="location.href='{% url 'manager_login' %}'" class="custom-button">Manager Login</button>
     </div>
+
+    <script>
+        // Function to update the current date and time every second
+        function updateDateTime() {
+            var now = new Date();
+            var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            var timeOptions = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
+            var currentDate = now.toLocaleDateString('en-US', dateOptions);
+            var currentTime = now.toLocaleTimeString('en-US', timeOptions);
+
+            // Update the date and time displayed on the page
+            document.getElementById('current-date').textContent = currentDate;
+            document.getElementById('current-time').textContent = currentTime;
+        }
+
+        // Call updateDateTime function initially to display the current date and time
+        updateDateTime();
+
+        // Update the current date and time every second
+        setInterval(updateDateTime, 1000);
+    </script>
 </body>
 </html>

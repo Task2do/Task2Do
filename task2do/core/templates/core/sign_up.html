@@ -10,42 +10,48 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align items at the top of the container */
+            align-items: center;
         }
 
         /* Style the form container */
         .form-container {
             text-align: center;
+            background-color: lightblue; /* Teal background color */
+            font-family: Arial, sans-serif; /* Change font family */
+            padding: 20px; /* Padding */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
         }
 
         /* Define button styles */
         .custom-button {
             color: white; /* Text color */
-            font-size: 16px; /* Font size */
-            border: 2px solid cadetblue; /* Green outline color */
+            font-size: 20px; /* Font size increased to 20px */
+            border: none; /* Remove border */
             border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin: 5px; /* Margin */
+            padding: 15px 30px; /* Padding increased */
+            margin: 10px; /* Margin */
             background-color: cadetblue; /* Green background */
             cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
         }
 
         /* Define hover effect */
         .custom-button:hover {
             background-color: steelblue; /* Darker green on hover */
-            border-color: steelblue; /* Darker outline on hover */
         }
 
         /* Define smaller button styles */
         .small-button {
-            font-size: 12px; /* Smaller font size */
-            padding: 5px 10px; /* Smaller padding */
+            font-size: 16px; /* Font size increased to 16px */
+            padding: 10px 20px; /* Padding increased */
         }
 
         /* Style the error messages */
         .error-message {
             color: red; /* Red color for error messages */
             font-weight: bold; /* Bold font for emphasis */
+            font-size: 18px; /* Font size increased to 18px */
         }
 
         /* Password constraints bubble */
@@ -54,15 +60,16 @@
             color: #333; /* Text color */
             border: 2px solid #ccc; /* Border color */
             border-radius: 5px; /* Rounded corners */
-            padding: 10px; /* Padding */
+            padding: 15px; /* Padding increased */
             margin-top: 20px; /* Margin from the top */
             text-align: left; /* Align text to the left */
+            font-size: 18px; /* Font size increased to 18px */
         }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <h2>Sign Up</h2>
+        <h2 style="font-size: 24px;">Sign Up</h2> <!-- Font size increased to 24px -->
         <form action="{% url 'signup' %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
@@ -73,7 +80,7 @@
             <ul class="error-message">
                 {% for field in form %}
                     {% for error in field.errors %}
-                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                        <li><strong style="font-size: 20px;">{{ field.label }}:</strong> {{ error }}</li> <!-- Font size increased to 20px -->
                     {% endfor %}
                 {% endfor %}
             </ul>
@@ -81,10 +88,10 @@
         <div id="password-constraints">
             <h3>Password must contain:</h3>
             <ul>
-                <li>At least 8 characters</li>
-                <li>At least one lowercase letter</li>
-                <li>At least one digit</li>
-                <li>At least one special character (e.g., !@#$%^&*)</li>
+                <li style="font-size: 20px;">At least 8 characters</li> <!-- Font size increased to 20px -->
+                <li style="font-size: 20px;">At least one lowercase letter</li> <!-- Font size increased to 20px -->
+                <li style="font-size: 20px;">At least one digit</li> <!-- Font size increased to 20px -->
+                <li style="font-size: 20px;">At least one special character (e.g., !@#$%^&*)</li> <!-- Font size increased to 20px -->
             </ul>
         </div>
     </div>
