@@ -246,7 +246,9 @@ def manager_forgot_password(request):
 
 
 def manager_home_screen(request):
-    return render(request, 'core/manager_home_screen.html')
+    user_id = request.user.personal_data.id
+    projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')[:2]
+    return render(request, 'core/manager_home_screen.html',{'projects': projects})
 
 
 # # Manager's projects
@@ -266,7 +268,7 @@ def project_workers(request, project_id):
 @login_required(login_url='manager_login')
 def active_projects(request):
     user_id = request.user.personal_data.id
-    active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id))
+    active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')
     now = timezone.now()
     formatted_now = now.strftime("%Y-%m-%d")
     context = {'active_projects': active_projects, 'now': formatted_now}
@@ -364,7 +366,7 @@ def task_editing_screen_manager(request, task_id):
         if 'save_changes' in request.POST:
             if form.is_valid():
                 updated_task = form.save(commit=False)
-                if updated_task.status == 'COMPLETED':
+                if updated_task.status in ['COMPLETED','CANCELED']:
                     updated_task.is_active = False
                 updated_task.save()  # TODO: Almog, please check if this is the correct way to save the form
                 return redirect('task_display_manager', task_id=task.id)

@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
+    
     <meta charset="UTF-8">
     <title>Manager Home Screen</title>
     <style>
         /* Define button styles */
         .custom-button {
             color: white; /* Text color */
-            font-size: 20px; /* Font size for smaller buttons */
-            border: 2px solid darkblue; /* Blue outline color */
-            border-radius: 25px; /* Rounded corners for smaller buttons */
-            padding: 10px 20px; /* Padding for smaller buttons */
-            margin: 5px; /* Margin */
-            background-color: cornflowerblue; /* Blue background for smaller buttons */
+            font-size: 18px; /* Font size */
+            border: none; /* Remove border */
+            border-radius: 30px; /* Large border radius for a bubbly effect */
+            padding: 15px 30px; /* Larger padding to increase button size */
+            margin: 10px; /* Margin */
+            background-color: darkblue; /* Coral color */
             cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+            z-index: 1; /* Ensure buttons are above bubbles */
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: darkblue; 
+            transform: scale(1.05); /* Scale up slightly on hover */
         }
 
         /* Define larger button styles */
@@ -21,27 +30,136 @@
             font-size: 20px; /* Font size for larger buttons */
             border-radius: 50px; /* Larger rounded corners */
             padding: 20px 40px; /* Larger padding */
-            background-color: cornflowerblue; /* Blue background for larger buttons */
+           }
+
+       
+ 
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: top;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Set background color to light cyan */
+        }
+
+        /* Define button styles */
+        .chooseprojectBtn {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
-        .custom-button:hover {
-            background-color: cornflowerblue; /* Darker blue on hover */
-            border-color: darkblue; /* Darker outline on hover */
+        .chooseprojectBtn:hover {
+            background-color: darkblue;
+        }
+
+        /* Adjust the height of the container */
+        body {
+            height: 95vh; /* Adjusted height */
+        }
+
+        /* Define bubble styles */
+        .project-bubble {
+            background-color: #c7e0ff; /* Light blueish color */
+            border: 2px solid #99ccff; /* Lighter blue border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px; /* Padding */
+            margin-bottom: 10px; /* Margin between bubbles */
+            width: 400px; /* Width of the bubbles */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: flex; /* Use flexbox for positioning */
+            flex-direction: column; /* Display content in a column layout */
+            align-items: flex-start; /* Align content to the start of the column */
+        }
+
+        /* Define hover effect for bubbles */
+        .project-bubble:hover {
+            background-color: #b3d9ff; /* Slightly darker blueish color on hover */
+        }
+
+        /* Define button margin */
+        .chooseprojectBtn {
+            margin-top: 10px; /* Adjust button margin */
+        }
+
+        /* Define project info styles */
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+           /* display: inline-block; /* Ensure name and username are in the same line */
+        }
+
+        /* Define strong tag styles */
+        .project-info strong {
+            margin-right: 10px; /* Add some spacing between name and username */
+        }
+
+        /* Define username styles */
+        .not-top-info {
+            margin-top: 5px; /* Add margin to separate username */
+        }
+
+        /* Container for each project item */
+        .project-item {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
+        }
+        .left, .right{
+        display: flex;
+        flex-direction: column;
+        }
+        /* Adjust button width to fit inside the bubble */
+        .chooseprojectBtn {
+            width: auto; /* Allow button to adjust its width */
         }
     </style>
-</head>
+
 <body>
-    <div style="text-align: center;">
-        <button class="custom-button large-button" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
-        <br>
-        <button class="custom-button" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My Workers</button>
-        <br>
-        <button class="custom-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
-        <br>
-        <button class="custom-button" onclick="location.href='{% url 'project_history' %}'">Project History</button>
-        <br>
-        <button class="custom-button" style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
+    <div style="text-align: center;  " >
+        <button class="chooseprojectBtn" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
+        
+        <button class="chooseprojectBtn" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My projects</button>
+        
+        <button class="chooseprojectBtn" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
+        
+        <button class="chooseprojectBtn" onclick="location.href='{% url 'project_history' %}'">Project History</button>
+        
     </div>
+
+    {% for project in projects %}
+        <div class="project-item">
+            <div class="project-bubble bubble-{{ forloop.counter }}">
+                <div class="project-info">
+                    <div class=left>
+                        <strong>Name:</strong> {{ project.name }}
+                        <div class="not-top-info">
+                            <strong>tasks:</strong> {{ project.tasks.count}}
+                        </div>
+                    </div>
+                    <div class=right>
+                        <strong>Name:</strong> {{ project.name }}
+                        <div class="not-top-info">
+                            <strong>tasks:</strong> {{ project.tasks.count}}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
+        </div>
+    {% endfor %}
+    <button class="custom-button" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
 </body>
 </html>
