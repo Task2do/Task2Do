@@ -635,8 +635,10 @@ def active_tasks(request):
     user_id = request.user.personal_data.id
     # print(user_id)
     active_tasks = Task.objects.filter(  # followup by Almog
-        ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id))
-    context = {'active_tasks': active_tasks}
+        ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id)).order_by("due_date")
+    now = timezone.now()
+    formatted_now = now.strftime("%Y-%m-%d")
+    context = {'active_tasks': active_tasks, "now" : formatted_now}
     return render(request, 'core/active_tasks.html', context)
 
 

@@ -11,16 +11,16 @@
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: cornflowerblue; /* Light blueish color */
-            border: 2px solid #99ccff;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            background-color: cornflowerblue; /* Light blueish color */
+            border: 2px solid #99ccff;
         }
 
         /* Button hover effect */
         .custom-button:hover {
-            background-color: #3066be; /* Blue sapphire */
-            transform: scale(1.05); /* Scale up slightly on hover */
+            background-color: darkblue;
+            transform: scale(1.05) /* Slightly darker blue */
         }
 
         /* Define larger button styles */
@@ -38,25 +38,25 @@
             align-items: center;
             flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff; /* Alice blue */
+            background-color: #eff5fe; /* Alice blue */
         }
+
 
         /* Define button styles */
         .chooseprojectBtn {
             color: white;
             font-size: 15px;
+            border: none;
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: cornflowerblue; /* Light blueish color */
-            border: none
+            background-color:  #6495ED; /* Dodger blue */
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         /* Define hover effect */
         .chooseprojectBtn:hover {
-            background-color: #0040c4; /* Dark royal blue */
+            background-color:#0040c4; /* Dark royal blue */
             transform: scale(1.05);
         }
 
@@ -71,7 +71,7 @@
         }
         /* Define bubble styles */
         .project-bubble {
-            background-color: cornflowerblue; /* Light blueish color */
+            background-color: #c7e0ff; /* Light blueish color */
             border: 2px solid #99ccff;
             border-radius: 10px; /* Rounded corners */
             padding: 15px; /* Padding */
@@ -85,7 +85,7 @@
 
         /* Define hover effect for bubbles */
         .project-bubble:hover {
-            background-color: #6495ED; /* Powder blue */
+            background-color: #9ad0eb; /* Powder blue */
         }
 
         /* Define button margin */
@@ -130,25 +130,6 @@
 
     <h1>projects</h1>
         {% for project in active_projects %}
-            {% if project.deadline|date:"Y-m-d" < now|date:"Y-m-d" %}
-            <div class="project-item">
-                <div class="project-bubble bubble-{{ forloop.counter }}">
-                    <div class="project-info">
-                        <div style="color: red;" class=left>
-                            <strong  style="color: red;">Name:</strong> {{ project.name }}
-                            <div class="not-top-info">
-                                <strong  style="color: red;">tasks:</strong> {{ project.tasks.count }}
-                            </div>
-                        </div>
-                        <div class=right  style="color: red;">
-                            <strong >workers:</strong>  {{ project.members.count }}
-                            <div class="not-top-info">
-                                <strong>due-date:</strong> {{project.due_date}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
             <div class="project-item">
                 <div class="project-bubble bubble-{{ forloop.counter }}">
                     <div class="project-info">
@@ -166,7 +147,6 @@
                         </div>
                     </div>
                 </div>
-            {% endif %}
                 <button class="custom-button" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
             </div>
         {% endfor %}

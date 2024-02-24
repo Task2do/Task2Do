@@ -4,65 +4,146 @@
     <meta charset="UTF-8">
     <title>Task History</title>
     <style>
+        /* Define button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: cornflowerblue; /* Light blueish color */
+            border: 2px solid #99ccff;
+        }
+
+        /* Button hover effect */
+        .custom-button:hover {
+            background-color: darkblue;
+            transform: scale(1.05) /* Slightly darker blue */
+        }
+
+        /* Define larger button styles */
+        .large-button {
+            font-size: 20px; /* Font size for larger buttons */
+            padding: 20px 40px; /* Larger padding */
+        }
+
         /* Center content vertically and horizontally */
         html, body {
             height: 100%;
             margin: 0;
             display: flex;
-            justify-content: center;
+            justify-content: top;
             align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #eff5fe; /* Alice blue */
         }
 
-        /* Adjust margin and padding for better spacing */
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        .task-box {
-            border: 1px solid black;
-            margin: 10px;
-            padding: 10px;
-            border-radius: 5px;
-        }
 
         /* Define button styles */
-        button {
-            font-size: 15px; /* Font size */
-            border: 2px solid darkblue; /* Blue border */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px 20px; /* Padding */
-            margin-top: 20px; /* Margin from the tasks */
-            background-color: cornflowerblue; /* Blue background */
-            cursor: pointer; /* Change cursor on hover */
-            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        .chooseprojectBtn {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color:  #6495ED; /* Dodger blue */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        /* Define hover effect */
+        .chooseprojectBtn:hover {
+            background-color:#0040c4; /* Dark royal blue */
+            transform: scale(1.05);
         }
 
-        /* Define hover effect */
-        button:hover {
-            background-color: darkblue; /* Darker blue on hover */
-            border-color: darkblue; /* Darker border on hover */
+        /* Adjust the height of the container */
+        body {
+            height: 95vh; /* Adjusted height */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px; /* Increased margin for separation */
+            color: #333;
+        }
+        /* Define bubble styles */
+        .project-bubble {
+            background-color: #c7e0ff; /* Light blueish color */
+            border: 2px solid #99ccff;
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px; /* Padding */
+            margin-bottom: 10px; /* Margin between bubbles */
+            width: 400px; /* Width of the bubbles */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: flex; /* Use flexbox for positioning */
+            flex-direction: column; /* Display content in a column layout */
+            align-items: flex-start; /* Align content to the start of the column */
+        }
+
+        /* Define hover effect for bubbles */
+        .project-bubble:hover {
+            background-color: #9ad0eb; /* Powder blue */
+        }
+
+        /* Define button margin */
+        .chooseprojectBtn {
+            margin-top: 10px; /* Adjust button margin */
+        }
+
+        /* Define project info styles */
+        .project-info {
+            column-gap: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Define strong tag styles */
+        .project-info strong {
+            margin-right: 10px; /* Add some spacing between name and username */
+        }
+
+        /* Define username styles */
+        .not-top-info {
+            margin-top: 5px; /* Add margin to separate username */
+        }
+
+        /* Container for each project item */
+        .project-item {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
+        }
+        .left, .right{
+            display:flex;
+            flex-direction: column;
+        }
+        /* Adjust button width to fit inside the bubble */
+        .chooseprojectBtn {
+            width: auto; /* Allow button to adjust its width */
         }
     </style>
 </head>
 <body>
     <h1>Task History</h1>
+    {% for task in histtory_tasks %}
+        <div class="project-item">
+            <div class="project-bubble bubble-{{ forloop.counter }}">
+                <div class="project-info">
+                    <div class=left>
+                        <strong >Name:</strong> {{ task.title }}
+                    </div>
+                    <div class=right  >
+                        <strong > Deadline: </strong>{{ task.due_date }}
+                    </div>
+                </div>
+            </div>
+            <button class="custom-button" onclick="location.href='{% url 'task_display_user' task.id %}'">task details</button>
+        </div>
+    {% endfor %}
+    <button class="custom-button" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'user_home_screen' %}'">Back to Home Screen</button>
 
-    <ul>
-        {% for task in history_tasks %}
-            <li class="task-box">
-                <h2>{{ task.title }}</h2>
-                <p>{{ task.description }}</p>
-                <p>Due Date: {{ task.due_date }}</p>
-                <p>Status: {{ task.status }}</p>
-            </li>
-        {% endfor %}
-    </ul>
-    <button id="back">Back</button>
-
-    <script>
-        document.getElementById("back").addEventListener("click", function() {
-            window.history.back();
-        });
-    </script>
 </body>
 </html>

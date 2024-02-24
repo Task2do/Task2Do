@@ -4,45 +4,75 @@
     <meta charset="UTF-8">
     <title>Workers List</title>
     <style>
+        /* Define button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: cornflowerblue; /* Light blueish color */
+            border: 2px solid #99ccff;
+        }
+
+        /* Button hover effect */
+        .custom-button:hover {
+            background-color: darkblue;
+            transform: scale(1.05) /* Slightly darker blue */
+        }
+
+        /* Define larger button styles */
+        .large-button {
+            font-size: 20px; /* Font size for larger buttons */
+            padding: 20px 40px; /* Larger padding */
+        }
+
         /* Center content vertically and horizontally */
         html, body {
             height: 100%;
             margin: 0;
             display: flex;
-            justify-content: center;
+            justify-content: top;
             align-items: center;
             flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff; /* Set background color to light cyan */
+            background-color: #eff5fe; /* Alice blue */
         }
 
+
         /* Define button styles */
-        .chooseWorkerBtn {
+        .chooseprojectBtn {
             color: white;
             font-size: 15px;
             border: none;
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: cornflowerblue;
+            background-color:  #6495ED; /* Dodger blue */
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         /* Define hover effect */
-        .chooseWorkerBtn:hover {
-            background-color: darkblue;
+        .chooseprojectBtn:hover {
+            background-color:#0040c4; /* Dark royal blue */
+            transform: scale(1.05);
         }
 
         /* Adjust the height of the container */
         body {
             height: 95vh; /* Adjusted height */
         }
-
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px; /* Increased margin for separation */
+            color: #333;
+        }
         /* Define bubble styles */
-        .worker-bubble {
+        .project-bubble {
             background-color: #c7e0ff; /* Light blueish color */
-            border: 2px solid #99ccff; /* Lighter blue border */
+            border: 2px solid #99ccff;
             border-radius: 10px; /* Rounded corners */
             padding: 15px; /* Padding */
             margin-bottom: 10px; /* Margin between bubbles */
@@ -54,66 +84,72 @@
         }
 
         /* Define hover effect for bubbles */
-        .worker-bubble:hover {
-            background-color: #b3d9ff; /* Slightly darker blueish color on hover */
+        .project-bubble:hover {
+            background-color: #9ad0eb; /* Powder blue */
         }
 
         /* Define button margin */
-        .chooseWorkerBtn {
+        .chooseprojectBtn {
             margin-top: 10px; /* Adjust button margin */
         }
 
-        /* Define worker info styles */
-        .worker-info {
-            display: inline-block; /* Ensure name and username are in the same line */
+        /* Define project info styles */
+        .project-info {
+            column-gap: 40px;
+            display: flex;
+            justify-content: space-between;
         }
 
         /* Define strong tag styles */
-        .worker-info strong {
+        .project-info strong {
             margin-right: 10px; /* Add some spacing between name and username */
         }
 
         /* Define username styles */
-        .username {
+        .not-top-info {
             margin-top: 5px; /* Add margin to separate username */
         }
 
-        /* Container for each worker item */
-        .worker-item {
+        /* Container for each project item */
+        .project-item {
             display: flex; /* Use flexbox for layout */
             justify-content: space-between; /* Space between bubble and button */
             align-items: flex-start; /* Align items to the top */
         }
-
+        .left, .right{
+            display:flex;
+            flex-direction: column;
+        }
         /* Adjust button width to fit inside the bubble */
-        .chooseWorkerBtn {
+        .chooseprojectBtn {
             width: auto; /* Allow button to adjust its width */
         }
     </style>
 </head>
 <body>
-    <h1>Workers List</h1>
-
+    <h1>workers </h1>
     {% for worker in workers %}
-        <div class="worker-item">
-            <div class="worker-bubble bubble-{{ forloop.counter }}">
-                <div class="worker-info">
-                    <strong>Name:</strong> {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
-                    <div class="username">
-                        <strong>Username:</strong> {{ worker.personal_data.user.username }}
+        <div class="project-item">
+            <div class="project-bubble bubble-{{ forloop.counter }}">
+                <div class="project-info">
+                    <div  class=left>
+                        <strong >Name:</strong>  {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
+                    </div>
+                    <div class=right >
+                        <strong  >username</strong> {{ worker.personal_data.user.username }}
                     </div>
                 </div>
             </div>
-            <button class="chooseWorkerBtn" onclick="location.href='{% url 'worker_details' worker.id %}'">Choose Worker</button>
+            <button class="custom-button" onclick="location.href='{% url 'worker_details' worker.id %}'">worker details</button>
         </div>
     {% endfor %}
+    <button class="custom-button" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'manager_home_screen' %}'">Back to Home Screen</button>
 
-    <button id="backToHome" class="chooseWorkerBtn">Back to Home Screen</button>
 
-    <script>
-        document.getElementById("backToHome").addEventListener("click", function() {
-            location.href = "{% url 'manager_home_screen' %}";
-        });
-    </script>
+
+
+
+
+
 </body>
 </html>
