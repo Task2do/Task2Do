@@ -8,16 +8,16 @@
         .custom-button {
             color: white;
             font-size: 15px;
-            border: none;
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: #0d98ba; /* Dark cerulean */
+            background-color: cornflowerblue; /* Light blueish color */
+            border: 2px solid #99ccff;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
-        /* Define hover effect */
+        /* Button hover effect */
         .custom-button:hover {
             background-color: #3066be; /* Blue sapphire */
             transform: scale(1.05); /* Scale up slightly on hover */
@@ -38,18 +38,18 @@
             align-items: center;
             flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: #eff5fe; /* Alice blue */
+            background-color: #f0f8ff; /* Alice blue */
         }
 
         /* Define button styles */
         .chooseprojectBtn {
             color: white;
             font-size: 15px;
-            border: none;
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: #1a73e8; /* Dodger blue */
+            background-color: cornflowerblue; /* Light blueish color */
+            border: none
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
@@ -71,8 +71,8 @@
         }
         /* Define bubble styles */
         .project-bubble {
-            background-color: #c3e7f7; /* Light sky blue */
-            border: 2px solid #5ba3d0; /* Jordy blue */
+            background-color: cornflowerblue; /* Light blueish color */
+            border: 2px solid #99ccff;
             border-radius: 10px; /* Rounded corners */
             padding: 15px; /* Padding */
             margin-bottom: 10px; /* Margin between bubbles */
@@ -85,7 +85,7 @@
 
         /* Define hover effect for bubbles */
         .project-bubble:hover {
-            background-color: #9ad0eb; /* Powder blue */
+            background-color: #6495ED; /* Powder blue */
         }
 
         /* Define button margin */
@@ -167,10 +167,10 @@
                     </div>
                 </div>
             {% endif %}
-                <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
+                <button class="custom-button" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
             </div>
         {% endfor %}
-        <button class="chooseprojectBtn" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'manager_home_screen' %}'">Back to Home Screen</button>
+        <button class="custom-button" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'manager_home_screen' %}'">Back to Home Screen</button>
     
 </body>
 </html>
