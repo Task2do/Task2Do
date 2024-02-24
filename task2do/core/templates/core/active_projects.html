@@ -1,83 +1,184 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Active Projects</title>
+    <title>Projects</title>
     <style>
+        /* Define button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: darkblue;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: darkblue; 
+            transform: scale(1.05); /* Scale up slightly on hover */
+        }
+
+        /* Define larger button styles */
+        .large-button {
+            font-size: 20px; /* Font size for larger buttons */
+            
+            padding: 20px 40px; /* Larger padding */
+           }
+
+       
+ 
         /* Center content vertically and horizontally */
         html, body {
             height: 100%;
             margin: 0;
             display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Align items at the top of the container */
+            justify-content: top;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: lightcyan; /* Set background color to light cyan */
         }
 
         /* Define button styles */
-        .custom-button {
-            color: white; /* Text color */
-            font-size: 15px; /* Font size */
-            border: none; /* No border */
-            border-radius: 0; /* Square corners */
-            padding: 10px 20px; /* Padding */
-            margin: 5px; /* Margin */
-            background-color: cornflowerblue; /* Blue background */
-            cursor: pointer; /* Change cursor on hover */
+        .chooseprojectBtn {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: darkblue;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
-        .custom-button:hover {
-            background-color: darkblue; /* Darker blue on hover */
+        .chooseprojectBtn:hover {
+            background-color: darkblue;
+            transform: scale(1.05);
         }
 
-        /* Adjust vertical spacing */
-        div {
-            margin-top: 50px; /* Adjust as needed */
-            text-align: center; /* Center content horizontally */
+        /* Adjust the height of the container */
+        body {
+            height: 95vh; /* Adjusted height */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px; /* Increased margin for separation */
+            color: #333;
+        }
+        /* Define bubble styles */
+        .project-bubble {
+            background-color: #c7e0ff; /* Light blueish color */
+            border: 2px solid #99ccff; /* Lighter blue border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px; /* Padding */
+            margin-bottom: 10px; /* Margin between bubbles */
+            width: 400px; /* Width of the bubbles */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: flex; /* Use flexbox for positioning */
+            flex-direction: column; /* Display content in a column layout */
+            align-items: flex-start; /* Align content to the start of the column */
+        }
+
+        /* Define hover effect for bubbles */
+        .project-bubble:hover {
+            background-color: #b3d9ff; /* Slightly darker blueish color on hover */
+        }
+
+        /* Define button margin */
+        .chooseprojectBtn {
+            margin-top: 10px; /* Adjust button margin */
+        }
+
+        /* Define project info styles */
+        .project-info {
+            column-gap: 40px;
+            display: flex;
+            justify-content: space-between;
+           /* display: inline-block; /* Ensure name and username are in the same line */
+        }
+
+        /* Define strong tag styles */
+        .project-info strong {
+            margin-right: 10px; /* Add some spacing between name and username */
+        }
+
+        /* Define username styles */
+        .not-top-info {
+            margin-top: 5px; /* Add margin to separate username */
+        }
+
+        /* Container for each project item */
+        .project-item {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
+        }
+        .left, .right{
+            display:flex;
+            flex-direction: column;
+        }
+        /* Adjust button width to fit inside the bubble */
+        .chooseprojectBtn {
+            width: auto; /* Allow button to adjust its width */
         }
     </style>
 </head>
 <body>
-    <div>
-        <button class="custom-button" style="margin-bottom: 20px;">
-            <a href="{% url 'create_new_project' %}">Create New Project</a>
-        </button>
-        <h1>Active Projects</h1>
+        
+    <h1>projects</h1>
+        {% for project in active_projects %}
+            {% if project.deadline|date:"Y-m-d" < now|date:"Y-m-d" %}
+            <div class="project-item">
+                <div class="project-bubble bubble-{{ forloop.counter }}">
+                    <div class="project-info">
+                        <div style="color: red;" class=left>
+                            <strong  style="color: red;">Name:</strong> {{ project.name }}
+                            <div class="not-top-info">
+                                <strong  style="color: red;">tasks:</strong> {{ project.tasks.count }}
+                            </div>
+                        </div>
+                        <div class=right  style="color: red;">
+                            <strong >workers:</strong>  {{ project.members.count }}
+                            <div class="not-top-info">
+                                <strong>due-date:</strong> {{project.due_date}}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            {% else %}
+            <div class="project-item">
+                <div class="project-bubble bubble-{{ forloop.counter }}">
+                    <div class="project-info">
+                        <div  class=left>
+                            <strong >Name:</strong> {{ project.name }}
+                            <div class="not-top-info">
+                                <strong  >tasks:</strong> {{ project.tasks.count }}
+                            </div>
+                        </div>
+                        <div class=right >
+                            <strong >workers:</strong>  {{ project.members.count }}
+                            <div class="not-top-info">
+                                <strong>due-date:</strong> {{project.due_date}}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            {% endif %}
 
-        <ul>
-            {% for project in active_projects %}
-                {% if project.deadline|date:"Y-m-d" < now|date:"Y-m-d" %}
-                    <li style="border: 1px solid red; margin: 10px; padding: 10px;">
-                        <h2 style="color: red;">{{ project.name }}</h2>
-                        <p style="color: red;">Number of Tasks: {{ project.tasks.count }}</p>
-                        <p style="color: red;">Number of Assigned Workers: {{ project.members.count }}</p>
-                        <p style="color: red;">Project Due Date: {{ project.due_date }}</p>
-                        <h5 style="color: red;">Project Due Date Passed</h5>
-                        <button class="custom-button">
-                            <a href="{% url 'view_project' project.id %}">Project Details</a>
-                        </button>
-                    </li>
-                {% else %}
-                    <li style="border: 1px solid black; margin: 10px; padding: 10px;">
-                        <h2>{{ project.name }}</h2>
-                        <p>Number of Tasks: {{ project.tasks.count }}</p>
-                        <p>Number of Assigned Workers: {{ project.members.count }}</p>
-                        <p>Project Due Date: {{ project.due_date }}</p>
-                        <button class="custom-button">
-                            <a href="{% url 'view_project' project.id %}">Project Details</a>
-                        </button>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-
-        <button class="custom-button" id="backToHome">Back to Home Screen</button>
-    </div>
-
-    <script>
-        document.getElementById("backToHome").addEventListener("click", function() {
-            location.href = "{% url 'manager_home_screen' %}";
-        });
-    </script>
+                <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
+            </div>
+        {% endfor %}
+        <button class="chooseprojectBtn" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'manager_home_screen' %}'">Back to Home Screen</button>
+    
 </body>
 </html>
