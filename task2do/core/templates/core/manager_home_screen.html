@@ -7,16 +7,15 @@
     <style>
         /* Define button styles */
         .custom-button {
-            color: white; /* Text color */
-            font-size: 18px; /* Font size */
-            border: none; /* Remove border */
-            border-radius: 30px; /* Large border radius for a bubbly effect */
-            padding: 15px 30px; /* Larger padding to increase button size */
-            margin: 10px; /* Margin */
-            background-color: darkblue; /* Coral color */
-            cursor: pointer; /* Change cursor on hover */
-            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
-            z-index: 1; /* Ensure buttons are above bubbles */
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: cornflowerblue;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
@@ -28,7 +27,7 @@
         /* Define larger button styles */
         .large-button {
             font-size: 20px; /* Font size for larger buttons */
-            border-radius: 50px; /* Larger rounded corners */
+            
             padding: 20px 40px; /* Larger padding */
            }
 
@@ -95,6 +94,7 @@
 
         /* Define project info styles */
         .project-info {
+            column-gap: 40px;
             display: flex;
             justify-content: space-between;
            /* display: inline-block; /* Ensure name and username are in the same line */
@@ -117,8 +117,8 @@
             align-items: flex-start; /* Align items to the top */
         }
         .left, .right{
-        display: flex;
-        flex-direction: column;
+            display:flex;
+            flex-direction: column;
         }
         /* Adjust button width to fit inside the bubble */
         .chooseprojectBtn {
@@ -128,13 +128,13 @@
 
 <body>
     <div style="text-align: center;  " >
-        <button class="chooseprojectBtn" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
         
-        <button class="chooseprojectBtn" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My projects</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My projects</button>
         
-        <button class="chooseprojectBtn" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
         
-        <button class="chooseprojectBtn" onclick="location.href='{% url 'project_history' %}'">Project History</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'project_history' %}'">Project History</button>
         
     </div>
 
@@ -149,9 +149,9 @@
                         </div>
                     </div>
                     <div class=right>
-                        <strong>Name:</strong> {{ project.name }}
+                        <strong>workers:</strong> {{ project.members.count }}
                         <div class="not-top-info">
-                            <strong>tasks:</strong> {{ project.tasks.count}}
+                            <strong>due-date:</strong> {{ project.due_date}}
                         </div>
                     </div>
                     
@@ -160,6 +160,6 @@
             <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
         </div>
     {% endfor %}
-    <button class="custom-button" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
+    <button class="chooseprojectBtn" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
 </body>
 </html>
