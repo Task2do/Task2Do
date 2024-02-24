@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    
     <meta charset="UTF-8">
     <title>Manager Home Screen</title>
     <style>
@@ -13,26 +12,23 @@
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: darkblue;
+            background-color: #0d98ba; /* Dark cerulean */
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
         .custom-button:hover {
-            background-color: darkblue; 
+            background-color: #3066be; /* Blue sapphire */
             transform: scale(1.05); /* Scale up slightly on hover */
         }
 
         /* Define larger button styles */
         .large-button {
             font-size: 20px; /* Font size for larger buttons */
-            
             padding: 20px 40px; /* Larger padding */
-           }
+        }
 
-       
- 
         /* Center content vertically and horizontally */
         html, body {
             height: 100%;
@@ -42,7 +38,7 @@
             align-items: center;
             flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: lightcyan; /* Set background color to light cyan */
+            background-color: #eff5fe; /* Alice blue */
         }
 
         /* Define button styles */
@@ -53,14 +49,14 @@
             border-radius: 5px;
             padding: 10px 20px;
             margin: 5px;
-            background-color: darkblue;
+            background-color: #1a73e8; /* Dodger blue */
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
         .chooseprojectBtn:hover {
-            background-color: darkblue;
+            background-color: #0040c4; /* Dark royal blue */
             transform: scale(1.05);
         }
 
@@ -71,8 +67,8 @@
 
         /* Define bubble styles */
         .project-bubble {
-            background-color: #c7e0ff; /* Light blueish color */
-            border: 2px solid #99ccff; /* Lighter blue border */
+            background-color: #c3e7f7; /* Light sky blue */
+            border: 2px solid #5ba3d0; /* Jordy blue */
             border-radius: 10px; /* Rounded corners */
             padding: 15px; /* Padding */
             margin-bottom: 10px; /* Margin between bubbles */
@@ -85,7 +81,7 @@
 
         /* Define hover effect for bubbles */
         .project-bubble:hover {
-            background-color: #b3d9ff; /* Slightly darker blueish color on hover */
+            background-color: #9ad0eb; /* Powder blue */
         }
 
         /* Define button margin */
@@ -98,7 +94,6 @@
             column-gap: 40px;
             display: flex;
             justify-content: space-between;
-           /* display: inline-block; /* Ensure name and username are in the same line */
         }
 
         /* Define strong tag styles */
@@ -126,17 +121,13 @@
             width: auto; /* Allow button to adjust its width */
         }
     </style>
-
+</head>
 <body>
-    <div style="text-align: center;  " >
+    <div style="text-align: center;">
         <button class="custom-button large-button" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
-        
-        <button class="custom-button large-button" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My projects</button>
-        
+        <button class="custom-button large-button" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My Workers</button>
         <button class="custom-button large-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
-        
         <button class="custom-button large-button" onclick="location.href='{% url 'project_history' %}'">Project History</button>
-        
     </div>
 
     {% for project in projects %}
@@ -146,19 +137,18 @@
                     <div class=left>
                         <strong>Name:</strong> {{ project.name }}
                         <div class="not-top-info">
-                            <strong>tasks:</strong> {{ project.tasks.count}}
+                            <strong>Tasks:</strong> {{ project.tasks.count }}
                         </div>
                     </div>
                     <div class=right>
-                        <strong>workers:</strong> {{ project.members.count }}
+                        <strong>Workers:</strong> {{ project.members.count }}
                         <div class="not-top-info">
-                            <strong>due-date:</strong> {{ project.due_date}}
+                            <strong>Due Date:</strong> {{ project.due_date }}
                         </div>
                     </div>
-                    
                 </div>
             </div>
-            <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project.id %}'">project details</button>
+            <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project.id %}'">Project Details</button>
         </div>
     {% endfor %}
     <button class="chooseprojectBtn" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
