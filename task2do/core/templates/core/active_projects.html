@@ -129,6 +129,8 @@
 <body>
 
     <h1>projects</h1>
+    <button class="custom-button large-button" onclick="location.href='{% url 'create_new_project' %}'">New Project</button>
+        
         {% for project in active_projects %}
             <div class="project-item">
                 <div class="project-bubble bubble-{{ forloop.counter }}">
