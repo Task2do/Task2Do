@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <title>Project Details</title>
     <style>
+        .colored-strip {
+            width: 100vw;
+            position: relative;
+            margin-left: -50vw;
+            height: auto;
+            left: 50%;
+            background-color: #66b6a9;
+            text-align: left; /* Center the image horizontally */
+        }
+        
+        .colored-strip img {
+            max-width: 100%;
+            height: auto;
+        }
         /* Center content vertically and horizontally */
         html, body {
             height: 100%;
@@ -44,6 +58,11 @@
     </style>
 </head>
 <body>
+    {% load static %}
+    <div class="colored-strip">
+        
+        <img src="{% static 'task2do_logo.jpeg' %}" style ="width:10% ;" alt="logo">
+    </div>
     <h1>Project Details</h1>
 
     <h2>{{ project.name }}: Project Name</h2>

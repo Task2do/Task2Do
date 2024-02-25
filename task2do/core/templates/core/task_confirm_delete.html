@@ -5,6 +5,11 @@
     <title>Confirm Task Deletion</title>
 </head>
 <body>
+    {% load static %}
+    <div class="colored-strip">
+        
+        <img src="{% static 'task2do_logo.jpeg' %}" style ="width:10% ;" alt="logo">
+    </div>
     <h1>Are you sure you want to delete this task?</h1>
     <p>{{ task.title }}</p>
     <form method="post">

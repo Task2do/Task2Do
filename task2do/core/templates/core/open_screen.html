@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <title>Your Django Web Page</title>
     <style>
+        .colored-strip {
+            z-index: 0;
+            width: 100vw;
+            position: absolute;
+            margin-left: -50vw;
+            height: auto;
+            left: 50%;
+            background-color: #66b6a9;
+            text-align: left; /* Center the image horizontally */
+            z-index=1;
+        }
+        
+        .colored-strip img {
+            max-width: 100%;
+            height: auto;
+        }
         body {
             background-color: lightcyan; /* Light blue background */
             font-family: Arial, sans-serif; /* Change font family */
@@ -100,6 +116,11 @@
     </style>
 </head>
 <body>
+    {% load static %}
+    <div class="colored-strip">
+        
+        <img src="{% static 'task2do_logo.jpeg' %}" style ="width:10% ;" alt="logo">
+    </div>
     <!-- Static bubbles resembling sticky notes -->
     <div class="sticky-note">Task: Review project proposal and provide feedback.</div>
     <div class="sticky-note">Task: Prepare presentation slides for team meeting.</div>

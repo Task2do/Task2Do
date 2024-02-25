@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requests</title>
     <style>
+        .colored-strip {
+            width: 100vw;
+            position: relative;
+            margin-left: -50vw;
+            height: auto;
+            left: 50%;
+            background-color: #66b6a9;
+            text-align: left; /* Center the image horizontally */
+        }
+        
+        .colored-strip img {
+            max-width: 100%;
+            height: auto;
+        }
         /* Reset default margin and padding */
         * {
             margin: 0;
@@ -90,6 +104,11 @@
     </style>
 </head>
 <body>
+    {% load static %}
+    <div class="colored-strip">
+        
+        <img src="{% static 'task2do_logo.jpeg' %}" style ="width:10% ;" alt="logo">
+    </div>
     <div class="container">
         <h1>Requests to Me</h1>
         <ul>

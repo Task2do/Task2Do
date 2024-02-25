@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <title>Worker Details</title>
     <style>
+        .colored-strip {
+            width: 100vw;
+            position: relative;
+            margin-left: -50vw;
+            height: auto;
+            left: 50%;
+            background-color: #66b6a9;
+            text-align: left; /* Center the image horizontally */
+        }
+        
+        .colored-strip img {
+            max-width: 100%;
+            height: auto;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: lightcyan; /* Light blue background */
@@ -55,6 +69,11 @@
     </style>
 </head>
 <body>
+    {% load static %}
+    <div class="colored-strip">
+        
+        <img src="{% static 'task2do_logo.jpeg' %}" style ="width:10% ;" alt="logo">
+    </div>
     <div>
         <h1>Worker Details</h1>
 
