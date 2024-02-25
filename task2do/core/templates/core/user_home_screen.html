@@ -6,28 +6,119 @@
     <style>
         /* Define button styles */
         .custom-button {
-            color: white; /* Text color */
-            font-size: 20px; /* Font size for smaller buttons */
-            border: 2px solid darkblue; /* Blue outline color */
-            border-radius: 25px; /* Rounded corners for smaller buttons */
-            padding: 10px 20px; /* Padding for smaller buttons */
-            margin: 5px; /* Margin */
-            background-color: cornflowerblue; /* Blue background for smaller buttons */
-            cursor: pointer; /* Change cursor on hover */
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: cornflowerblue; /* Dark cerulean */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Define hover effect */
+        .custom-button:hover {
+            background-color: darkblue; /* Blue sapphire */
+            transform: scale(1.05); /* Scale up slightly on hover */
         }
 
         /* Define larger button styles */
         .large-button {
             font-size: 20px; /* Font size for larger buttons */
-            border-radius: 50px; /* Larger rounded corners */
             padding: 20px 40px; /* Larger padding */
-            background-color: cornflowerblue; /* Blue background for larger buttons */
+        }
+
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: top;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #eff5fe; /* Alice blue */
+        }
+
+        /* Define button styles */
+        .chooseprojectBtn {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: cornflowerblue; /* Dodger blue */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         /* Define hover effect */
-        .custom-button:hover {
-            background-color: cornflowerblue; /* Darker blue on hover */
-            border-color: darkblue; /* Darker outline on hover */
+        .chooseprojectBtn:hover {
+            background-color: darkblue; /* Dark royal blue */
+            transform: scale(1.05);
+        }
+
+        /* Adjust the height of the container */
+        body {
+            height: 95vh; /* Adjusted height */
+        }
+
+        /* Define bubble styles */
+        .project-bubble {
+            background-color: #c3e7f7; /* Light sky blue */
+            border: 2px solid #5ba3d0; /* Jordy blue */
+            border-radius: 10px; /* Rounded corners */
+            padding: 15px; /* Padding */
+            margin-bottom: 10px; /* Margin between bubbles */
+            width: 400px; /* Width of the bubbles */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: flex; /* Use flexbox for positioning */
+            flex-direction: column; /* Display content in a column layout */
+            align-items: flex-start; /* Align content to the start of the column */
+        }
+
+        /* Define hover effect for bubbles */
+        .project-bubble:hover {
+            background-color: #9ad0eb; /* Powder blue */
+        }
+
+        /* Define button margin */
+        .chooseprojectBtn {
+            margin-top: 10px; /* Adjust button margin */
+        }
+
+        /* Define project info styles */
+        .project-info {
+            column-gap: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Define strong tag styles */
+        .project-info strong {
+            margin-right: 10px; /* Add some spacing between name and username */
+        }
+
+        /* Define username styles */
+        .not-top-info {
+            margin-top: 5px; /* Add margin to separate username */
+        }
+
+        /* Container for each project item */
+        .project-item {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
+        }
+        .left, .right{
+            display:flex;
+            flex-direction: column;
+        }
+        /* Adjust button width to fit inside the bubble */
+        .chooseprojectBtn {
+            width: auto; /* Allow button to adjust its width */
         }
     </style>
 </head>
@@ -35,12 +126,29 @@
     <div style="text-align: center;">
         <button class="custom-button large-button" onclick="location.href='{% url 'active_tasks' %}'">Active Tasks</button>
         <button class="custom-button large-button" onclick="location.href='{% url 'upcoming_deadlines' %}'">Upcoming Deadlines</button>
-        <br>
-        <button class="custom-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
-        <br>
-        <button class="custom-button" onclick="location.href='{% url 'task_history' %}'">Tasks History</button>
-        <br>
-        <button class="custom-button" style="font-size: 15px; float: left;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'requests_page' %}'">Requests</button>
+        <button class="custom-button large-button" onclick="location.href='{% url 'task_history' %}'">Tasks History</button>
     </div>
+    {% for task in active_tasks %}
+            <div class="project-item">
+                <div class="project-bubble bubble-{{ forloop.counter }}">
+                    <div class="project-info">
+                        <div class=left>
+                            <strong >Name:</strong> {{ task.title }}
+                            <div class="not-top-info">
+                                <strong>status</strong> {{task.status}}
+                            </div>
+                        </div> 
+                        <div class=right  >
+                            <strong > Deadline: </strong>{{ task.due_date }}
+                            
+                        </div>
+                    </div>
+                </div>
+                <button class="custom-button" onclick="location.href='{% url 'task_display_user' task.id %}'">task details</button>
+                <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_user' task.id %}'">edit tasks</button>
+            </div>
+        {% endfor %}
+    <button class="chooseprojectBtn" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'logout' %}'">Sign Out</button>
 </body>
 </html>

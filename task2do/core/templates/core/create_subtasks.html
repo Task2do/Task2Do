@@ -6,71 +6,73 @@
     <style>
         /* Center content vertically and horizontally */
         html, body {
-            height: 100%;
+            height: 90%;
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
             flex-direction: column;
+            align-items: center;
+            background-color: #f0f8ff;
         }
 
         /* Adjust margin and padding for better spacing */
-        h2 {
-            margin-top: 50px; /* Increased margin at the top */
-            margin-bottom: 30px; /* Increased margin at the bottom */
-        }
-
-        form {
-            text-align: center;
-        }
+        
 
         /* Define button styles */
-        button[type="submit"], button#back {
+        button {
             color: white; /* Text color */
             font-size: 15px; /* Font size */
-            border: 2px solid darkblue; /* Blue border */
+            border: cornflowerblue; /* Blue border */
             border-radius: 5px; /* Rounded corners */
             padding: 10px 20px; /* Padding */
             margin: 10px; /* Margin */
-            background-color: cornflowerblue; /* Blue background */
+            background-color: #9ad0eb; /* Blue background */
             cursor: pointer; /* Change cursor on hover */
             transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
         }
 
         /* Define hover effect */
-        button[type="submit"]:hover, button#back:hover {
+        button:hover {
             background-color: darkblue; /* Darker blue on hover */
             border-color: darkblue; /* Darker border on hover */
         }
 
-        /* Style form list items */
-        li {
-            border: 1px solid black; /* Black border */
-            margin: 10px; /* Margin */
-            padding: 10px; /* Padding */
-            list-style: none; /* Remove bullet point */
+        .delete-button {
+            color: white;
+            background-color: orangered;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: red;
         }
     </style>
 </head>
 <body>
-    <h2>Create Subtasks</h2>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ formset.management_form }}
-        {% for form in formset %}
-            <li>
-                {{ form.as_p }}
-            </li>
-        {% endfor %}
-        <button type="submit" name="next">Create</button>
-    </form>
-
+    
+    <h1>Create Subtasks</h1>
     <button id="back">Back</button>
     <script>
         document.getElementById("back").addEventListener("click", function() {
             history.back();
         });
     </script>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+                {{ form.as_p }}
+            
+        {% endfor %}
+        <button type="submit" name="next">Create</button>
+    </form>
+
+    
 </body>
 </html>

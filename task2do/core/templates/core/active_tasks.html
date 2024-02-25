@@ -135,9 +135,13 @@
                     <div class="project-info">
                         <div class=left>
                             <strong >Name:</strong> {{ task.title }}
-                        </div>
+                            <div class="not-top-info">
+                                <strong>status</strong> {{task.status}}
+                            </div>
+                        </div> 
                         <div class=right  >
                             <strong > Deadline: </strong>{{ task.due_date }}
+                            
                         </div>
                     </div>
                 </div>

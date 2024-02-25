@@ -607,7 +607,11 @@ def user_forgot_password(request):
 
 
 def user_home_screen(request):
-    return render(request, 'core/user_home_screen.html')
+    user_id = request.user.personal_data.id
+    active_tasks = Task.objects.filter(  # followup by Almog
+        ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id)).order_by("due_date")[:5]
+    context = {'active_tasks': active_tasks}
+    return render(request, 'core/user_home_screen.html',context)
 
 
 # # User's tasks
@@ -705,7 +709,6 @@ def create_subtasks(request, task_id, num_subtasks):
         formset = SubtaskFormSet()
     return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
 
-
 @login_required(login_url='user_login')
 def upcoming_deadlines(request):
     """
@@ -720,7 +723,7 @@ def upcoming_deadlines(request):
         HttpResponse: The HTTP response.
     """
     now = timezone.now()
-    upcoming_tasks = Task.objects.filter(due_date__gt=now,
+    upcoming_tasks = Task.objects.filter(due_date__gte=now,
                                          assigned_to__personal_data__id=request.user.personal_data.id).order_by(
         'due_date')
     context = {'upcoming_tasks': upcoming_tasks}

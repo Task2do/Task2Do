@@ -134,6 +134,9 @@
                 <div class="project-info">
                     <div  class=left>
                         <strong >Name:</strong>  {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
+                        <div class= "not-top-info">
+                            <strong>Email: </strong> {{ worker.personal_data.user.email }}
+                        </div>
                     </div>
                     <div class=right >
                         <strong  >username</strong> {{ worker.personal_data.user.username }}
