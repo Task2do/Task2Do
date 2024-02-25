@@ -35,21 +35,26 @@
 
         /* List styles */
         ul {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 20px;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
         }
 
         /* List item styles */
         li {
             background-color: #c7e0ff; /* Light blueish color */
-            border: 2px solid #99ccff; /* Lighter blue border */
+            border: 2px solid #99ccff;
             border-radius: 10px; /* Rounded corners */
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px; /* Padding */
+            margin-bottom: 10px; /* Margin between bubbles */
+            width: 400px; /* Width of the bubbles */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: flex; /* Use flexbox for positioning */
+            flex-direction: column; /* Display content in a column layout */
+            align-items: flex-start; /* Align content to the start of the column */
+        }
+        li:hover {
+            background-color: #9ad0eb; /* Powder blue */
         }
 
         /* Button styles */
@@ -63,10 +68,10 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         /* Button hover effect */
         .custom-button:hover {
-            background-color: #6495ED; /* Slightly darker blue */
+            background-color: darkblue;
+            transform: scale(1.05) /* Slightly darker blue */
         }
 
         /* Button container */
@@ -90,12 +95,13 @@
             {% for request in requests_to_me %}
                 <li>
                     <span>{{ request.header }} - {{ request.type }}</span>
-                    {% if request.type == 'ASOC' %}
+                    
+                </li>
+                {% if request.type == 'ASOC' %}
                         <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
                     {% else %}
                         <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
                     {% endif %}
-                </li>
             {% endfor %}
         </ul>
 
@@ -104,12 +110,13 @@
             {% for request in requests_from_me %}
                 <li>
                     <span>{{ request.header }} - {{ request.type }}</span>
-                    {% if request.type == 'ASOC' %}
+                    
+                </li>
+                {% if request.type == 'ASOC' %}
                         <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
                     {% else %}
                         <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
                     {% endif %}
-                </li>
             {% endfor %}
         </ul>
 

@@ -100,12 +100,24 @@ def request_history(request):
     personal_data = request.user.personal_data
 
     # Filter requests where the last sender is the current user's PersonalData
-    requests_from_me = Request.objects.filter(last_sender=personal_data, is_active=False)
+    requests_from_me= Request.objects.filter(last_sender=personal_data, is_active=False)
 
     # Filter requests where the last receiver is the current user's PersonalData
     requests_to_me = Request.objects.filter(last_receiver=personal_data, is_active=False)
+    #requests_from_me={}
+    ##for request in requests_from_me_model:
+        ##requests_from_me.update(
+            ##"request": {
+                
+            ##}
+        ##)
+
+    
+    
+    
     # Pass the requests to the template
-    context = {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me}
+    context = {'requests_from_me': requests_from_me,
+                'requests_to_me': requests_to_me}
     return render(request, 'core/request_history.html', context)
 
 
@@ -618,8 +630,10 @@ def user_home_screen(request):
 @login_required(login_url='user_login')
 def task_history(request):
     worker_id = request.user.personal_data.id
+    
     tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assigned_to=worker_id).order_by(
         '-due_date')
+    
     return render(request, 'core/task_history.html', {'history_tasks': tasks})
 
 

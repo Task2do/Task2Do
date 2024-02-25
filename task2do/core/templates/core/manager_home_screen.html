@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Manager Home Screen</title>
     <style>
+        .colored-strip {
+            background-color: #66b6a9;
+            padding: 20px;
+            text-align: center; /* Center the image horizontally */
+        }
+        
+        .colored-strip img {
+            max-width: 100%;
+            height: auto;
+        }
         /* Define button styles */
         .custom-button {
             color: white;
@@ -123,6 +133,9 @@
     </style>
 </head>
 <body>
+    <div class="colored-strip">
+        <img src="{% static 'task2do/task2do_logo.jpgjpg' %}" alt="Your Image">
+    </div>
     <div style="text-align: center;">
         <button class="custom-button large-button" onclick="location.href='{% url 'active_projects' %}'">Active Projects</button>
         <button class="custom-button large-button" onclick="location.href='{% url 'workers_list_manager' request.user.id %}'">My Workers</button>
