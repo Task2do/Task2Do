@@ -159,12 +159,12 @@
                         <div class=right>
                             <strong>workers:</strong>  {{ project_data.num_workers }}
                             <div class="not-top-info">
-                                <strong>due-date:</strong> {{ project_data.project.due_date}}
+                                <strong>due-date:</strong> {{ project_data.due_date}}
                             </div>
                         </div>
                     </div>
                 </div>
-                <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project_data.project.id %}'">project details</button>
+                <button class="chooseprojectBtn" onclick="location.href='{% url 'view_project' project_data.id %}'">project details</button>
             </div>
         {% endfor %}
         <button class="chooseprojectBtn" style="font-size: 15px;margin-left:-500px;" onclick="location.href='{% url 'manager_home_screen' %}'">Back to Home Screen</button>
