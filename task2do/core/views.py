@@ -35,8 +35,29 @@ def add_project_to_manager(request, manager_id, project_id):
     project = Project.objects.get(id=project_id)
     manager.lead_projects.add(project)
     manager.save()
-
-
+def taskAPI( task):
+    return {"title":task.title ,
+            "status":task.status , 
+            "due_date":task.due_date, 
+            "user":
+            task.assigned_to.personal_data.user.username +" - "+task.assigned_to.personal_data.user.first_name+" "+task.assigned_to.personal_data.user.last_name
+            }
+def projectAPI(project):
+    tasks =project.tasks.filter( ~Q(status = "CANCELED"))
+    completed_tasks = tasks.filter(status ="COMPLETED")
+    return [{"name":project.name,
+                        "count_tasks": tasks.count,
+                        "count_completed_tasks":completed_tasks.count,
+                        "members_count": project.members.count,
+                        "due_date": project.due_date,
+                        "id": project.id
+                    }]
+def requestAPI(request):
+    return{
+                "header": request.header,
+                "type":request.type,
+                 "id":request.id
+                }
 # general stuff
 def open_screen(request):
     context = {
@@ -369,7 +390,12 @@ def project_tasks(request, project_id):
     inactive_tasks = [task for task in all_tasks if not task.is_active and task.due_date >= now]
     active_tasks_past_deadline = [task for task in all_tasks if task.is_active and task.due_date < now]
     inactive_tasks_past_deadline = [task for task in all_tasks if not task.is_active and task.due_date < now]
-
+    project= {"name": project.name, "id": project.id}
+    active_tasks =[taskAPI(task) for task in active_tasks]
+    inactive_tasks =[taskAPI(task) for task in inactive_tasks]
+    active_tasks_past_deadline =[taskAPI(task) for task in active_tasks_past_deadline]
+    inactive_tasks_past_deadline =[taskAPI(task) for task in inactive_tasks_past_deadline]
+    
     context = {
         'project': project,
         'active_tasks': active_tasks,
@@ -385,6 +411,7 @@ def project_tasks(request, project_id):
 def task_display_manager(request, task_id):
     task = Task.objects.get(id=task_id)
     project = task.project_tasks.all().first()
+    
     return render(request, 'core/task_display_manager.html', {'task': task, 'project_id': project.id})
 
 
