@@ -35,14 +35,14 @@ def add_project_to_manager(request, manager_id, project_id):
     project = Project.objects.get(id=project_id)
     manager.lead_projects.add(project)
     manager.save()
-def taskAPI( task):
+def task_data( task):
     return {"title":task.title ,
             "status":task.status , 
             "due_date":task.due_date, 
             "user":
             task.assigned_to.personal_data.user.username +" - "+task.assigned_to.personal_data.user.first_name+" "+task.assigned_to.personal_data.user.last_name
             }
-def projectAPI(project):
+def project_data(project):
     tasks =project.tasks.filter( ~Q(status = "CANCELED"))
     completed_tasks = tasks.filter(status ="COMPLETED")
     return [{"name":project.name,
@@ -52,7 +52,7 @@ def projectAPI(project):
                         "due_date": project.due_date,
                         "id": project.id
                     }]
-def requestAPI(request):
+def request_data(request):
     return{
                 "header": request.header,
                 "type":request.type,
