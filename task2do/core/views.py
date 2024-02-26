@@ -100,19 +100,26 @@ def request_history(request):
     personal_data = request.user.personal_data
 
     # Filter requests where the last sender is the current user's PersonalData
-    requests_from_me= Request.objects.filter(last_sender=personal_data, is_active=False)
+    requests_from_me_model= Request.objects.filter(last_sender=personal_data, is_active=False)
 
     # Filter requests where the last receiver is the current user's PersonalData
-    requests_to_me = Request.objects.filter(last_receiver=personal_data, is_active=False)
-    #requests_from_me={}
-    ##for request in requests_from_me_model:
-        ##requests_from_me.update(
-            ##"request": {
-                
-            ##}
-        ##)
+    requests_to_me_model = Request.objects.filter(last_receiver=personal_data, is_active=False)
+    requests_from_me=[]
+    for request1 in requests_from_me_model:
+        requests_from_me += [{
+                "header": request1.header,
+                "type":request1.type,
+                "id":request1.id
+                }]
+    requests_to_me=[]
+    for request1 in requests_to_me_model:
+        requests_to_me += [{
+                "header": request1.header,
+                "type":request1.type,
+                 "id":request1.id
+                }]
 
-    
+
     
     
     # Pass the requests to the template
@@ -202,7 +209,13 @@ def view_request_association(request, request_id):
     # Get the user_id from the request.user object
     user_id = request.user.id
     request_date = request_to_view.content_history.all().first().updated_at
-    context = {'request_to_view': request_to_view, 'user_id': user_id, 'request_date': request_date}
+    context = {'request_to_view': {"header":request_to_view.header
+                                   ,"is_active":request_to_view.is_active
+                                   , "last_sender_id": request_to_view.last_sender.id 
+                                   ,"last_sender_name": request_to_view.last_sender.user.username+" - "+ request_to_view.last_sender.user.first_name +" "+ request_to_view.last_sender.user.last_name 
+                                   }
+               , 'user_id': user_id
+               , 'request_date': request_date}
     return render(request, 'core/view_request_association.html', context)
 
 
@@ -259,8 +272,19 @@ def manager_forgot_password(request):
 
 def manager_home_screen(request):
     user_id = request.user.personal_data.id
-    projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')[:2]
-    return render(request, 'core/manager_home_screen.html',{'projects': projects})
+    projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')[:5]
+    list_projects = []
+    for project in projects:
+        tasks =project.tasks.filter( ~Q(status = "CANCELED"))
+        completed_tasks = tasks.filter(status ="COMPLETED")
+        list_projects+= [{"name":project.name,
+                          "count_tasks": tasks.count,
+                            "count_completed_tasks":completed_tasks.count,
+                            "members_count": project.members.count,
+                            "due_date": project.due_date,
+                            "id": project.id
+                        }]
+    return render(request, 'core/manager_home_screen.html',{'projects': list_projects})
 
 
 # # Manager's projects
@@ -283,7 +307,18 @@ def active_projects(request):
     active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')
     now = timezone.now()
     formatted_now = now.strftime("%Y-%m-%d")
-    context = {'active_projects': active_projects, 'now': formatted_now}
+    list_projects = []
+    for project in active_projects:
+        tasks =project.tasks.filter( ~Q(status = "CANCELED"))
+        completed_tasks = tasks.filter(status ="COMPLETED")
+        list_projects+= [{"name":project.name,
+                          "count_tasks": tasks.count,
+                            "count_completed_tasks":completed_tasks.count,
+                            "members_count": project.members.count,
+                            "due_date": project.due_date,
+                            "id": project.id
+                        }]
+    context = {'active_projects': list_projects, 'now': formatted_now}
     return render(request, 'core/active_projects.html', context)
 
 
@@ -309,16 +344,18 @@ def create_new_project(request):
 def project_history(request):
     manager = Manager.objects.get(personal_data__user=request.user)
     projects = manager.lead_projects.all().filter(is_active=False, due_date__lt=timezone.now())
-    projects_data = []
+    list_projects = []
     for project in projects:
-        num_tasks = project.tasks.count()
-        num_workers = project.members.count()
-        projects_data.append({
-            'project': project,
-            'num_tasks': num_tasks,
-            'num_workers': num_workers,
-        })
-    return render(request, 'core/project_history.html', {'projects_data': projects_data})
+        tasks =project.tasks.filter( ~Q(status = "CANCELED"))
+        completed_tasks = tasks.filter(status ="COMPLETED")
+        list_projects+= [{"name":project.name,
+                          "count_tasks": tasks.count,
+                            "count_completed_tasks":completed_tasks.count,
+                            "members_count": project.members.count,
+                            "due_date": project.due_date,
+                            "id": project.id
+                        }]
+    return render(request, 'core/project_history.html', {'projects_data': list_projects})
 
 
 # # Manager's tasks

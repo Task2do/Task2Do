@@ -7,7 +7,7 @@
     <style>
         .colored-strip {
             width: 100vw;
-            position: relative;
+            position: relative
             margin-left: -50vw;
             height: auto;
             left: 50%;
@@ -157,11 +157,11 @@
                     <div class=left>
                         <strong>Name:</strong> {{ project.name }}
                         <div class="not-top-info">
-                            <strong>Tasks:</strong> {{ project.tasks.count }}
+                            <strong>Tasks:</strong> {{project.count_completed_tasks}}/{{project.count_tasks}}
                         </div>
                     </div>
                     <div class=right>
-                        <strong>Workers:</strong> {{ project.members.count }}
+                        <strong>Workers:</strong> {{ project.members_count }}
                         <div class="not-top-info">
                             <strong>Due Date:</strong> {{ project.due_date }}
                         </div>

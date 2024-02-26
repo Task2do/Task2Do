@@ -6,7 +6,8 @@
     <style>
         .colored-strip {
             width: 100vw;
-            position: relative;
+            position: absolute;
+            top:0;
             margin-left: -50vw;
             height: auto;
             left: 50%;
@@ -62,10 +63,10 @@
     <h1>{{ request_to_view.header }}</h1>
 
     <h3>Request Details</h3>
-    <p>Sender: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
+    <p>Sender: {{request_to_view.last_sender_name}}</p>
     <p>Request Date: {{ request_date }}</p>
 
-    {% if request_to_view.is_active and user_id != request_to_view.last_sender.id %}
+    {% if request_to_view.is_active and user_id != request_to_view.last_sender_id %}
     <h3>Accept or Reject Request</h3>
         <form method="post">
             {% csrf_token %}
