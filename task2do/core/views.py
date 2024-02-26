@@ -38,22 +38,23 @@ def add_project_to_manager(request, manager_id, project_id):
 def task_data( task):
     return {"title":task.title ,
             "status":task.status , 
-            "due_date":task.due_date, 
+            "due_date":task.due_date,
+            "id":task.id, 
             "user":
             task.assigned_to.personal_data.user.username +" - "+task.assigned_to.personal_data.user.first_name+" "+task.assigned_to.personal_data.user.last_name
             }
 def project_data(project):
     tasks =project.tasks.filter( ~Q(status = "CANCELED"))
     completed_tasks = tasks.filter(status ="COMPLETED")
-    return [{"name":project.name,
+    return {"name":project.name,
                         "count_tasks": tasks.count,
                         "count_completed_tasks":completed_tasks.count,
                         "members_count": project.members.count,
                         "due_date": project.due_date,
                         "id": project.id
-                    }]
+                    }
 def request_data(request):
-    return{
+    return {
                 "header": request.header,
                 "type":request.type,
                  "id":request.id
@@ -121,24 +122,12 @@ def request_history(request):
     personal_data = request.user.personal_data
 
     # Filter requests where the last sender is the current user's PersonalData
-    requests_from_me_model= Request.objects.filter(last_sender=personal_data, is_active=False)
+    requests_from_me= Request.objects.filter(last_sender=personal_data, is_active=False)
 
     # Filter requests where the last receiver is the current user's PersonalData
-    requests_to_me_model = Request.objects.filter(last_receiver=personal_data, is_active=False)
-    requests_from_me=[]
-    for request1 in requests_from_me_model:
-        requests_from_me += [{
-                "header": request1.header,
-                "type":request1.type,
-                "id":request1.id
-                }]
-    requests_to_me=[]
-    for request1 in requests_to_me_model:
-        requests_to_me += [{
-                "header": request1.header,
-                "type":request1.type,
-                 "id":request1.id
-                }]
+    requests_to_me = Request.objects.filter(last_receiver=personal_data, is_active=False)
+    requests_from_me=[ request_data(request) for request in requests_from_me]
+    requests_to_me=requests_from_me=[ request_data(request) for request in requests_to_me]
 
 
     
@@ -294,17 +283,8 @@ def manager_forgot_password(request):
 def manager_home_screen(request):
     user_id = request.user.personal_data.id
     projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')[:5]
-    list_projects = []
-    for project in projects:
-        tasks =project.tasks.filter( ~Q(status = "CANCELED"))
-        completed_tasks = tasks.filter(status ="COMPLETED")
-        list_projects+= [{"name":project.name,
-                          "count_tasks": tasks.count,
-                            "count_completed_tasks":completed_tasks.count,
-                            "members_count": project.members.count,
-                            "due_date": project.due_date,
-                            "id": project.id
-                        }]
+    list_projects = [project_data(project) for project in projects]
+    print(list_projects)
     return render(request, 'core/manager_home_screen.html',{'projects': list_projects})
 
 
@@ -328,17 +308,7 @@ def active_projects(request):
     active_projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')
     now = timezone.now()
     formatted_now = now.strftime("%Y-%m-%d")
-    list_projects = []
-    for project in active_projects:
-        tasks =project.tasks.filter( ~Q(status = "CANCELED"))
-        completed_tasks = tasks.filter(status ="COMPLETED")
-        list_projects+= [{"name":project.name,
-                          "count_tasks": tasks.count,
-                            "count_completed_tasks":completed_tasks.count,
-                            "members_count": project.members.count,
-                            "due_date": project.due_date,
-                            "id": project.id
-                        }]
+    list_projects = [project_data(project) for project in active_projects]
     context = {'active_projects': list_projects, 'now': formatted_now}
     return render(request, 'core/active_projects.html', context)
 
@@ -365,17 +335,7 @@ def create_new_project(request):
 def project_history(request):
     manager = Manager.objects.get(personal_data__user=request.user)
     projects = manager.lead_projects.all().filter(is_active=False, due_date__lt=timezone.now())
-    list_projects = []
-    for project in projects:
-        tasks =project.tasks.filter( ~Q(status = "CANCELED"))
-        completed_tasks = tasks.filter(status ="COMPLETED")
-        list_projects+= [{"name":project.name,
-                          "count_tasks": tasks.count,
-                            "count_completed_tasks":completed_tasks.count,
-                            "members_count": project.members.count,
-                            "due_date": project.due_date,
-                            "id": project.id
-                        }]
+    list_projects = [project_data(project) for project in projects]
     return render(request, 'core/project_history.html', {'projects_data': list_projects})
 
 
@@ -391,10 +351,10 @@ def project_tasks(request, project_id):
     active_tasks_past_deadline = [task for task in all_tasks if task.is_active and task.due_date < now]
     inactive_tasks_past_deadline = [task for task in all_tasks if not task.is_active and task.due_date < now]
     project= {"name": project.name, "id": project.id}
-    active_tasks =[taskAPI(task) for task in active_tasks]
-    inactive_tasks =[taskAPI(task) for task in inactive_tasks]
-    active_tasks_past_deadline =[taskAPI(task) for task in active_tasks_past_deadline]
-    inactive_tasks_past_deadline =[taskAPI(task) for task in inactive_tasks_past_deadline]
+    active_tasks =[task_data(task) for task in active_tasks]
+    inactive_tasks =[task_data(task) for task in inactive_tasks]
+    active_tasks_past_deadline =[task_data(task) for task in active_tasks_past_deadline]
+    inactive_tasks_past_deadline =[task_data(task) for task in inactive_tasks_past_deadline]
     
     context = {
         'project': project,

@@ -7,8 +7,7 @@
     <style>
         .colored-strip {
             width: 100vw;
-            position: absolute;
-            top:0;
+            position: relative;
             margin-left: -50vw;
             height: auto;
             left: 50%;
@@ -20,43 +19,72 @@
             max-width: 100%;
             height: auto;
         }
-        /* Reset default margin and padding */
-        * {
+        /* Define button styles */
+        .custom-button {
+            color: white;
+            font-size: 15px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            background-color: cornflowerblue; /* Light blueish color */
+            border: 2px solid #99ccff;
+        }
+
+       /* Button hover effect */
+        .custom-button:hover {
+            background-color: #6495ED; /* Slightly darker blue */
+        }
+
+        /* Define larger button styles */
+        .large-button {
+            font-size: 20px; /* Font size for larger buttons */
+            padding: 20px 40px; /* Larger padding */
+        }
+
+        /* Center content vertically and horizontally */
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Body styles */
-        body {
+            display: flex;
+            justify-content: top;
+            align-items: center;
+            flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff; /* Light cyan background */
-            padding: 20px;
-            text-align: center; /* Center align text */
+            background-color: #eff5fe; /* Alice blue */
         }
 
-        /* Container styles */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        /* Define button styles */
+        .chooseprojectBtn {
+            color: white;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color:  #6495ED; /* Dodger blue */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        /* Heading styles */
+        /* Define hover effect */
+        .chooseprojectBtn:hover {
+            background-color:#0040c4; /* Dark royal blue */
+            transform: scale(1.05);
+        }
+
+        /* Adjust the height of the container */
+        body {
+            height: 95vh; /* Adjusted height */
+        }
         h1 {
             font-size: 24px;
             margin-bottom: 20px; /* Increased margin for separation */
             color: #333;
         }
-
-        /* List styles */
-        ul {
-            display: flex; /* Use flexbox for layout */
-            justify-content: space-around; /* Space between bubble and button */
-            align-items: flex-start; /* Align items to the top */
-        }
-
-        /* List item styles */
-        li {
+        /* Define bubble styles */
+        .project-bubble {
             background-color: #c7e0ff; /* Light blueish color */
             border: 2px solid #99ccff;
             border-radius: 10px; /* Rounded corners */
@@ -68,39 +96,47 @@
             flex-direction: column; /* Display content in a column layout */
             align-items: flex-start; /* Align content to the start of the column */
         }
-        li:hover {
+
+        /* Define hover effect for bubbles */
+        .project-bubble:hover {
             background-color: #9ad0eb; /* Powder blue */
         }
 
-        /* Button styles */
-        .custom-button {
-            color: white;
-            font-size: 15px;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            background-color: cornflowerblue;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        /* Define button margin */
+        .chooseprojectBtn {
+            margin-top: 10px; /* Adjust button margin */
         }
 
-        /* Button hover effect */
-        .custom-button:hover {
-            background-color: darkblue;
-            transform: scale(1.05) /* Slightly darker blue */
-        }
-
-        /* Button container */
-        .button-container {
-            margin-top: 20px;
+        /* Define project info styles */
+        .project-info {
+            column-gap: 40px;
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap; /* Wrap buttons onto multiple lines if necessary */
+            justify-content: space-between;
         }
 
-        /* Individual button styles */
-        .button-container button {
-            margin: 5px;
+        /* Define strong tag styles */
+        .project-info strong {
+            margin-right: 10px; /* Add some spacing between name and username */
+        }
+
+        /* Define username styles */
+        .not-top-info {
+            margin-top: 5px; /* Add margin to separate username */
+        }
+
+        /* Container for each project item */
+        .project-item {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between bubble and button */
+            align-items: flex-start; /* Align items to the top */
+        }
+        .left, .right{
+            display:flex;
+            flex-direction: column;
+        }
+        /* Adjust button width to fit inside the bubble */
+        .chooseprojectBtn {
+            width: auto; /* Allow button to adjust its width */
         }
     </style>
 </head>
@@ -112,34 +148,42 @@
     </div>
     <div class="container">
         <h1>Requests to Me</h1>
-        <ul>
             {% for request in requests_to_me %}
-                <li>
-                    <span>{{ request.header }} - {{ request.type }}</span>
-                    
-                </li>
+            <div class="project-item">
+                <div class="project-bubble bubble-{{ forloop.counter }}">
+                    <div class="project-info">
+                        <div class=left>
+                            <strong>Name:</strong> {{ request.header }} - {{ request.type }}
+                        </div>
+                    </div>
+                </div>
                 {% if request.type == 'ASOC' %}
-                        <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
-                    {% else %}
-                        <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
-                    {% endif %}
+                    <button class="chooseprojectBtn" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
+                {% else %}
+                    <button class="chooseprojectBtn" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                {% endif %}
+                </div>
+               
             {% endfor %}
-        </ul>
-
         <h1>My Requests</h1>
-        <ul>
+        
             {% for request in requests_from_me %}
-                <li>
-                    <span>{{ request.header }} - {{ request.type }}</span>
-                    
-                </li>
+            <div class="project-item">
+                <div class="project-bubble bubble-{{ forloop.counter }}">
+                    <div class="project-info">
+                        <div class=left>
+                            <strong>Name:</strong> {{ request.header }} - {{ request.type }}
+                        </div>
+                    </div>
+                </div>
                 {% if request.type == 'ASOC' %}
-                        <button class="custom-button" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
-                    {% else %}
-                        <button class="custom-button" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
-                    {% endif %}
-            {% endfor %}
-        </ul>
+                    <button class="chooseprojectBtn" onclick="location.href='{% url 'view_request_association' request.id %}'">More</button>
+                {% else %}
+                    <button class="chooseprojectBtn" onclick="location.href='{% url 'view_request_project' request.id %}'">More</button>
+                {% endif %}
+                </div>
+        {% endfor %}
+        
 
     
 
