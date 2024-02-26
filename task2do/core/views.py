@@ -47,6 +47,7 @@ def project_data(project):
     tasks =project.tasks.filter( ~Q(status = "CANCELED"))
     completed_tasks = tasks.filter(status ="COMPLETED")
     return {"name":project.name,
+            "description":project.description,
                         "count_tasks": tasks.count,
                         "count_completed_tasks":completed_tasks.count,
                         "members_count": project.members.count,
@@ -284,7 +285,6 @@ def manager_home_screen(request):
     user_id = request.user.personal_data.id
     projects = Project.objects.filter(Q(is_active=True) & Q(lead__personal_data__id=user_id)).order_by('due_date')[:5]
     list_projects = [project_data(project) for project in projects]
-    print(list_projects)
     return render(request, 'core/manager_home_screen.html',{'projects': list_projects})
 
 
@@ -292,12 +292,14 @@ def manager_home_screen(request):
 @login_required(login_url='manager_login')
 def view_project(request, project_id):
     project = Project.objects.get(id=project_id)
+    project = project_data(project)
     return render(request, 'core/view_project.html', {'project': project})
 
 
 @login_required(login_url='manager_login')
 def project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
+    #project= {"name" :project.name}
     workers = project.members.all()
     return render(request, 'core/project_workers.html', {'project': project, 'workers': workers})
 

@@ -172,7 +172,7 @@
         <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_user' task.id %}'">edit tasks</button>
     </div>
     {% endfor %}
-    {% for task in active_tasks %}
+    {% for task in active_tasks_past_deadline %}
     <div class="project-item">
         <div class="project-bubble bubble-{{ forloop.counter }}">
             <div class="project-info">
