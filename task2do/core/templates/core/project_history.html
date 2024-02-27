@@ -151,13 +151,13 @@
                 <div class="project-bubble bubble-{{ forloop.counter }}">
                     <div class="project-info">
                         <div class=left>
-                            <strong>Name:</strong> {{ project_data.project.name }}
+                            <strong>Name:</strong> {{ project_data.name }}
                             <div class="not-top-info">
-                                <strong>tasks:</strong> {{ project_data.num_tasks }}
+                                <strong>tasks:</strong> {{project_data.count_completed_tasks}}/{{ project_data.count_tasks }}
                             </div>
                         </div>
                         <div class=right>
-                            <strong>workers:</strong>  {{ project_data.num_workers }}
+                            <strong>workers:</strong>  {{ project_data.members_count }}
                             <div class="not-top-info">
                                 <strong>due-date:</strong> {{ project_data.due_date}}
                             </div>

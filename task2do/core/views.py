@@ -35,14 +35,16 @@ def add_project_to_manager(request, manager_id, project_id):
     project = Project.objects.get(id=project_id)
     manager.lead_projects.add(project)
     manager.save()
+def user_full_name(user):
+    return user.user.username +" - "+user.user.first_name+" "+user.user.last_name
+
 def task_data( task):
     return {"title":task.title ,
             "status":task.status , 
+            "description":task.description,
             "due_date":task.due_date,
             "id":task.id, 
-            "user":
-            task.assigned_to.personal_data.user.username +" - "+task.assigned_to.personal_data.user.first_name+" "+task.assigned_to.personal_data.user.last_name
-            }
+            "user": user_full_name(task.assigned_to.personal_data)           }
 def project_data(project):
     tasks =project.tasks.filter( ~Q(status = "CANCELED"))
     completed_tasks = tasks.filter(status ="COMPLETED")
@@ -58,8 +60,18 @@ def request_data(request):
     return {
                 "header": request.header,
                 "type":request.type,
-                 "id":request.id
+                 "id":request.id,
+                 "last_sender": user_full_name(request.last_sender),
+                 "last_receiver":  user_full_name(request.last_receiver),
+                 "is_active": request.is_active
                 }
+def worker_data(worker):
+    return {"first_name":worker.personal_data.user.first_name,
+            "last_name" :worker.personal_data.user.last_name,
+             "username": worker.personal_data.user.username,
+              "email": worker.personal_data.user.email,
+              "b_date": worker.personal_data.b_date,
+                "id":worker.id  }
 # general stuff
 def open_screen(request):
     context = {
@@ -301,7 +313,8 @@ def project_workers(request, project_id):
     project = Project.objects.get(id=project_id)
     #project= {"name" :project.name}
     workers = project.members.all()
-    return render(request, 'core/project_workers.html', {'project': project, 'workers': workers})
+    workers= [worker_data(worker) for worker in workers]
+    return render(request, 'core/project_workers.html', {'project': project_data(project), 'workers': workers})
 
 
 @login_required(login_url='manager_login')
@@ -374,7 +387,7 @@ def task_display_manager(request, task_id):
     task = Task.objects.get(id=task_id)
     project = task.project_tasks.all().first()
     
-    return render(request, 'core/task_display_manager.html', {'task': task, 'project_id': project.id})
+    return render(request, 'core/task_display_manager.html', {'task': task_data(task), 'project_id': project.id})
 
 
 @login_required(login_url='manager_login')
@@ -444,7 +457,7 @@ def edit_project_workers(request, project_id):
             return redirect('project_workers', project_id=project_id)
     else:
         form = EditProjectWorkersForm(instance=project, manager_id=request.user.personal_data.id)
-    return render(request, 'core/edit_project_workers.html', {'form': form, 'project': project})
+    return render(request, 'core/edit_project_workers.html', {'form': form, 'project': project_data(project)})
 
 
 # # Manager's workers
@@ -452,14 +465,15 @@ def edit_project_workers(request, project_id):
 def workers_list_manager(request, manager_id):
     manager = get_object_or_404(Manager, personal_data__user=request.user)
     workers = manager.workers.all()
-    return render(request, 'core/workers_list_manager.html', {'workers': workers, manager_id: manager_id})
+    workers= [worker_data(worker) for worker in workers]
+    return render(request, 'core/workers_list_manager.html', {'workers': workers})
 
 
 @login_required(login_url='manager_login')  # is this needed?
 def worker_details(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     last_login = worker.personal_data.user.last_login
-    return render(request, 'core/worker_details.html', {'worker': worker, 'last_login': last_login})
+    return render(request, 'core/worker_details.html', {'worker': worker_data(worker), 'last_login': last_login})
 
 
 @login_required(login_url='manager_login')
@@ -472,7 +486,7 @@ def edit_project(request, project_id):
             return redirect('view_project', project_id=project.id)
     else:
         form = ProjectChangeForm(instance=project)
-    return render(request, 'core/edit_project.html', {'form': form, 'project': project})
+    return render(request, 'core/edit_project.html', {'form': form, 'project': project_data(project)})
 
 
 # # Manager's requests
@@ -496,6 +510,10 @@ def requests_page(request):
 
     # Filter requests where the last receiver is the current user's PersonalData
     requests_to_me = Request.objects.filter(last_receiver=personal_data, is_active=True)
+    print( requests_from_me, requests_to_me)
+    requests_from_me=[ request_data(request) for request in requests_from_me]
+    requests_to_me=[ request_data(request) for request in requests_to_me]
+    print( requests_from_me, requests_to_me)
     return render(request, 'core/requests_page.html',
                   {'requests_from_me': requests_from_me, 'requests_to_me': requests_to_me, 'user_type': user_type})
 
@@ -568,7 +586,7 @@ def view_request_project(request, request_id):
 
     is_receiver = request_obj.last_receiver.user == request.user
 
-    context = {'request_to_view': request_obj, 'request_date': request_date, 'is_receiver': is_receiver}
+    context = {'request_to_view': request_data(request_obj), 'request_date': request_date, 'is_receiver': is_receiver}
 
     if request.method == 'POST':
         if 'close_request' in request.POST:
@@ -648,6 +666,7 @@ def user_home_screen(request):
     user_id = request.user.personal_data.id
     active_tasks = Task.objects.filter(  # followup by Almog
         ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id)).order_by("due_date")[:5]
+    active_tasks= [task_data(task) for task in active_tasks]
     context = {'active_tasks': active_tasks}
     return render(request, 'core/user_home_screen.html',context)
 
@@ -659,7 +678,7 @@ def task_history(request):
     
     tasks = Task.objects.filter(Q(status='COMPLETED') | Q(status='CANCELED'), assigned_to=worker_id).order_by(
         '-due_date')
-    
+    tasks = [task_data(task) for task in tasks]
     return render(request, 'core/task_history.html', {'history_tasks': tasks})
 
 
@@ -682,6 +701,7 @@ def active_tasks(request):
         ~Q(status='CANCELED') & Q(is_active=True) & Q(assigned_to__personal_data__id=user_id)).order_by("due_date")
     now = timezone.now()
     formatted_now = now.strftime("%Y-%m-%d")
+    active_tasks= [task_data(task) for task in active_tasks]
     context = {'active_tasks': active_tasks, "now" : formatted_now}
     return render(request, 'core/active_tasks.html', context)
 
@@ -689,7 +709,7 @@ def active_tasks(request):
 @login_required(login_url='user_login')
 def task_display_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
-    context = {'task': task, 'today_date': date.today(), 'project_name': task.project_tasks.all().first().name}
+    context = {'task': task_data(task), 'today_date': date.today(), 'project_name': task.project_tasks.all().first().name}
     return render(request, 'core/task_display_user.html', context)
 
 
@@ -721,7 +741,7 @@ def choose_subtasks_num(request, task_id):
             return redirect('create_subtasks', task_id=task.id, num_subtasks=num_subtasks)
     else:
         form = SubtaskDivisionForm()
-    return render(request, 'core/choose_subtasks_num.html', {'form': form, 'task': task})
+    return render(request, 'core/choose_subtasks_num.html', {'form': form, 'task': task_data(task)})
 
 
 @login_required(login_url='user_login')
@@ -747,7 +767,7 @@ def create_subtasks(request, task_id, num_subtasks):
             return redirect('task_display_user', task_id=task.id)
     else:
         formset = SubtaskFormSet()
-    return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task})
+    return render(request, 'core/create_subtasks.html', {'formset': formset, 'task': task_data(task)})
 
 @login_required(login_url='user_login')
 def upcoming_deadlines(request):
@@ -766,5 +786,6 @@ def upcoming_deadlines(request):
     upcoming_tasks = Task.objects.filter(due_date__gte=now,
                                          assigned_to__personal_data__id=request.user.personal_data.id).order_by(
         'due_date')
+    upcoming_tasks =[ task_data(task) for task in upcoming_tasks]
     context = {'upcoming_tasks': upcoming_tasks}
     return render(request, 'core/upcoming_deadlines.html', context)

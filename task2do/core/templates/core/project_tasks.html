@@ -168,8 +168,8 @@
                 </div>
             </div>
         </div>
-        <button class="custom-button" onclick="location.href='{% url 'task_display_user' task.id %}'">task details</button>
-        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_user' task.id %}'">edit tasks</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_display_manager' task.id %}'">task details</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">edit tasks</button>
     </div>
     {% endfor %}
     {% for task in active_tasks_past_deadline %}
@@ -190,8 +190,8 @@
                 </div>
             </div>
         </div>
-        <button class="custom-button" onclick="location.href='{% url 'task_display_user' task.id %}'">task details</button>
-        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_user' task.id %}'">edit tasks</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_display_manager' task.id %}'">task details</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">edit tasks</button>
     </div>
     {% endfor %}
     <h4>Inactive Tasks</h4>
@@ -213,8 +213,8 @@
                 </div>
             </div>
         </div>
-        <button class="custom-button" onclick="location.href='{% url 'task_display_user' task.id %}'">task details</button>
-        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_user' task.id %}'">edit tasks</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_display_manager' task.id %}'">task details</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">edit tasks</button>
     </div>
     {% endfor %}
     {% for task in inactive_tasks_past_deadline %}
@@ -235,8 +235,8 @@
                 </div>
             </div>
         </div>
-        <button class="custom-button" onclick="location.href='{% url 'task_display_user' task.id %}'">task details</button>
-        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_user' task.id %}'">edit tasks</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_display_manager' task.id %}'">task details</button>
+        <button class="custom-button" onclick="location.href='{% url 'task_editing_screen_manager' task.id %}'">edit tasks</button>
     </div>
     {% endfor %}
 

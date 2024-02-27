@@ -157,7 +157,7 @@
                         <div  class=left>
                             <strong >Name:</strong> {{ project.name }}
                             <div class="not-top-info">
-                                <strong  >tasks:</strong> {{ project.tasks.count }}
+                                <strong  >tasks:</strong> {{project.count_completed_tasks}}/{{project.count_tasks}}
                             </div>
                         </div>
                         <div class=right >

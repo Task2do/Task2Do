@@ -148,18 +148,18 @@
     </div>
     <h1>Project Workers - {{ project.name }}</h1>
 
-    {% for worker in project.members.all %}
+    {% for worker in workers%}
     <div class="project-item">
             <div class="project-bubble bubble-{{ forloop.counter }}">
                 <div class="project-info">
                     <div  class=left>
-                        <strong >Name:</strong>  {{ worker.personal_data.user.first_name }} {{ worker.personal_data.user.last_name }}
+                        <strong >Name:</strong>  {{ worker.first_name }} {{ worker.last_name }}
                         <div class= "not-top-info">
-                            <strong>Email:</strong> {{ worker.personal_data.user.email }}
+                            <strong>Email:</strong> {{ worker.email }}
                         </div>
                     </div>
                     <div class=right >
-                        <strong  >username</strong> {{ worker.personal_data.user.username }}
+                        <strong  >username</strong> {{ worker.username }}
                     </div>
                 </div>
             </div>

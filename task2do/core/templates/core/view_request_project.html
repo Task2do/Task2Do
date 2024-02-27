@@ -123,8 +123,8 @@
 
         <div class="bubble">
             <h3>Request Details</h3>
-            <p>Sender: {{ request_to_view.last_sender.user.username }} - {{ request_to_view.last_sender.user.first_name }} {{ request_to_view.last_sender.user.last_name }}</p>
-            <p>Receiver: {{ request_to_view.last_receiver.user.username }} - {{ request_to_view.last_receiver.user.first_name }} {{ request_to_view.last_receiver.user.last_name }}</p>
+            <p>Sender: {{request_to_view.last_sender}}</p>
+            <p>Receiver: {{ request_to_view.last_receiver}}</p>
             <p>Type: {{ request_to_view.type }}</p>
             <p>Active: {{ request_to_view.is_active }}</p>
             <p>Request Date: {{ request_date }}</p>
