@@ -709,7 +709,11 @@ def active_tasks(request):
 @login_required(login_url='user_login')
 def task_display_user(request, task_id):
     task = Task.objects.get(id=task_id, assigned_to__personal_data__id=request.user.personal_data.id)
-    context = {'task': task_data(task), 'today_date': date.today(), 'project_name': task.project_tasks.all().first().name}
+    if (task.project_tasks.all().first()):
+        project_name = task.project_tasks.all().first().name
+    else:
+         project_name = task.parent_task.project_tasks.all().first().name
+    context = {'task': task_data(task), 'today_date': date.today(), 'project_name': project_name}
     return render(request, 'core/task_display_user.html', context)
 
 
