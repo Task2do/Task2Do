@@ -16,9 +16,12 @@ Right now, there's a delicate balance in managing time, tasks, and team members 
 ## Technologies in use
 ### data base-
 
+
 ### backend- 
 
+
 ### frontend-
+We used HTML files and CSS for designing the user interface of our web application.
 
 ## Looking at the app 
 In the attached video, we can see the entire app: <br/>
@@ -28,7 +31,7 @@ https://github.com/Task2do/Task2Do/assets/118693941/a174950e-338d-4798-9ccb-a2fb
 
 ## Creators 
 Shira Chesler, Almog Shor , Lior Shiboli , Yuval Baror/ <br/> 
-We'd like to extend a special thank you to Alina O. and Sapir Asraf for their guidance and support throughout the software engineering course.
+We'd like to extend a special thank you to Alina O. and Sapir A. for their guidance and support throughout the software engineering course.
 
 
 
