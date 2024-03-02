@@ -26,8 +26,9 @@ from the opening page where we can see the sign up and login options to the main
 
 https://github.com/Task2do/Task2Do/assets/118693941/a174950e-338d-4798-9ccb-a2fbd2c6d31d
 
-
-
+## Creators 
+Shira Chesler, Almog Shor , Lior Shiboli , Yuval Baror/ <br/> 
+We'd like to extend a special thank you to Alina O. and Sapir Asraf for their guidance and support throughout the software engineering course.
 
 
 
