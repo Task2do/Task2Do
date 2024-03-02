@@ -22,7 +22,7 @@ Right now, there's a delicate balance in managing time, tasks, and team members 
 
 ## Looking at the app 
 In the attached video, we can see the entire app: <br/>
-from the opening page where we can see the sign up and login options to the 
+from the opening page where we can see the sign up and login options to the main screens of users and managers, there we can see the project, tasks, hostory and requests.  
 
 https://github.com/Task2do/Task2Do/assets/118693941/a174950e-338d-4798-9ccb-a2fbd2c6d31d
 
