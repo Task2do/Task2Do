@@ -14,11 +14,10 @@ Right now, there's a delicate balance in managing time, tasks, and team members 
 ``` python3 manage.py runserver ```
 
 ## Technologies in use
-### data base-
+### data base and backend- 
+We used Django in our project. That allows for rapid development and clean, pragmatic design, making it ideal for web app development under tight deadlines. <br/> You can find comprehensive documentation to guide you through using Django [here](https://docs.djangoproject.com/).<br/>
 
-
-### backend- 
-
+For incorporating PostgreSQL, it's a powerful, open-source object-relational database system known for its reliability, feature robustness, and performance. Detailed documentation for PostgreSQL can be accessed to help integrate it into your project [here](https://www.postgresql.org/docs/).<br/>
 
 ### frontend-
 We used HTML files and CSS for designing the user interface of our web application.
